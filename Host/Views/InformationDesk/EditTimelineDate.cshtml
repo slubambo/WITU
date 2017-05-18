@@ -1,0 +1,75 @@
+﻿@using System.Web.UI.WebControls
+@using ARMSv2.Utils
+@model ARMSv2.Models.EditTimelineDate
+
+@{
+    ViewBag.Title = "Ndejje University Records Management System";
+}
+
+<div class="">
+    <h3 class="blueHeader">Add / Edit Calendar Event </h3>
+    
+    @using (Html.BeginForm("EditTimelineDate", "InformationDesk", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+          
+            @Html.ValidationSummary(true)
+            
+            <div class="form-group">
+                @Html.LabelFor(model => model.EventName, new { @class = "control-label col-md-2" })
+                <div class="col-md-10 progCoreInput">
+                    @Html.EditorFor(model => model.EventName)
+                    @Html.ValidationMessageFor(model => model.EventName)
+                </div>
+            </div>
+            
+
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.StartDate, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10 progCoreInput">
+                    <div class="input-group">
+                        <label class="input-group-addon btn noborder" for="start-date"><span class="glyphicon glyphicon-calendar" data-for="start-date"></span></label>
+                        @Html.DateTimeEditorFor(m => m.StartDate, "dd/MM/yyyy", new { @id = "start-date", @class = "noborder date-start-date uneditable-input" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.EndDate, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10 progCoreInput controls">
+
+                    <div class="input-group">
+                        <label class="input-group-addon btn noborder" for="end-date">
+                            <span class="glyphicon glyphicon-calendar" data-for="end-date"></span>
+                        </label>
+                        @Html.DateTimeEditorFor(m => m.EndDate, "dd/MM/yyyy", new { @id = "end-date", @class = "noborder date-end-date uneditable-input" })
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.EventDetails, new { @class = "control-label col-md-2" })
+                <div class="col-md-10 ">
+                    @Html.TextAreaFor(model => model.EventDetails, new { @class = "fullWidth" })
+                </div>
+            </div>
+
+            <div class="">
+                <div class="pull-right">
+                    <input type="submit" value="Save" class="btn saveBtn" />
+                    <input type="button" value="Cancel"
+                           onclick="javascript: cancelSubmission('@Url.Action("Calendar", "InformationDesk", new { id = Model.Id })');" class="btn delBtn" />
+                </div>
+            </div>
+        </div>
+        
+        @Html.HiddenFor(x => x.Id)
+        @Html.HiddenFor(x => x.TimelineId)
+    }
+
+</div>
+

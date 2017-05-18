@@ -1,0 +1,111 @@
+﻿@{
+    ViewBag.Title = "Staff";
+    Layout = "~/Views/Shared/_LayoutStaff.cshtml";
+}
+@model ARMSv2.Models.StaffHomeView
+
+
+<div class="row">
+    <div class="col-md-12" style="line-height:25px">
+        <h4 class="maroonHeader ">Staff Information</h4>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-3">
+        <img src="@User.ApplicationUserProfilePhoto()" class="img-responsive" style="width: 110px; height: auto; margin:10px auto; border: 1px solid #E9C3CC" />
+    </div>
+    <div class="col-md-9 row-top" style="line-height:20px">
+        <div class="row"><div class="col-xs-3"><p class="detailLabel">Name:</p></div><div class="col-xs-9"><p> @Model.staff.Person.FullName</p></div></div>
+        <div class="row"><div class="col-xs-3"><p class="detailLabel">Email Address</p></div><div class="col-xs-9"><p>@Model.staff.Person.EmailAddress</p></div></div>
+        <div class="row"><div class="col-xs-3"><p class="detailLabel">Phone Number</p></div><div class="col-xs-9"><p>@Model.staff.Person.TelephoneContact</p></div></div>
+        <div class="row">
+            <div class="col-xs-3"></div>
+            <div class="col-xs-9">
+                @Html.ActionLink("Edit", "EditStaffProfile", "Staff", null, new { @class = "btn btn-default btn-xs" })
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+<br />
+<div class="row">
+    @*<div class="col-md-6" style="line-height:20px">*@
+    <div class="col-md-12">
+
+        @*<h4 class="maroonHeader">Upcoming Semester Events</h4>
+            <ul class="semEvents">
+                <li>Orientation Week 2013/2014</li>
+                <li>Fresher's Orientation Week</li>
+                <li>In-Service Session I 2013-2014 </li>
+                <li>School of Postgraduate: VICA VOCE </li>
+            </ul>
+            <br />*@
+        <div class="row">
+            <div class="col-xs-6">
+                @if (@Model.semInfo != null)
+                {
+                    <h4 class="maroonHeader">Semester Progress</h4>
+                    <div class="semstats">
+                        <span class="icon calenderIcon"></span>
+                        <p>Day <span id="elapseddays" class="font-bold"></span> of <span id="totaldays" class="font-bold"></span></p>
+                    </div>
+                    <div class="clearfix"></div>
+                    <br />
+                    <div class="progress" style="height: 30px; width: 70%">
+                        <div id="sem-progress-bar" class="progress-bar" role="progressbar" aria-valuenow="0"
+                             aria-valuemin="0" aria-valuemax="100">
+
+                        </div>
+                    </div>
+
+                }
+                else
+                {
+
+                    @*<div class="icon warningIcon"></div>*@
+                    <div class="center center-block" style="margin-top: 30px;">
+                        <div>
+                            <span class="fa fa-warning" style="font-size: 64px; color: #f57800; ‏"></span>
+                        </div>
+                        <span class="maroonTxt center">No Active Semester</span>
+                    </div>
+                }
+                <br />
+            </div>
+            <div class="col-xs-6">
+                <div class="downloads">
+                    <div class="row">
+                        <h4 class="maroonHeader">Quick Links </h4>
+                    </div>
+                    <div class="row">
+                        <ul>
+                            <li>
+                                <div>@Html.ActionLink("Regulations and Procedures", "RegulationsAndProcedures", "Semester", null, null)</div>
+                            </li>
+                        </ul>
+                        
+                        @*<div>@Html.ActionLink("Semester Timetable", "", "", null, new { @class = "btn saveBtn" })</div>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+            @*<div class="col-md-6 currentDiv">*@
+            <h4 class="maroonHeader">New and Events</h4>
+            @Html.Partial("~/Views/Shared/Display/_InformationDeskItems.cshtml", @Model.InformationDesks)
+            @Html.ActionLink("View All News and Events", "All", "InformationDesk", null, new { @class = "delBtn pull-right" })
+            <div class="clearfix"></div>
+            <br />
+            @*</div>*@
+        </div>
+</div>
+ 
+<div class="row">
+    <div class="col-md-12">
+        <h4 class="maroonHeader text-center">University Calendar</h4>
+        <div class="jumbotron timeline-view" id="timeline-view">
+
+        </div>
+
+    </div>
+</div>
+

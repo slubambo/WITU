@@ -1,0 +1,17 @@
+﻿@model WITU.Models.EditPerson
+@using WITU.Utils
+@using NHibernate.Linq
+
+@{
+    ViewBag.Title = "Edit Student Profile";
+}
+
+
+<h4 class="maroonHeader">Edit Profile</h4>
+@using (Html.BeginForm("EditStudentProfile", "Student", FormMethod.Post, new {enctype = "multipart/form-data"}))
+{
+   
+    @Html.AntiForgeryToken()
+    @Html.Partial("~/Views/Shared/_EditProfilePartial.cshtml")
+
+}

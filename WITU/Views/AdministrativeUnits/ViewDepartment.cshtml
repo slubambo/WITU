@@ -1,0 +1,165 @@
+﻿@using WITU.Core.Model
+@using WITU.Models
+@using WITU.Utils
+@using WITU.Models.UserManagement
+@{ var sessionDetails = (SessionUserManagementDetails)HttpContext.Current.Session["LoggedInUserRoles"]; }
+@model WITU.Models.AdminUnits.DepartmentView
+
+@{
+    ViewBag.Title = "Ndejje University Records Management System";
+
+}
+
+<div class="">
+    <div class="row">
+        <div class="col-md-9 programViewCont ">
+            <div class="row">
+                <h2 class="blueHeader col-sm-9 nomargin">
+                    @Model.Department.DepartmentCore.Name
+                </h2>
+                @if (Request.IsAuthenticated)
+                {
+                    if (User.ApplicationUserType() == (int)UserTypes.Staff)
+                    {
+                        if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) WITU.Models.ServiceDetail.Department
+                                                                                                && (x.Role.CanCreate == true || x.Role.CanUpdate == true || x.Role.CanDelete == true)))
+                        {
+                            <div class="col-sm-3">
+                                @Html.ActionLink("Edit Department", "AddOrEditDepartment", new {id = Model.Department.Id}, new {@class = "saveBtn"})
+                            </div>
+                        }
+                    }
+                }
+            </div>
+            <div class="row">
+
+                @if (string.IsNullOrWhiteSpace(Model.Department.Description))
+                {
+                    <span class="col-xs-12 col-sm-12 greyTxt text-justify">
+
+                        No Description Available
+
+                    </span>
+                }
+                else
+                {
+                    <span class="col-xs-12 col-sm-12 text-justify">
+
+                        @Model.Department.Description
+
+                    </span>
+                }
+
+            </div>
+            <div>
+                @if (Model.Department.Faculty != null)
+                {
+                    <div class="row">
+                        <span class="col-xs-12 col-sm-2">Faculty: </span>
+                        <span class="col-xs-12 col-sm-10">@Model.Department.Faculty.FacultyCore.Name</span>
+
+                    </div>
+                    
+                }
+                @if (Model.Department.Faculty.Campus != null)
+                {
+                    <div class="row">
+                        <span class="col-xs-12 col-sm-2">Campus: </span>
+                        <span class="col-xs-12 col-sm-10">@Model.Department.Faculty.Campus.Name</span>
+                    </div>
+                }
+
+            </div>
+            @*<div class="">
+                
+                @if (Model.Department.Programs.Any())
+                {
+                    <div class="row">
+                        <label class="control-label col-xs-12 col-sm-2">Programs:</label>
+                        <label class="control col-xs-12 col-sm-10">
+                            @Model.Department.Programs.Count
+                        </label>
+                    </div> 
+                }
+            </div>*@
+            <div class="clearfix"></div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            @*TODO: Add something to the right*@
+
+        </div>
+    </div>
+    
+    <hr />
+    <div class="row">
+        <div class="col-md-12">
+            <h4 class="greyHeader">
+                Contact Information
+            </h4>
+        </div>
+
+    </div>
+    
+   @Html.Partial("~/Views/AdministrativeUnits/_Contacts.cshtml", @Model.ContactViewEntended)
+    
+    <br/>
+    
+    @if (Model.Department.Programs.Any())
+    {
+        <div class="row">
+            <div class="col-md-12">
+                <h4 class="greyHeader">
+                    Programs
+                </h4>
+            </div>
+
+        </div>
+        <div>
+            <table class="table dataTable">
+                <thead>
+                    <tr>
+                        <th>
+                            Program Name
+                        </th>
+                        <th>
+                            Minimum Duration
+                        </th>
+                        <th>
+                            Start Year
+                        </th>
+                        <th>
+                            Study Times
+                        </th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var program in Model.Department.Programs)
+                    {
+                        <tr>
+                            <td title="Click to View @program.ProgramCore.Name">
+                                @Html.ActionLink(program.ProgramCore.Name, "View", "Program", new { id = program.Id }, null)
+
+                            </td>
+                            <td>
+                                @program.ProgramCore.MinimumDuration Year(s)
+                            </td>
+                            <td>
+                                @program.StartAcademicYear.StartYear - @program.StartAcademicYear.EndYear
+                            </td>
+                            <td>
+                                @string.Join(", ", program.StudyPeriods.Select(sp => sp.Name))
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+    </div>
+         
+    }
+    
+</div>

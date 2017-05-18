@@ -1,0 +1,66 @@
+﻿@using ARMSv2.Utils
+@using Microsoft.AspNet.Identity
+@using ARMSv2.Core.Model
+@if (Request.IsAuthenticated)
+{
+    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    {
+
+        @Html.AntiForgeryToken()
+
+        <ul class="loginLinks">
+            @if (@User.ApplicationUserProfilePhoto() != null)
+            {
+                <li class="userPicLi">
+                    <img src="@User.ApplicationUserProfilePhoto()" class="userPic img-circle img-responsive" />
+                </li>
+            }
+
+            <li class="" id="dropdownMenu1" data-toggle="dropdown">
+                <a class="username nopaddingss">@User.Identity.GetUserName()</a>
+            </li>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                @{
+        switch (User.ApplicationUserType())
+        {
+            case (int)UserTypes.Staff:
+                <li>@Html.ActionLink("View Profile", "StaffProfile", "Staff", null, new { @title = "View Profile", @rel = "" })</li>
+                break;
+            case (int)UserTypes.Student:
+            <li>@Html.ActionLink("View Profile", "StudentProfile", "Student", null, new { @title = "View Profile", @rel = "" })</li>
+                break;
+            default:
+
+                break;
+        }
+                }
+
+                <li>@Html.ActionLink("Change Password", "manage", "account", null, new { @title = "Change Password", @rel = "" })</li>
+                <li>
+                    <a href="javascript:document.getElementById('logoutForm').submit()">Log Out<span class="topIcon logoutIcon"></span></a>
+                </li>
+            </ul>
+
+
+
+
+
+            <li class="">
+                <a href="#"><span class="alertCount"></span><i class="fa-bell-o fa"></i>  </a>
+            </li>
+
+
+        </ul>
+    }
+}
+else
+{
+    <ul class="loginLinks universalLogin">
+
+        <li>@Html.ActionLink("Apply Now", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink", target = "_blank" })</li>
+        <li>@Html.ActionLink("Log In", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+        
+    </ul>
+
+   
+}

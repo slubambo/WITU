@@ -1,0 +1,140 @@
+﻿@model List<ARMSv2.Models.SemesterView>
+@{
+    ViewBag.Title = "Add or Edit Semester";
+}
+
+
+<h2>Add Semester</h2>
+@using (Html.BeginForm())
+{
+    int i;
+    for (i = 0; i < 2; i++)
+    {
+        <div>
+            @Html.ValidationSummary(true)
+        </div>
+
+    <div class="form-horizontal tabs bodytext tabs-pilled noborder">
+        <ul class="">
+
+            @for (i = 0; i < 2; i++)
+            {
+                <li>
+                    <a href="#div-Semester@(i)">
+                        Semester @{if (i == 0)
+                        {<span>I</span>}
+                        else
+                        {<span>II</span>}
+                        }
+                    </a>
+                </li>
+            }
+        </ul>
+
+        @for (i = 0; i < 2; i++)
+        {
+            <div id="div-Semester@(i)" class="bodytext tab-pane nopadding">
+                <div class="clearfix">
+                    <br />
+                </div>
+
+                <div class="form-horizontal">
+
+
+                    @Html.HiddenFor(m => m[i].SemesterSession, new { Value = i + 1 })
+
+
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m[i].StartDate, new { @class = "control-label col-md-3" })
+                        <div class="col-md-9 progCoreInput">
+                            <div class="input-group">
+                                <label class="input-group-addon btn noborder" for="StartDate"><span class="glyphicon glyphicon-calendar" data-for="StartDate"></span></label>
+                                @Html.TextBoxFor(m => m[i].StartDate, "{0:dd/MM/yyyy}", new { @class = "date-start-date noborder uneditable-input ", required = "required" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m[i].EndDate, new { @class = "control-label col-md-3" })
+                        <div class="col-md-9 progCoreInput">
+                            <div class="input-group">
+                                <label class="input-group-addon btn noborder" for="EndDate"><span class="glyphicon glyphicon-calendar" data-for="EndDate"></span></label>
+                                @Html.TextBoxFor(m => m[i].EndDate, "{0:dd/MM/yyyy}", new { @class = "date-end-date uneditable-input noborder", required = "required" })
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m[i].RegistrationDeadline, new { @class = "control-label col-md-3" })
+                        <div class="col-md-9  progCoreInput">
+                            <div class="input-group">
+                                <label class="input-group-addon btn noborder" for="RegistrationDeadline"><span class="glyphicon glyphicon-calendar" data-for="RegistrationDeadline"></span></label>
+                                @Html.TextBoxFor(m => m[i].RegistrationDeadline, "{0:dd/MM/yyyy}", new { @class = "date-picker uneditable-input noborder", required = "required" })
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m[i].AssessmentStartDate, new { @class = "control-label col-md-3" })
+                        <div class="col-md-9 progCoreInput">
+                            <div class="input-group">
+                                <label class="input-group-addon btn noborder" for="AssessmentStartDate"><span class="glyphicon glyphicon-calendar" data-for="AssessmentStartDate"></span></label>
+                                @Html.TextBoxFor(m => m[i].AssessmentStartDate, "{0:dd/MM/yyyy}", new { @class = "date-start-date uneditable-input noborder" })
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m[i].AssessmentEndDate, new { @class = "control-label col-md-3" })
+                        <div class="col-md-9 progCoreInput">
+                            <div class="input-group">
+                                <label class="input-group-addon btn noborder" for="AssessmentEndDate"><span class="glyphicon glyphicon-calendar" data-for="AssessmentEndDate"></span></label>
+                                @Html.TextBoxFor(m => m[i].AssessmentEndDate, "{0:dd/MM/yyyy}", new { @class = "date-end-date uneditable-input noborder" })
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m[i].ResultsUploadDeadline, new { @class = "control-label col-md-3" })
+                        <div class="col-md-9 progCoreInput">
+                            <div class="input-group">
+                                <label class="input-group-addon btn noborder" for="ResultsUploadDeadline"><span class="glyphicon glyphicon-calendar" data-for="ResultsUploadDeadline"></span></label>
+                                @Html.TextBoxFor(m => m[i].ResultsUploadDeadline, "{0:dd/MM/yyyy}", new { @class = "date-picker uneditable-input noborder" })
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group hidden">
+                        @Html.LabelFor(m => m[i].Status, new { @class = "control-label col-md-3" })
+                        <div class="col-md-9 progCoreInput">
+                            @Html.TextBoxFor(m => m[i].Status)
+                            @Html.ValidationMessageFor(m => m[i].Status)
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+        }
+
+
+
+    </div>
+
+
+        <button type="submit">Submit</button>
+
+
+    }
+
+}
+

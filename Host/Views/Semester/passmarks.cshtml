@@ -1,0 +1,134 @@
+﻿@{
+    ViewBag.Title = "Pass Marks";
+}
+
+@model ARMSv2.Models.semester.Passmarks
+@using ARMSv2.Utils
+@using ARMSv2.Models.UserManagement
+@{ var sessionDetails = (SessionUserManagementDetails)HttpContext.Current.Session["LoggedInUserRoles"]; }
+
+@if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int)ARMSv2.Models.ServiceDetail.ClassificationOfAwards
+                                                                         && (x.Role.CanCreate == true || x.Role.CanUpdate == true)))
+{
+    <div class="pull-right">
+        @*TODO: Uncomment this out as soon as graduates and result recalculation is considered*@
+        @* @Html.ActionLink("Add Passmark", "AddOrEditPassmark", "Semester", new { @class = "btn saveBtn" })*@
+    </div>
+}
+
+<br />
+<p class="blueHeader award ">Pass Marks</p>
+
+<div class="form-horizontal tabs bodytext tabs-pilled noborder">
+
+    <ul class="grading-ul">
+
+
+
+        @foreach (var m in Model.AwardTypes)
+        {
+
+            <li class="row">
+                <a href="#div-tab-@m.Id" role="tab" data-toggle="tab">
+                    @m.Name
+                </a>
+            </li>
+
+        }
+    </ul>
+
+    @foreach (var m in Model.AwardTypes)
+    {
+
+        <div id="div-tab-@m.Id" class="bodytext tab-pane nopadding">
+            <div class="clearfix">
+                <br />
+            </div>
+
+            <table class="table dataTable">
+                <thead>
+
+                    <tr>
+                        
+                        <th>
+                            Start Academic Year
+                        </th>
+                        <th>
+                            End Academic Year
+                        </th>
+                        <th>
+                            Passmark
+                        </th>
+
+                    </tr>
+
+                </thead>
+                <tbody>
+                    @foreach (var x in Model.PassmarksView.Where(x => x.AwardType.Id == m.Id))
+                    {
+                        if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(y => y.Role.Service.Id == (int)ARMSv2.Models.ServiceDetail.ClassificationOfAwards
+                                                                                                && (y.Role.CanCreate == true || y.Role.CanUpdate == true)))
+                        {
+                        //TODO: Uncomment code below when graduates and result calculation is considered
+                            <tr @(m.Name == "Active" ? String.Empty : "class=\"danger\"") @*onclick="location.href = '@Url.Action("AddOrEditPassmark", "Semester", new { id = @x.Id })' "*@ style="cursor: pointer;" @*title="Edit"*@>
+                                @if (x.AwardType.Name == m.Name)
+                                {
+                                    <td>
+                                        @if (x.StartAcademicYear != null)
+                                        {
+                                            <span>@x.StartAcademicYear.Name</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (x.EndAcademicYear != null)
+                                        {
+                                            <span>@x.EndAcademicYear.Name</span>
+                                        }
+
+                                    </td>
+                                    <td>
+                                        @x.PassMark
+                                    </td>
+
+                                }
+
+
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr @(m.Name == "Active" ? String.Empty : "class=\"danger\"")>
+                                @if (x.AwardType.Name == m.Name)
+                                {
+                                    
+                                    <td>
+                                        @x.StartAcademicYear.Name
+                                    </td>
+                                    <td>
+                                        @if (x.EndAcademicYear != null)
+                                        {
+                                            <span>@x.EndAcademicYear.Name</span>
+                                        }
+
+                                    </td>
+                                    <td>
+                                        @x.PassMark
+                                    </td>
+
+                                }
+
+
+                            </tr>
+                        }
+
+                    }
+                </tbody>
+            </table>
+
+        </div>
+
+    }
+
+
+
+</div>

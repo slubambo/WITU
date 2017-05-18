@@ -1,0 +1,221 @@
+﻿@using WITU.Models
+@using WITU.Utils
+@using WITU.Models.UserManagement
+@{ var sessionDetails = (SessionUserManagementDetails)HttpContext.Current.Session["LoggedInUserRoles"]; }
+@{
+    ViewBag.Title = "Staff Accounts Management";
+    //Layout = "~/Views/Shared/_LayoutStaff.cshtml";
+}
+@model WITU.Models.UserInfoViewModel
+
+<style>
+    tr.group,
+    tr.group:hover {
+        background-color: #ddd !important;
+        color: #663300 !important;
+    }
+
+    .table-hover tbody tr:hover > td {
+        cursor: pointer;
+        cursor: hand;
+    }
+</style>
+@if (Model.User.Id > 0)
+{
+    <h3 class="maroonHeader">@Model.Person.FullName's details</h3>
+
+    <div class="row">
+        <span class="col-xs-12 col-sm-2">Activation Status:</span>
+        @if (Model.User.IsLockedOut)
+        {
+            <span class="col-xs-12 col-sm-2"><strong> Deactivated </strong></span>
+            if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int)WITU.Models.ServiceDetail.CreateStaffAccountsAndRoles
+                                                                                    && (x.Role.CanCreate == true || x.Role.CanUpdate == true || x.Role.CanDelete == true)))
+            {
+                <div class="col-xs-12 col-sm-2">
+                    <button type="button" class="btn saveBtn" id="btn-activate-staff">
+                        Activate
+                    </button>
+                </div>
+            }
+        }
+        else
+        {
+            <span class="col-xs-12 col-sm-2"><strong> Activated </strong></span>
+            if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int)WITU.Models.ServiceDetail.CreateStaffAccountsAndRoles
+                                                                                    && (x.Role.CanCreate == true || x.Role.CanUpdate == true || x.Role.CanDelete == true)))
+            {
+                <div class="col-xs-12 col-sm-2">
+                    <button type="button" class="btn saveBtn" id="btn-deactivate-staff">
+                        Deactivate
+                    </button>
+                </div>
+            }
+        }
+
+        <div class="col-sm-2">
+            @if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int)WITU.Models.ServiceDetail.CreateStaffAccountsAndRoles
+                                                                                     && (x.Role.CanCreate == true || x.Role.CanUpdate == true || x.Role.CanDelete == true)))
+            {
+                <button type="button" class="btn delBtn" id="btn-reset-password">
+                    Reset Password
+                </button>
+            }
+        </div>
+        <br />
+        <br />
+    </div>
+}
+<div class="form-horizontal tabs bodytext tabs-pilled noborder" id="tabselect">
+    <ul class="nav nav-pills programUl">
+        <li class="active"><a href="#tab-info" role="tab" data-toggle="tab">User Information</a></li>
+        <li><a href="#tab-roles" role="tab" data-toggle="tab">Roles and Access Scope</a></li>
+        <li><a href="#tab-responsibility" role="tab" data-toggle="tab">Responsibility</a></li>
+    </ul>
+
+    <div class="tab-content">
+        <div id="tab-info" class="active">
+             
+                @using (Ajax.BeginForm("StaffPersonalDetails", "UserManagement", null, new AjaxOptions { HttpMethod = "POST", OnSuccess = "onSuccess", UpdateTargetId = "PersonalInfoDIV" }, new { id = "rolesTable", enctype = "multipart/form-data" }))
+                {
+                    <div id="PersonalInfoDIV">
+
+                        @Html.Action("StaffPersonalDetails", "UserManagement", Model)
+
+                    </div>
+                }
+        </div>
+        <div id="tab-roles">
+            @if (Model.User.Id > 0)
+            {
+                using (Ajax.BeginForm("StaffPositions", "UserManagement", null, new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "Positions" }, new { id = "PositionsTable" }))
+                {
+                    <div id="Positions">
+                        @Html.Action("StaffPositions", "UserManagement", Model)
+                    </div>
+                }
+            }
+            else
+            {
+                @Html.Raw("Kindly Create Person Details first !")
+            }
+        </div>
+
+        <div id="tab-responsibility">
+            @if (Model.User.Id > 0)
+            {
+                using (Ajax.BeginForm("StaffResponsibilities", "UserManagement", null, new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "Responsibilities" }, new { id = "ResponsibilitiesTable" }))
+                {
+                    <div id="Responsibilities">
+                        @Html.Action("StaffResponsibilities", "UserManagement", Model)
+                    </div>
+                }
+            }
+            else
+            {
+                @Html.Raw("Kindly Create Person Details first !")
+            }
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var userId = '@Model.User.Id';
+
+        if ($('#btn-reset-password').length) {
+            $('#btn-reset-password').click(function () {
+                var userId = '@Model.User.Id';
+
+                BootstrapDialog.confirm("You are about to reset @Model.Person.FullName's password, Are you sure?", function (result) {
+                    if (result) {
+                        ResetPassword(userId);
+
+                    } else {
+                        //Do nothing
+                    }
+                });
+
+            });
+        }
+
+        //Activate Code
+        if ($('#btn-activate-staff').length) {
+            $('#btn-activate-staff').click(function () {
+                var userId = '@Model.User.Id';
+
+                BootstrapDialog.confirm("You are about to activate @Model.Person.FullName's account, Are you sure?", function (result) {
+                    if (result) {
+                        ActivateStaff(userId);
+
+                    } else {
+                        //Do nothing
+                    }
+                });
+
+            });
+        }
+        //End Activate Code
+
+        //Deactivate Code
+        if ($('#btn-deactivate-staff').length) {
+            $('#btn-deactivate-staff').click(function () {
+                var userId = '@Model.User.Id';
+
+                BootstrapDialog.confirm("You are about to de-activate @Model.Person.FullName's account, Are you sure?", function (result) {
+                    if (result) {
+                        DeactivateStaff(userId);
+
+                    } else {
+                        //Do nothing
+                    }
+                });
+
+            });
+        }
+        //End De-activate Code
+    }
+    );
+
+    function ResetPassword(userId) {
+        $.post(baseUrl + "Api/UtilsApi/ResetPassword/" + userId, function (data) {
+            if (data == true) {
+                showToast("You have successfully reset @Model.Person.FullName's password to 123456.", "success");
+
+            } else {
+                showToast("Something went wrong while resetting @Model.Person.FullName's password.", "error");
+            }
+        });
+    }
+
+    function ActivateStaff(userId) {
+        $.post(baseUrl + "Api/UtilsApi/ToggleStaffActivation/" + userId, function (data) {
+            if (data == true) {
+                showToast("@Model.Person.FullName's account has successfully been activated.", "success");
+                setTimeout(function () {
+
+                    window.location.reload(true);
+                }, 3000);
+            } else {
+                showToast("Something went wrong while activating @Model.Person.FullName's account.", "error");
+            }
+
+        });
+
+    }
+
+    function DeactivateStaff(userId) {
+        $.post(baseUrl + "Api/UtilsApi/ToggleStaffActivation/" + userId, function (data) {
+            if (data == true) {
+                showToast(" @Model.Person.FullName's account has successfully been deactivated.", "success");
+                setTimeout(function () {
+
+                    window.location.reload(true);
+                }, 3000);
+
+            } else {
+                showToast("Something went wrong while deactivating @Model.Person.FullName's account.", "error");
+            }
+        });
+    }
+</script>

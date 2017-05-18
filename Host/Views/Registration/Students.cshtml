@@ -1,0 +1,84 @@
+﻿@using System.Globalization
+@using System.Activities.Expressions
+@using ARMSv2.Core.Model
+@using ARMSv2.Utils
+@model ARMSv2.Models.Registration.RegisteredStudentsComponents
+
+@{
+    ViewBag.Title = "Registration - Students";
+    Html.EnableClientValidation();
+}
+
+<h2 class="blueHeader">Registration Management - Interactive - Students</h2>
+<p class="greyHeader">Students</p>
+@{
+    int i = 1;
+}
+<table class="dataTable">
+    <thead>
+
+        <tr>
+           <th>
+                SN
+            </th>
+            <th>
+                Registration Number
+            </th>
+            <th>
+                Name
+            </th>
+            <th>
+                Status
+            </th>
+            
+        </tr>
+
+    </thead>
+    <tbody>
+        @foreach (var m in Model.Students)
+{
+    <tr onclick="location.href = '@Url.Action("StudentRegistrationDetails", "Registration", new { id = @m.Student.Id })'" style="cursor: pointer;" title="View Registration Details">
+        <td>
+            @i.ToString()
+        </td>
+
+        <td>
+            @m.Student.RegistrationNumber
+
+
+        <td>
+            @m.Student.Person.FullName
+        </td>
+        <td>
+            @if (m.RegistrationStatus == (decimal)RegistrationStatus.PendingRegistration)
+            {
+                <p>Pending Approval</p>
+            }
+            @if (m.RegistrationStatus == (decimal)RegistrationStatus.ApprovedRegistration)
+            {
+                <p>Registration Approved</p>
+            }
+            @if (m.RegistrationStatus == (decimal)RegistrationStatus.RejectedRegistration)
+            {
+                <p>Registration Denied</p>
+            }
+            @if (m.RegistrationStatus == (decimal)RegistrationStatus.NotRegistered)
+            {
+                <p>Not Registered</p>
+            }
+            @if (m.RegistrationStatus == (decimal)RegistrationStatus.Unknown)
+            {
+                <p>Not Specified</p>
+            }
+        </td>
+        @*<td>
+                   <a href="" class="btn btn-primary">View Details</a>
+            </td>*@
+    </tr>
+            i++;
+}
+       
+    </tbody>
+    
+</table>
+

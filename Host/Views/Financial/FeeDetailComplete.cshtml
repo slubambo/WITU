@@ -1,0 +1,76 @@
+﻿@using System.Globalization
+@using ARMSv2.Core.Model
+@using ARMSv2.Utils
+@model ARMSv2.Models.FeeDetailComplete
+
+@{
+    Layout = null;
+}
+<div>
+    @if(Model.CurrentFunctionalFeeDetail != null){
+      <div class="">  <p class="blueTxt  pull-left" >
+            @Html.DisplayEnum(Model.CurrentFunctionalFeeDetail.GraduateLevel, typeof(GraduateLevel)) - 
+            @Html.DisplayEnum(Model.CurrentFunctionalFeeDetail.StudyPeriodCategory, typeof(StudyPeriodCategory)) Program
+        </p>
+        
+        @Html.ActionLink("Add Fee", "AddFee", new
+        {
+            functionalFeeId = Model.CurrentFunctionalFeeDetail.FunctionalFee.Id,
+            year = Model.CurrentFunctionalFeeDetail.YearOfStudy,
+            graduateLevel = Model.CurrentFunctionalFeeDetail.GraduateLevel,
+            studyPeriodProgram = Model.CurrentFunctionalFeeDetail.StudyPeriodCategory
+        }, new { @class = "btn saveBtn pull-right" })<div class="clearfix"></div><br/></div>
+    }
+    
+   
+</div>
+<div>
+    
+</div>
+<div><div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.CurrentFunctionalFeeDetail.StartAcademicYear)
+                </th>
+                <th>
+                    Fee (UGX)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CurrentFunctionalFeeDetail.EndAcademicYear)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CurrentFunctionalFeeDetail.IsPayableOnce)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CurrentFunctionalFeeDetail.CreatedOn)
+                </th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model.CorrespondingFeeDetails.OrderByDescending(x => x.Id))
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.StartAcademicYear.Name)
+                    </td>
+                    <td>
+                        @item.Fee.ToString("n0", CultureInfo.InvariantCulture)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EndAcademicYear.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayCustomBoolean(@item.IsPayableOnce, "Per Semester", "Per Year")
+                    </td>
+                    <td>
+                        @item.CreatedOn.ToString("dd/MM/yyyy hh:mm")
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+</div>

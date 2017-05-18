@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>Mvc.RazorTools.FontAwesome</id>
+    <version>4.1.0.0</version>
+    <title>Font Awesome for MVC Razor Tools</title>
+    <authors>Daniel M. Porrey</authors>
+    <owners>Daniel M. Porrey</owners>
+    <licenseUrl>https://fontawesome.codeplex.com/license</licenseUrl>
+    <projectUrl>https://fontawesome.codeplex.com/</projectUrl>
+    <iconUrl>https://download-codeplex.sec.s-msft.com/Download?ProjectName=fontawesome&amp;DownloadId=775457&amp;Build=20841</iconUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>Font Awesome for MVC Razor Tools provides a set of objects to use Font Awesome directly in MVC Razor views. This library provides a class for creating a font, pre-defined classes for all fonts and extension methods for HtmlHelper.
+
+Documentation can be found at http://fontawesome.codeplex.com. A live example can be viewed at http://fontawesome.porrey.net.</description>
+    <summary>Font Awesome for MVC Razor Tools provides a set of objects to use Font Awesome directly in MVC Razor views.</summary>
+    <releaseNotes>Updated icon set to latest: 4.1.0</releaseNotes>
+    <copyright>Copyright © 2013-2014, All Right Reserved</copyright>
+    <language>en-US</language>
+    <tags>MVC 5 Razor Tools Font Awesome Intellisense unobtrusive JavaScript</tags>
+    <dependencies>
+      <dependency id="Microsoft.Aspnet.Mvc" version="5.0.0" />
+      <dependency id="Microsoft.AspNet.Razor" version="3.0.0" />
+      <dependency id="Microsoft.AspNet.WebPages" version="3.0.0" />
+      <dependency id="Mvc.RazorTools.Base" version="1.0.5" />
+      <dependency id="FontAwesome" version="4.1.0" />
+      <dependency id="WebActivatorEx" version="2.0.5" />
+    </dependencies>
+  </metadata>
+</package>

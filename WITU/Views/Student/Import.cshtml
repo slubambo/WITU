@@ -1,0 +1,32 @@
+﻿@model WITU.Models.student.StudentImportTypeModel
+@{
+    ViewBag.Title = "Import Students";
+
+    var options = new List<SelectListItem>() {new SelectListItem() {Value = "1", Text = "Batched"}, new SelectListItem(){Value = "2", Text = "Interactive"}};
+}
+
+<div>
+    <h3 class="greyHeader"><strong>Step 1:</strong> Specify how you would like to Add Student Accounts</h3>
+    <p>
+        Select Batched (to upload spreadsheet with student's registration numbers) or interactive.
+    </p>
+    
+    @using(Html.BeginForm()){
+    @Html.AntiForgeryToken()
+        
+    
+    <div>
+        @Html.ValidationSummary(true)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.ImportType, new { @class = "control-label col-md-2  col-md-push-1" })
+        <div class="col-md-6">
+            @Html.DropDownWithModelSelectable(m => m.ImportType, options, new SelectListItem() { Value = "0", Text = "Select Import Type" }, new { @class = "chosen-select" })
+
+        </div>
+        <div class="col-md-3  col-md-pull-3">
+            <input type="submit" value="Proceed" class="btn saveBtn" />
+        </div>
+    </div>
+    }
+</div>

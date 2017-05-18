@@ -1,0 +1,148 @@
+﻿@using ARMSv2.Utils
+@model ARMSv2.Models.AdministrativeSelectItem
+
+<div>
+    <link href="~/Content/base/font-awesome.min.css" rel="stylesheet" />
+    
+    <div class="form-group col-sm-12">
+        @Html.LabelFor(m => m.CampusId, new { @class = "col-md-4 col-sm-4 control-label" })
+        <div class="col-md-8  col-sm-8">
+            @Html.DropDownWithModelSelectable(m => m.CampusId, Model.CampusOptions, Model.DefaultFirstItem,
+                new { @class = "form-control", id = "drpdwn-campus" })
+        </div>
+    </div>
+    
+    <div class="form-group col-sm-12">
+        @Html.LabelFor(m => m.FacultyId, new { @class = "col-md-4 col-sm-4 control-label" })
+        <div class="col-md-8 col-sm-8">
+            @Html.DropDownWithModelSelectable(m => m.FacultyId, Model.FacultyOptions, Model.DefaultFirstItem,
+                    new { @class = "form-control drpdwn-campus-change", id = "drpdwn-faculty" })
+            <span class="spn-faculty-spinner hide">
+                <span class="fa fa-circle-o-notch fa-spin"></span>
+            </span>
+        </div>
+    </div>
+    
+    <div class="form-group col-sm-12">
+        @Html.LabelFor(m => m.DepartmentId, new { @class = "col-md-4 col-sm-4 control-label" })
+        <div class="col-md-8 col-sm-8">
+            @Html.DropDownWithModelSelectable(m => m.DepartmentId, Model.DepartmentOptions, Model.DefaultFirstItem,
+                new { @class = "form-control drpdwn-campus-change drpdwn-faculty-change", id = "drpdwn-department" })
+        </div>
+    </div>
+
+    @*<div class="hidden">
+        <input id="hdInputCampusId" value="@Model.CampusId"/>
+        
+        <input id="hdInputFacultyId" value="@Model.FacultyId" />
+        
+        <input id="hdInputDepartmentId" value="@Model.DepartmentId" />
+    </div>*@
+    @Html.HiddenFor( x => x.StaffId)
+    @Html.Hidden("levelId", 4)
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+
+        $('ele-hide').hide();
+
+        $('#drpdwn-campus').change(function () {
+            onCampusChange();
+        });
+
+        $('#drpdwn-faculty').change(function () {
+            onFacultyChange();
+        });
+
+        //if the campus is aredy present then load the faculties...
+        var campusId = '@Model.CampusId' > 0 ? '@Model.CampusId' : $('#drpdwn-campus :selected').val();
+
+        var facultyId = '@Model.FacultyId';
+        var departmentId = '@Model.DepartmentId';
+
+        //console.log("Campus " + $('#drpdwn-campus :selected').val());
+
+        if (campusId > 0) {
+            retrieveFaculties(campusId, facultyId);
+        }
+
+        if (facultyId > 0) {
+            retrieveDepartments(facultyId, departmentId);
+        }
+
+    });
+
+    function onCampusChange() {
+        var campusId = $("#drpdwn-campus :selected").val();
+
+        //empty the affected drpdwns...
+        $(".drpdwn-campus-change").empty();
+
+        //adding the default elements as from the code...
+        $(".drpdwn-campus-change").map(function (i, ele) {
+            $(ele).append($('<option></option>').val('@Model.DefaultFirstItem.Value').html('@Model.DefaultFirstItem.Text'));
+        });
+
+
+        if (campusId > 0) {
+            retrieveFaculties(campusId);
+        }
+
+    }
+
+    function onFacultyChange() {
+        var facultyId = $("#drpdwn-faculty :selected").val();
+
+        $(".drpdwn-faculty-change").empty();
+
+        $(".drpdwn-faculty-change").map(function (i, ele) {
+            $(ele).append($('<option></option>').val('@Model.DefaultFirstItem.Value').html('@Model.DefaultFirstItem.Text'));
+        });
+
+        if (facultyId > 0) {
+            retrieveDepartments(facultyId);
+        }
+    }
+
+    function retrieveFaculties(campusId, facultyId) {
+        //$('.spn-faculty-spinner').show();
+
+        var staffId =  '@Model.StaffId';
+
+        var reqUrl = parseInt(staffId) > 0 ? baseUrl + "Api/UtilsApi/Faculties/" + campusId + "?staffId=" + staffId : baseUrl + "Api/UtilsApi/Faculties/" + campusId;
+
+        $.get(reqUrl, function (data) {
+            //$('.spn-faculty-spinner').hide();
+            $.each(data, function (i, faculties) {
+                $('#drpdwn-faculty').append($('<option></option>').val(faculties.Value).html(faculties.Text));
+            });
+
+            //after set the default value if its available...
+            if (facultyId != undefined) {
+
+                $("#drpdwn-faculty").val(facultyId);
+            }
+        });
+    }
+
+    function retrieveDepartments(facultyId, departmentId) {
+
+        var staffId = '@Model.StaffId';
+
+        var reqUrl = parseInt(staffId) > 0 ? baseUrl + "Api/UtilsApi/Departments/" + facultyId + "?staffId=" + staffId : baseUrl + "Api/UtilsApi/Departments/" + facultyId;
+
+        $.get(reqUrl, function (data) {
+            //$('.spn-faculty-spinner').hide();
+            $.each(data, function (i, department) {
+                $('#drpdwn-department').append($('<option></option>').val(department.Value).html(department.Text));
+            });
+
+            //after set the default value if its available...
+            if (departmentId != undefined) {
+
+                $("#drpdwn-department").val(departmentId);
+            }
+        });
+    }
+</script>

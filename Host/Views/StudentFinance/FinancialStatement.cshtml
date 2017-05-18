@@ -1,0 +1,142 @@
+﻿@using System.Activities.Expressions
+@using ARMSv2.Core.Model
+@using ARMSv2.Utils
+@using ARMSv2.Core.Model
+@model ARMSv2.Models.Finance.StudentFinanceView
+@{
+    ViewBag.Title = "Financial Statement";
+}
+<div class="row">
+    <div class="col-md-12" style="line-height:25px">
+        <h2 class="maroonHeader">Financial Statement</h2>
+    </div>
+</div>
+
+<div>
+    <div class="row">
+        <div class="col-md-3"><img src="@User.ApplicationUserProfilePhoto()" class="img-responsive" style="width: 110px; height: auto; margin:10px auto; border: 1px solid #E9C3CC" />
+       </div>
+        <div class="col-md-6 row-top" style="line-height:20px">
+            <div class="row"><div class="col-xs-3"><p class="detailLabel">Name:</p></div><div class="col-xs-9"><p>@Model.Student.Person.FullName</p></div></div>
+            <div class="row"><div class="col-xs-3"><p class="detailLabel">FEES No:</p></div><div class="col-xs-9"><p>@Model.Student.StudentNumber</p></div></div>
+            <div class="row"><div class="col-xs-3"><p class="detailLabel">REG No:</p></div><div class="col-xs-9"><p>@Model.Student.RegistrationNumber</p></div></div>
+        </div>
+        <div class="col-md-3"></div>
+        </div>
+    <br/>
+        <table class="table" id="">
+            <thead>
+
+                <tr>
+                    <th>
+                        Date
+                    </th>
+                    <th>
+                        Ref No.
+                    </th>
+                    <th>
+                        Description
+                    </th>
+                    <th class="centerTh">
+                        Debit
+                    </th>
+                    <th style="width:150px" class="centerTh">
+                        Credit
+                    </th>
+                </tr>
+
+            </thead>
+            <tbody>
+                @if (Model.SemesterFees != null)
+                {
+                    foreach (var m in Model.SemesterFees)
+                    {
+
+                        <tr>
+                            <td>
+                                @m.Date.ToString("dd MMM yyyy")
+
+                            </td>
+                            <td>
+                                <p>@m.RefNumber</p>
+                            </td>
+                            <td>
+                                @m.Name
+                            </td>
+                            <td class="text-right">
+                                @if (m.Payment == null)
+                                {
+                                    <p class="text-right">UGX @m.Debit.ToString("N0")</p>
+                                }
+                            </td>
+                            <td>
+                                @if (m.Payment != null)
+                                {
+                                    <p class="text-right">UGX @m.Credit.ToString("N0")</p>
+
+                                }
+                            </td>
+
+                        </tr>
+
+                    }
+                }
+
+            </tbody>
+        </table>
+        <div class="balanceRow row">
+            <div class="col-xs-6"></div>
+            <div class="col-xs-2 text-right"><p><b>Balance:</b></div>
+            <div class="col-xs-4 text-right"><b>UGX @Model.Balance.ToString("N0")</b></div>
+        </div>
+        <div class="clearfix"></div>
+
+        <div class="">
+            @using (Html.BeginForm("PrintStatement", "StudentFinance", FormMethod.Post))
+            {
+                @*@Html.HiddenFor(model => model.ActiveSemesterRegId)*@
+                @Html.HiddenFor(model => model.TotalPayment)
+                @Html.HiddenFor(model => model.BankId)
+                @Html.HiddenFor(model => model.Semester.Id)
+                @Html.HiddenFor(model => model.Student.Id)
+
+                <div class="form-horizontal tabs bodytext tabs-pilled noborder" id="dateDiv">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.StartDateTime, new { @class = "control-label col-md-3" })
+                        <div class="col-md-9 progCoreInput">
+                            <div class="input-group">
+                                <label class="input-group-addon btn  noborder" for="StartDate"><span class="glyphicon glyphicon-calendar" data-for="StartDate"></span></label>
+                                @Html.TextBoxFor(m => m.StartDateTime, "{0:dd/MM/yyyy}", new { @id = "date-start-date0", @class = "noborder uneditable-input", @autocomplete = "off" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.EndDateTime, new { @class = "control-label col-md-3" })
+                        <div class="col-md-9 progCoreInput">
+                            <div class="input-group">
+                                <label class="input-group-addon btn noborder" for="EndDate"><span class="glyphicon glyphicon-calendar " data-for="EndDate"></span></label>
+                                @Html.TextBoxFor(m => m.EndDateTime, "{0:dd/MM/yyyy}", new { @id = "date-end-date0", @class = "noborder uneditable-input", @autocomplete = "off" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                    <div class="fleft">
+                        <span class="pdfIcon" onclick="$(this).closest('form').submit(); return false;"></span>
+                        @*<button type="submit">Printable PDF <span class="fa-file-pdf-o"></span></button>*@
+                    </div>
+    <div class="fleft" style="margin-left: 10px;">
+        <div class="checkbox" style="margin-left:0px">
+            @Html.CheckBoxFor(m => m.HasSetDates, new { @id = "chkDateRange", @class = "checkbox-inline dateCheckbox", @autocomplete = "off" })
+            <span id="spnDateRange" class="checkbox-inline">Include Date Range for Print</span>
+
+        </div>
+    </div>
+            }
+        </div>
+
+        <div class="col-md-3 col-lg-offset-4">
+
+        </div>
+    </div>

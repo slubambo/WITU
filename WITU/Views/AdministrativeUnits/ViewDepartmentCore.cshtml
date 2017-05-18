@@ -1,0 +1,109 @@
+﻿@using WITU.Core.Model
+@using WITU.Utils
+@using WITU.Models.UserManagement
+@{ var sessionDetails = (SessionUserManagementDetails)HttpContext.Current.Session["LoggedInUserRoles"]; }
+@model WITU.Models.AdminUnits.DepartmentCoreView
+
+@{
+    ViewBag.Title = Model.DepartmentCore.Name;
+}
+
+<div class="">
+
+
+    <div class="col-md-9">
+        <h3 class="blueHeader nomargin">@Model.DepartmentCore.Name</h3>
+
+        <div class="">
+            <span class="glyphicon glyphicon-map-marker"></span>
+            <label>Faculty Location(s): @string.Join(" , ",Model.DepartmentCore.Departments.Select(a => a.Faculty.FacultyCore.Name + "(" + a.Faculty.Campus.Name +")").Distinct()) </label>
+        </div>
+
+        
+        <div class="clearfix"></div>
+        <br />
+@if (Request.IsAuthenticated)
+{
+    if (User.ApplicationUserType() == (int) UserTypes.Staff)
+    {
+        <div class="progCoreBtns">
+            @if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) WITU.Models.ServiceDetail.Department
+                                                                                     && (x.Role.CanCreate == true || x.Role.CanUpdate == true || x.Role.CanDelete == true)))
+            {
+                @Html.ActionLink("Edit Department", "AddOrEditDepartmentCore", "AdministrativeUnits", new {id = Model.DepartmentCore.Id}, new {@class = "btn saveBtn"})
+            }
+            @if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) WITU.Models.ServiceDetail.Faculty
+                                                                                     && (x.Role.CanCreate == true || x.Role.CanUpdate == true || x.Role.CanDelete == true)))
+            {
+                @Html.ActionLink("Add Department to a Faculty", "AddorEditDepartment", "AdministrativeUnits", new {departmentCoreId = Model.DepartmentCore.Id}, new {@class = "btn leftBtn delBtn"})
+            }
+                </div>
+        <div class="clearfix"></div>
+    }
+}
+    @if (Model.DepartmentCore.Departments.Any())
+        {
+            <h3 class="greyHeader">Departments</h3>
+            <table class="table dataTable">
+            <thead>
+                <tr>
+                    <th>
+                        Department Name
+                    </th>
+                    <th>
+                        Location
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var department in Model.DepartmentCore.Departments)
+                {
+                    <tr>
+                        <td title="Click to View @department.DepartmentCore.Name">
+                            @Html.ActionLink(department.DepartmentCore.Name, "ViewDepartment", "AdministrativeUnits", new { id = department.Id }, null)
+
+                        </td>
+                        <td>
+                            <span>  @department.Faculty.FacultyCore.Name (@department.Faculty.Campus.Name) </span>
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+        }
+        
+        
+
+    </div>
+
+    <div class="col-md-3">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                Faculties With this Department
+            </div>
+            <ul class="list-group">
+                @if (Model.DepartmentCore.Departments.Any())
+                {
+                    foreach (var dep in Model.DepartmentCore.Departments)
+                    {
+                        <li class="list-group-item">
+                            <label class="text">@dep.Faculty.FacultyCore.Name (@dep.Faculty.Campus.Name)</label><div class="clearfix"></div>
+                            @Html.ActionLink("Details", "ViewFaculty", "AdministrativeUnits", new { id = dep.Faculty.Id }, new { @class = "linkBtn noborder" })
+                        </li>
+                    }
+                }
+                else
+                {
+                    <li class="list-group-item"><em>No Faculties with this department.</em></li>
+                }
+
+
+            </ul>
+
+        </div>
+
+    </div>
+</div>
+

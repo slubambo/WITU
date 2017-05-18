@@ -1,0 +1,58 @@
+﻿@model ARMSv2.Models.MessageDetail
+@{
+    ViewBag.Title = "Custom Lists";
+}
+<div class="pull-right">
+    <div class="btn"><span class="fa fa-inbox"></span>  @Html.ActionLink("Inbox", "Inbox", "Messenger")</div>
+    <div class="btn"><span class="fa fa-paper-plane"></span>  @Html.ActionLink("Sent", "SentMessages", "Messenger")</div>
+    <div class="btn"><span class="fa fa-floppy-o"></span>  @Html.ActionLink("Drafts", "Drafts", "Messenger")</div>
+    <div class="btn"><span class="fa fa-trash-o"></span>  @Html.ActionLink("Trash", "Trash", "Messenger")</div>
+</div>
+<div class="pull-left">
+    <div class="btn saveBtn"><span class="fa fa-pencil"></span>  @Html.ActionLink("Add Custom List", "AddCustomList", "Messenger")</div>
+</div>
+<br />
+<br />
+<table class="table dataTable">
+    <thead>
+
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Description
+            </th>
+            <th>
+                Date Created
+            </th>
+        </tr>
+
+    </thead>
+    <tbody>
+        @if (Model.CustomLists != null)
+        {
+            foreach (var m in Model.CustomLists)
+        {
+            <tr>
+                    <td>
+                        <a href="@Url.Action("ViewCustomLists", "Messenger", new { id = @m.Id })">@m.Name</a>
+                    </td>
+
+                    <td>
+                        <a href="@Url.Action("ViewCustomLists", "Messenger", new { id = @m.Id })">
+                           @m.Description
+                        </a>
+                    </td>
+                    <td>
+                        @m.CreatedOn.ToString("dd MMM")
+                    </td>
+
+                </tr>
+            
+        }
+        }
+        
+    </tbody>
+</table>
+

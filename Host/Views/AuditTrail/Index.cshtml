@@ -1,0 +1,94 @@
+﻿@model ARMSv2.Models.AuditViewList
+@{
+    ViewBag.Title = @ViewBag.TrailGroup + " Audit Trail";
+    Layout = "~/Views/Shared/_LayoutStaff.cshtml";
+}
+<script src="~/Scripts/dataTables/js/jquery.dataTables.columnFilter.js"></script>
+<script>
+    $.datepicker.regional[""].dateFormat = 'dd/mm/yy';
+    $.datepicker.setDefaults($.datepicker.regional['']);
+</script>
+
+<h2 class="blueHeader">@ViewBag.TrailGroup Audit Trail</h2>
+
+
+
+
+<table class="table dataTableFilter">
+    <thead>
+        <tr role="row">
+            <th rowspan="1" colspan="1">
+                <span class="filter_column filter_text">
+                    <input class="search_init text_filter form-control" type="text" rel="0" value="User Name" placeholder="Search by Username">
+                </span>
+            </th>
+            <th rowspan="1" colspan="1">
+                <span class="filter_column filter_text">
+                    <input class="search_init text_filter form-control" type="text" rel="0" value="IP Address" placeholder="Search by Username">
+                </span>
+            </th>
+            <th rowspan="1" colspan="1">
+                <span class="filter_column filter_text">
+                    <input class="search_init text_filter form-control" type="text" rel="0" value="URL Accessed">
+                </span>
+            </th>
+            <th rowspan="1" colspan="1">
+                <span class="filter_column filter_text">
+                    <input class="search_init text_filter form-control" type="text" rel="0" value="Company name">
+                </span>
+            </th>
+            <th rowspan="1" colspan="1">
+                <span class="filter_column filter_date_range">
+                    From
+                    <input id="example_range_from_1" class="date_range_filter form-control date-picker" type="text" rel="1">
+                    to
+                    <input id="example_range_to_1" class="date_range_filter form-control date-picker" type="text" rel="1">
+                </span>
+            </th>
+        </tr>
+        <tr>
+            <th>
+                Username
+            </th>
+            <th>
+                IpAddress
+            </th>
+            <th>
+                Url Accessed
+            </th>
+            <th>
+                Message
+            </th>
+
+            <th>
+                Time Accessed
+            </th>
+
+        </tr>
+
+    </thead>
+    <tbody>
+        @foreach (var item in Model.AuditRecords)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IpAddress)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UrlAccessed)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Message)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.TimeAccessed)
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>

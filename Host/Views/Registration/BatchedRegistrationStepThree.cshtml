@@ -1,0 +1,80 @@
+﻿@model ARMSv2.Models.Registration.BatchedRegSteps.BatchedStepThree
+@{
+    ViewBag.Title = "Step Three Batched Registration";
+}
+
+<div>
+    <h2 class="blueHeader">Import Returns</h2>
+
+    <h3 class="greyHeader">Step 3: Confrim Students to be Registered </h3>
+
+    <p class="text text-success">
+        The following students shall be registered.
+    </p>
+    <table class="table dataTable">
+        <thead>
+            <tr>
+                <th>Registration Number</th>
+                <th>Student Name</th>
+                <th>Academic Programme</th>
+                <th>Payslip Serial</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var successfulRecord in Model.SuccessBatchedRegistrations)
+            {
+                <tr>
+                    <td>@successfulRecord.RegistrationNumber</td>
+                    <td>@successfulRecord.StudentName</td>
+                    <td>@successfulRecord.StudentProgramme</td>
+                    <td>@successfulRecord.PayslipSerial</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <p class="text text-warning">
+        The following Rows have Errors
+    </p>
+    <table class="table dataTable">
+        <thead>
+            <tr>
+                <th>Row Number</th>
+                <th>Error(s)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var failedRecords in Model.ErrorBatchedRegistrations)
+            {
+                <tr>
+                    <td>@failedRecords.RowExcelNumber</td>
+                    <td>
+                        <ul>
+                            @foreach (var error in failedRecords.Errors)
+                            {
+                                <li>@error</li>
+                            }
+                        </ul>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <br />
+    <div>
+        @using (Html.BeginForm())
+        {
+            <button class="btn delBtn" value="cancel" type="button" name="saveStatus"
+                    onclick="javascript: cancelSubmission('@Url.Action("Approval", "Registration")', 'Are you sure you want to cancel Batched Registration? Changes will not be saved.');">
+                <span class="glyphicon glyphicon-remove"></span>
+                Cancel
+            </button>
+
+            <button class="btn saveBtn pull-right" value="save" name="saveStatus" type="submit">
+                Save
+                <span class="glyphicon glyphicon-chevron-right"></span>
+            </button>
+        }
+    </div>
+</div>

@@ -1,0 +1,218 @@
+﻿@model IEnumerable<ARMSv2.Core.Model.Student>
+@{
+    ViewBag.Title = "Add Grad students step Two";
+}
+
+<div class="pull-right voffset1 btn-group btn-group-sm">
+    <button id="btn-add-students" class="btn btn-info btn-sm voffset1 btn-multiselect">
+        <span class="fa fa-plus"></span>
+        Add Students
+    </button>
+</div>
+<div class="clearfix"></div>
+<br/>
+
+<table class="dataTable" id="tbl-add-students">
+    <thead>
+        <tr>
+            <th>
+                <input type="checkbox" autocomplete="off" value="allChecked" class="pull-left"
+                       id="tbl-chbx-addstudents-all" />
+            </th>
+            <th>Reg No.</th>
+            <th>Name</th>
+            <th>
+                Gender
+            </th>
+            <th>
+                Program Name
+            </th>
+            <th>
+                CGPA
+            </th>
+            <th>
+                CTCUs
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var student in Model)
+        {
+            <tr>
+
+                <td>
+                    <input type="checkbox" value="@student.Id" autocomplete="off"
+                           onchange="javascript: addStudentCheckBoxChange(this);" class="tbl-chbx-addstudent-sc pull-left" />
+                </td>
+                <td>@student.RegistrationNumber</td>
+                <td>@student.Person.FullNameWithNoTitle</td>
+                <td>
+                    @Html.DisplayEnum(@student.Person.Gender)
+
+                </td>
+                <td>
+                    @student.ProgramName
+                </td>
+                <td>
+                    @Math.Round(student.CurrentCGPA, 3)
+                </td>
+                <td>
+                    @student.CurrentCTCU
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<button id="btn-gobackto-detail" class=" btn btn-default btn-sm" onclick="location.href = '@Url.Action("ViewGradDetail", "Graduation", new {id = ViewBag.GradDetailId})'">
+    <span class="glyphicon glyphicon-arrow-left"></span>
+    Go back to Grad Detail
+</button>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        if ($('#tbl-chbx-addstudents-all').length) {
+
+            enableAndDisableAddButton();
+
+            //selecting all checked items on load...
+            $('table input:checked').each(function (i, obj) {
+                //retrieve the checkbox...
+                $(this).closest('tr').toggleClass('selected');
+            });
+
+            //for all...
+            $('input#tbl-chbx-addstudents-all').change(function (e) {
+
+                var oTable = $(e.target).closest('table').dataTable();
+                var nNodes = oTable.fnGetNodes();
+
+                $(nNodes).find(':checkbox').prop('checked', this.checked);
+                if (this.checked) {
+                    $(nNodes).addClass('selected');
+                } else {
+                    $(nNodes).removeClass('selected');
+                }
+
+                enableAndDisableButtons();
+            });
+        }
+
+
+        //on adding student..
+        $('#btn-add-students').click(function () {
+
+            //first we collect the necessar items..
+            var rows = [];
+
+            var oTable = $('#tbl-add-students').DataTable();
+            var nNodes = oTable.rows().nodes();
+
+            $(nNodes).find(':checkbox:checked').each(function (i, obj) {
+                //console.log('Selected Value: ' + $(obj).val());
+                rows.push($(obj).val());
+            });
+
+            console.log('Students selected: ' + rows.length);
+
+            var content = $('<div><div id="dv-addstudent-response"></div></div>');
+            content.append('<p class="voffset-2">You are about to Add <b>' + rows.length + '</b> Students to a Graduation.');
+            
+
+            ConfirmBeforeSubmission('Add Students', content, function ($dialog) {
+                //getting the loading dialog...
+                $('#dv-addstudent-response').html(
+                    '<div class"alert alert-info well-sm col-md-12">' +
+                        '<span class="col-md-4"><span class="fa fa-2x fa-spin fa-spinner"></span></span>' +
+                        '<span class="col-md-offset-2 col-md-6 text-left">Adding, Please Wait... </span>' +
+                    '<div>'
+                );
+
+                var response = {
+                    StudentIds: rows,
+                    GradDetailId: '@ViewBag.GradDetailId'
+                };
+
+                $.ajax({
+                    url: baseUrl + 'Api/UtilsApi/AddStudentsToGrad',
+                    type: 'POST',
+                    data: response,
+                    success: function (data) {
+                        if (data.SaveStatus) {
+                            $('#dv-addstudent-response').html(
+                                '<div class"alert alert-success well-sm col-md-12">' +
+                                    '<span class="col-md-4"><span class="glyphicon glyphicon-saved"></span></span>' +
+                                    '<span class="col-md-offset-2 col-md-6 text-left">The selected Students have been successfully added to the graduation. </span>' +
+                                '<div>'
+                            );
+
+                            //reload after some mill seconds..
+                            setTimeout(function () {
+                                //close the dialog...
+                                $dialog.close();
+
+                                window.location.reload(true);
+                            }, 1000);
+
+                        } else {
+                            $('#dv-addstudent-response').html(
+                                '<div class"alert alert-danger well-sm col-md-12">' +
+                                    '<span class="col-md-4"><span class="glyphicon glyphicon-warning-sign"></span></span>' +
+                                    '<span class="col-md-offset-2 col-md-6 text-left">Students could not be added to the graduation. </span>' +
+                                '<div>'
+                            );
+                        }
+                    },
+                    error: function () {
+                        $('#dv-addstudent-response').html(
+                            '<div class"alert alert-danger well-sm col-md-12">' +
+                                '<span class="col-md-4"><span class="glyphicon glyphicon-warning-sign"></span></span>' +
+                                '<span class="col-md-offset-2 col-md-6 text-left">Server Access Error. </span>' +
+                            '<div>'
+                        );
+                    }
+                });
+
+            });
+        });
+
+    });
+    
+    function addStudentCheckBoxChange(obj) {
+
+        var oTable = $(obj).closest('table').DataTable();
+        var row = oTable.row($(obj).closest('tr')).node();
+        $(row).toggleClass('selected');
+
+        enableAndDisableAddButton();
+
+        //uncheck the checkbox for all if not all checkboxes are checked..
+        var nNodes = oTable.rows().nodes();
+
+        if ($(nNodes).find('.tbl-chbx-addstudent-sc:checked').length == $(nNodes).find('.tbl-chbx-addstudent-sc').length) {
+            //if true then we are checking the master dude..
+            $('#tbl-chbx-addstudents-all').prop('checked', true);
+        } else {
+            $('#tbl-chbx-addstudents-all').prop('checked', false);
+        }
+    }
+
+    function enableAndDisableAddButton() {
+        var selectableLength = $('.selected').length;
+
+        if (selectableLength > 0) {
+            $('.btn-multiselect').removeAttr('disabled');
+            
+        } else {
+            $('.btn-multiselect').attr('disabled', 'disabled');
+        }
+    }
+
+</script>
+
+
+
+
+

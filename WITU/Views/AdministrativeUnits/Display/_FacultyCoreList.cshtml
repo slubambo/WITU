@@ -1,0 +1,34 @@
+﻿@model IEnumerable<WITU.Models.AdminUnits.FacultyCoreModel>
+
+<div>
+    <table class="table dataTable">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Campus Locations</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var fac in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.ActionLink(fac.FacultyCore.Name, "ViewFacultyCore", "AdministrativeUnits", new { id = fac.FacultyCore.Id }, null)
+                    </td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(fac.CampusLocations))
+                        {
+                           <p> @fac.CampusLocations </p>
+                        }
+                        else
+                        {
+                           <p> NONE </p>
+                        }
+                        
+                    </td>
+                    </tr>
+            }
+        </tbody>
+    </table>
+</div>

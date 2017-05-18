@@ -1,0 +1,60 @@
+﻿@model ARMSv2.Models.EditSpecialisationCore
+
+@{
+    Layout = null;
+}
+@*<script src="~/Scripts/base/jquery-1.10.2.min.js"></script>*@
+<script src="~/Scripts/base/jquery.validate.min.js"></script>
+<script src="~/Scripts/base/jquery.validate.unobtrusive.min.js"></script>
+<script src="~/Scripts/custom/program.js"></script>
+
+@*<script type="text/javascript">
+    $.validator.unobtrusive.parse("#fm-edit-specail-core");
+</script>*@
+
+@using (Ajax.BeginForm("EditSpecialisationCore", new {controller = "Program"}, new AjaxOptions { OnBegin = "OnSpecialisatonCoreEditSaveBegin", 
+    OnComplete = "OnSpecialisationCoreEditSaveComplete", 
+    LoadingElementId = "div-edit-special-core-loader",
+    HttpMethod = "POST"}, new {id = "fm-edit-specail-core"})) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        
+        <h6>*All Fields are Mandatory</h6>
+        
+        <div id="div-edit-special-core-loader" class="col-md-12 alert-info well-sm hidden">
+            <div class="col-md-4">Please Wait...</div>
+            <div class="col-md-4"><span class="fa fa-spinner fa-spin fa-lg"></span></div>
+        </div>
+        <br/>
+        <hr />
+        
+        @Html.ValidationSummary(true)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name)
+                @Html.ValidationMessageFor(model => model.Name)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Description)
+                @Html.ValidationMessageFor(model => model.Description)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input id="btn-edit-special-core-loader" type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+    
+    @Html.HiddenFor(m => m.Id)
+    @Html.HiddenFor(m => m.ProgramCoreId)
+}

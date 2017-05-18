@@ -1,0 +1,103 @@
+﻿@using ARMSv2.Core.Model
+@model ARMSv2.Core.Model.Staff
+
+@{
+    ViewBag.Title = "Staff Profile";
+}
+
+
+<div class="profInfo tabs bodytext tabs-pilled noborder">
+    <ul class="nav nav-pills programUl">
+        <li><a href="#tab-prof" role="tab" data-toggle="tab">Profile Information</a></li>
+        <li><a href="#tab-contact" role="tab" data-toggle="tab">Contact Information</a></li>
+    </ul>
+    <div class="tab-content">
+        <div id="tab-prof" class="tab-pane active">
+            <div class="row">
+                <span class="col-xs-12 col-sm-2"></span>
+                @if (@User.ApplicationUserProfilePhoto() != null)
+                {
+
+                    <img src="@User.ApplicationUserProfilePhoto()" class="img-responsive" />
+
+                }
+
+            </div>
+            <div class="row">
+                <span class="col-xs-12 col-sm-3">Name:</span>
+                <span class="col-xs-12 col-sm-9"> @Model.Person.FullName</span>
+            </div>
+            
+            @*<div class="row">
+                <span class="col-xs-12 col-sm-3">Position:</span>
+                <span class="col-xs-12 col-sm-9"> @Model.StaffPositions</span>
+            </div>*@
+            <div class="row">
+                <span class="col-xs-12 col-sm-3">
+                    Gender:
+                </span>
+                <span class="col-xs-12 col-sm-9">
+                    @Html.DisplayEnum(@Model.Person.Gender ?? Gender.Unknown)
+                </span>
+            </div>
+            <div class="row">
+                <span class="col-xs-12 col-sm-3">Birthday:</span>
+                @if (@Model.Person.DateOfBirth != null)
+                {
+                    <span class="col-xs-12 col-sm-9"> @Model.Person.DateOfBirth.Value.ToLongDateString()</span>
+                }
+            </div>
+            <div class="row">
+                <span class="col-xs-12 col-sm-3">Marital Status:</span>
+                <span class="col-xs-12 col-sm-9"> @Model.Person.MaritalStatus </span>
+            </div>
+            <div class="row">
+                <span class="col-xs-12 col-sm-3">Religion:</span>
+                <span class="col-xs-12 col-sm-9"> @Model.Person.Religion</span>
+            </div>
+            <div class="row">
+                <span class="col-xs-12 col-sm-3">Citizenship:</span>
+                <span class="col-xs-12 col-sm-9"> @Model.Person.PlaceOfBirth</span>
+            </div>
+            
+        </div>
+        <div id="tab-contact" class="tab-pane">
+            <div class="row">
+                <span class="col-xs-12 col-sm-3">Email Address:</span>
+                <span class="col-xs-12 col-sm-9"> @Model.Person.EmailAddress</span>
+            </div>
+            <div class="row">
+                <span class="col-xs-12 col-sm-3">Postal Address:</span>
+                <span class="col-xs-12 col-sm-9"> @Model.Person.PostalAddress </span>
+            </div>
+            
+            <div class="row">
+                <span class="col-xs-12 col-sm-3">Phone Contact:</span>
+                <span class="col-xs-12 col-sm-9"> @Model.Person.TelephoneContact</span>
+            </div>
+            <div class="row">
+                <span class="col-xs-12 col-sm-3">Alternative Phone Contact: </span>
+                <span class="col-xs-12 col-sm-9">@Model.Person.AltTelephoneContact</span>
+            </div>
+            <div class="row">
+                <span class="col-xs-12 col-sm-3">Next of Kin:</span>
+                <span class="col-xs-12 col-sm-9"> @Model.Person.NextOfKinName</span>
+            </div>
+            <div class="row">
+                <span class="col-xs-12 col-sm-3">Next of Kin Contact: </span>
+                <span class="col-xs-12 col-sm-9">@Model.Person.NextOfKinContact</span>
+            </div>
+            <div class="row">
+                <span class="col-xs-12 col-sm-3">Next of Kin Relationship: </span>
+                <span class="col-xs-12 col-sm-9">@Model.Person.NextOfKinRelationship</span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <span class="col-md-3"
+        <span class="col-xs-9"></span>
+        @Html.ActionLink("Edit", "EditStaffProfile", "Staff", new { @class = "btn saveBtn" })
+
+    </div>
+</div>
+

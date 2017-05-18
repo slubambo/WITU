@@ -1,0 +1,49 @@
+﻿@using System.Globalization
+@using WITU.Core.Model
+@model WITU.Models.Registration.InteractiveApprovalModel
+
+@{
+    ViewBag.Title = "Registration - Interactive Approval";
+    Html.EnableClientValidation();
+}
+
+<div class="interactive-reg-selector">
+    <h2 class="blueHeader">Registration Management - Interactive</h2>
+    <p class="greyHeader">Please specify the following fields.</p>
+
+    @using (Html.BeginForm("InteractiveApproval", "Registration", null, FormMethod.Post,
+        new { @class = "form-horizontal", role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div>
+            @Html.Raw(Html.UnEncodedValidationSummary())
+        </div>
+
+        @Html.EditorFor(m => m.StudyPeriodProgramSelectItem)
+
+        <div class="form-group col-md-12">
+            @Html.LabelFor(m => m.AcademicYearId, new { @class = "col-md-4 control-label" })
+            <div class="col-md-8">
+                @Html.DropDownWithModelSelectable(m => m.AcademicYearId, Model.AcademicYearOptions,
+                    Model.StudyPeriodProgramSelectItem.YearSemesterPogramSelectItem.ProgramSelectItem.AdministrativeSelectItem.DefaultFirstItem,
+                    new { @class = "form-control", id = "drpdwn-academic-year" })
+            </div>
+        </div>
+
+        @*<div class="form-group col-md-12">
+            @Html.LabelFor(m => m.IntakeType, new { @class = "col-md-4 control-label" })
+            <div class="col-md-8">
+                @Html.DropDownEnumFor(x => x.IntakeType, htmlAttributes: new { @class = "form-control", id = "drpdwn-intake-type" })
+            </div>
+        </div>*@
+
+        <div class="form-group col-md-3 col-md-push-9">
+        <button type="submit" class="btn saveBtn" onclick="javascript: showLoadingDialog('Loading Students...');">
+            Load Students
+            <span class=" glyphicon glyphicon-chevron-right">
+            </span>
+        </button>
+    </div>
+    }
+</div>

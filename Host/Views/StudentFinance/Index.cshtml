@@ -1,0 +1,629 @@
+﻿@using System.Activities.Expressions
+@using ARMSv2.Core.Model
+@using ARMSv2.Utils
+@using ARMSv2.Core.Model
+@model ARMSv2.Models.Finance.StudentFinanceView
+@{
+    ViewBag.Title = "Payslip";
+}
+<div class="row">
+    <div class="col-md-12" style="line-height:25px">
+        <h4 class="maroonHeader">Payslips</h4>
+    </div>
+</div>
+
+@if (Model != null)
+{
+    int i;
+    for (i = 0; i < Model.ProgramDuration; i++)
+    {
+        <div>
+            @Html.ValidationSummary(true)
+
+        </div>
+
+        <div class="form-horizontal tabs bodytext tabs-pilled noborder">
+            <ul class="">
+
+                @for (i = 0; i < Model.ProgramDuration; i++)
+                {
+                    <li class="@(Model.Student.CurrentYear == (i + 1) ? "ui-tabs-active ui-state-active" : "") ">
+                        <a href="#Year@(i)" role="tab" data-toggle="tab"> Year @(i + 1) </a>
+                    </li>
+                }
+            </ul>
+
+            @for (i = 0; i < Model.ProgramDuration; i++)
+            {
+                <div id="Year@(i)" class="bodytext tab-pane nopadding ">
+                    <div class="clearfix">
+                        <br />
+                    </div>
+
+                    <div class="form-horizontal noborder">
+
+                        <div class="accordionMenu">
+                            <div class="menuSection">
+                                <div class="">
+                                    <div class="menuElement">
+                                        <h4 class="panel-title">
+                                            <span class="menuAccordion">
+                                                <span class="icon resultsIcon" title="Semester I"></span><a data-toggle="collapse" data-parent="#accordion" href="#sem-one@(i)">
+                                                    <span class="hidden-xs">Semester I</span>
+                                                </a>
+                                            </span>
+                                        </h4>
+
+                                        <div id="sem-one@(i)" class="iconElements panel-collapse collapse @(Model.SemesterRegistrations.Any(x => x.SemesterLevel.Level == (i + 1) && x.SemesterLevel.SemesterSession == 1 && x.Semester.Id == Model.ActiveSemesterId) ? "in" : "")">
+                                            <span class="iconElementsArrow"></span>
+                                            @if (!(Model.SemesterRegistrations.Any(x => x.SemesterLevel.Level == (i + 1) && x.SemesterLevel.SemesterSession == 1)))
+                                            {
+                                                <p><b>There is no Registration Record for this semester</b></p>
+                                            }
+                                            else
+                                            {
+                                                if (!(Model.SemesterFees.Any(x => x.SemesterLevel.Level == (i + 1) && x.SemesterLevel.SemesterSession == 1)))
+                                                {
+                                                    <p><b>No Fees Found for this Semester</b></p>
+                                                }
+                                                else
+                                                {
+                                                    <table class="table" id="">
+                                                        <thead>
+
+                                                            <tr>
+                                                                <th>
+                                                                    Fee
+                                                                </th>
+                                                                <th class="centerTh">
+                                                                    Amount
+                                                                </th>
+                                                                <th class="centerTh">
+                                                                    Status
+                                                                </th>
+                                                            </tr>
+
+                                                        </thead>
+                                                        <tbody>
+                                                            @if (Model.SemesterFees != null)
+                                                            {
+                                                                foreach (var k in Model.SemesterFees)
+                                                                {
+                                                                    if ((k.SemesterLevel.Level == (i + 1)) && k.SemesterLevel.SemesterSession == 1)
+                                                                    {
+                                                                        <tr>
+                                                                            <td style="width:40%">
+                                                                                @k.Name
+
+                                                                            </td>
+
+
+                                                                            <td style="text-align: right; width: 20%;">
+                                                                                UGX @k.Fee.ToString("N0")
+                                                                            </td>
+                                                                            <td style="text-align:center">
+                                                                                @if (k.PaymentStatus == (int)PaymentStatus.Pending)
+                                                                                {
+                                                                                    <p>Pending</p>
+                                                                                }
+                                                                                @if (k.PaymentStatus == (int)PaymentStatus.PartiallyPayed)
+                                                                                {
+                                                                                    <p>Half Paid</p>
+                                                                                }
+                                                                                @if (k.PaymentStatus == (int)PaymentStatus.Paid)
+                                                                                {
+                                                                                    <p>Paid</p>
+                                                                                }
+                                                                            </td>
+
+                                                                        </tr>
+
+                                                                    }
+                                                                }
+
+                                                                if (Model.ActiveSemesterId > 0)
+                                                                {
+                                                                    <tr>
+                                                                        <td><b>Total</b></td>
+                                                                        <td style="text-align: right"><b>UGX @Model.TotalPayment.ToString("N0") </b></td>
+                                                                        <td></td>
+                                                                    </tr>
+                                                                }
+                                                            }
+
+                                                        </tbody>
+                                                    </table>
+                                                }
+                                            }
+
+                                            @if (Model.ActiveSemesterId > 0)
+                                            {
+                                                if (Model.SemesterRegistrations.Any(x => x.SemesterLevel.Level == (i + 1) && x.SemesterLevel.SemesterSession == 1 && x.Semester.Id == Model.ActiveSemesterId))
+                                                {
+                                                    using (Html.BeginForm("PrintBankSlip", "StudentFinance", FormMethod.Post))
+                                                    {
+                                                        <div class="col-lg-3 col-lg-offset-9">
+                                                            @Html.HiddenFor(model => model.ActiveSemesterId)
+                                                            @Html.HiddenFor(model => model.ActiveSemesterRegistrationId)
+                                                            <button type="submit" class="saveBtn btn">Print Invoice <i class="fa fa-print"></i></button>
+                                                            <div class="clearfix"></div>
+                                                        </div>
+                                                    }
+                                                    <h5><b>Follow Steps to Generate Bankslip</b></h5>
+
+                                                    <br />
+                                                    <div class="row">
+                                                        <div class="col-md-3">
+                                                            <p><b>Step One: </b></p>
+                                                        </div>
+                                                        <div class="col-md-9">
+                                                            <p> <a class="showSpecialCharges btn btn-default">Add Special Charges (Optional)</a></p>
+
+                                                            <div class="SpecialCharges">
+
+                                                                @using (Html.BeginForm("SaveSpecialCharges", "StudentFinance", FormMethod.Post))
+                                                                {
+                                                                    <h5 style="color: #1d268f;">Select the additional charges you want to pay for this semester</h5>
+
+                                                                    <table class="table">
+                                                                        <thead>
+                                                                            <tr></tr>
+                                                                        </thead>
+
+                                                                        <tbody>
+                                                                            @if (Model.SpecialCharges.Any())
+                                                                            {
+                                                                                foreach (var k in Model.SpecialCharges)
+                                                                                {
+                                                                                    //if ((k.SemesterLevel.Level == (i + 1)) && k.SemesterLevel.SemesterSession == 2)
+                                                                                    //{
+                                                                                    <tr>
+                                                                                        <td>
+                                                                                            <input name="selectedFees" type="checkbox" autocomplete="off" value="@k.Id" />
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @k.Name
+                                                                                        </td>
+                                                                                        <td style="text-align: right">
+                                                                                            UGX @k.Fee.ToString("N0")
+                                                                                        </td>
+
+                                                                                    </tr>
+                                                                                    //}
+                                                                                }
+                                                                            }
+                                                                        </tbody>
+                                                                    </table>
+
+                                                                    @Html.HiddenFor(model => model.ActiveSemesterId)
+                                                                    @Html.HiddenFor(model => model.ActiveSemesterRegistrationId)
+                                                                    <div class="col-lg-4 col-lg-offset-8">
+                                                                        <input type="submit" value="Add Charges" class="btn saveBtn" />
+                                                                        <input type="button" value="Cancel" class=" btn delbtn HideSpecialCharges" />
+                                                                        <div class="clearfix"> </div>
+                                                                        <br />
+                                                                    </div>
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <hr />
+
+                                                    using (Html.BeginForm("PrintBankSlip", "StudentFinance", FormMethod.Post))
+                                                    {
+                                                        <div class="row">
+                                                            <div class="col-md-3">
+                                                                <p><b>Step Two: </b></p>
+                                                            </div><div class="col-md-9">
+                                                                <p>Select Payment Method</p>
+                                                                <label class="radio-inline"><input type="radio" value="0" name="PaymentMethod">Cash</label>
+                                                                <label class="radio-inline"><input type="radio" value="1" name="PaymentMethod">Cheque</label>
+                                                                <label class="radio-inline"><input type="radio" value="2" name="PaymentMethod">Wire Transfer</label>
+                                                            </div>
+                                                        </div>
+                                                        <hr />
+                                                        <div class="row">
+                                                            <div class="col-md-3">
+                                                                <p><b>Step Three: </b></p>
+                                                            </div><div class="col-md-9">
+                                                                <p>Select Bank</p>
+                                                                <div class="">
+                                                                    @Html.DropDownWithModelSelectable(x => x.BankId, Model.Banks.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }), new SelectListItem() { Value = "0", Text = "-- Select --" })
+                                                                    @Html.ValidationMessageFor(model => model.BankId)
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <hr />
+                                                        @Html.HiddenFor(model => model.ActiveSemesterId)
+                                                        @Html.HiddenFor(model => model.ActiveSemesterRegistrationId)
+                                                        <input type="submit" value="Get Payslip" class="btn saveBtn" />
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    if (Model.ActiveSession == 1)
+                                                    {
+                                                        using (Html.BeginForm("PrintBankSlip", "StudentFinance", FormMethod.Post))
+                                                        {
+                                                            <hr />
+                                                            <h4 class="showSpecialCharges">Print Payslip for this Semester and Register Later</h4>
+                                                            <br />
+                                                            <div class="row">
+                                                                <div class="col-md-3">
+                                                                    <p><b>Payment Method: </b></p>
+                                                                </div><div class="col-md-9">
+                                                                    <p>Select Payment Method</p>
+                                                                    <label class="radio-inline"><input type="radio" value="0" name="PaymentMethod">Cash</label>
+                                                                    <label class="radio-inline"><input type="radio" value="1" name="PaymentMethod">Cheque</label>
+                                                                    <label class="radio-inline"><input type="radio" value="2" name="PaymentMethod">Wire Transfer</label>
+                                                                </div>
+                                                            </div>
+                                                            <hr />
+                                                            <div class="row">
+                                                                <div class="col-md-3">
+                                                                    <p><b>Bank: </b></p>
+                                                                </div><div class="col-md-9">
+                                                                    <p>Select Bank</p>
+                                                                    <div class="">
+                                                                        @Html.DropDownWithModelSelectable(x => x.BankId, Model.Banks.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }), new SelectListItem() { Value = "0", Text = "-- Select --" })
+                                                                        @Html.ValidationMessageFor(model => model.BankId)
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <hr />
+                                                            @Html.HiddenFor(model => model.ActiveSemesterId)
+                                                            @Html.HiddenFor(model => model.ActiveSemesterRegistrationId)
+                                                            <input type="submit" value="Get Payslip" class="btn saveBtn" />
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+
+                        <div class="clearfix"></div>
+
+                        <div class="accordionMenu">
+                            <div class="menuSection">
+                                <div class="">
+                                    <div class="menuElement">
+                                        <h4 class="panel-title">
+                                            <span class="menuAccordion">
+                                                <span class="icon resultsIcon" title="Semester II"></span><a data-toggle="collapse" data-parent="#accordion" href="#sem-two@(i)">
+                                                    <span class="hidden-xs">Semester II</span>
+                                                </a>
+                                            </span>
+                                        </h4>
+
+                                        <div id="sem-two@(i)" class="iconElements panel-collapse collapse @(Model.SemesterRegistrations.Any(x => x.SemesterLevel.Level == (i + 1) && x.SemesterLevel.SemesterSession == 2 && x.Semester.Id == Model.ActiveSemesterId) ? "in" : "")">
+                                            <span class="iconElementsArrow"></span>
+
+                                            @if (!(Model.SemesterRegistrations.Any(x => x.SemesterLevel.Level == (i + 1) && x.SemesterLevel.SemesterSession == 2)))
+                                            {
+                                                <p><b>There is no Registration Record for this semester</b></p>
+                                            }
+                                            else
+                                            {
+                                                if (Model.SemesterFees == null)
+                                                {
+                                                    <p><b>No Fees Found for this Semester</b></p>
+                                                }
+                                                else
+                                                {
+                                                    if (!(Model.SemesterFees.Any(x => x.SemesterLevel.Level == (i + 1) && x.SemesterLevel.SemesterSession == 2)))
+                                                    {
+                                                        <p><b>No Fees Found for this Semester</b></p>
+                                                    }
+                                                    else
+                                                    {
+                                                        <table class="table" id="">
+                                                            <thead>
+
+                                                                <tr>
+                                                                    <th>
+                                                                        Fee
+                                                                    </th>
+                                                                    <th>
+                                                                        Amount
+                                                                    </th>
+                                                                    <th style="text-align: center">
+                                                                        Status
+                                                                    </th>
+                                                                </tr>
+
+                                                            </thead>
+                                                            <tbody>
+                                                                @if (Model.SemesterFees != null)
+                                                                {
+                                                                    foreach (var k in Model.SemesterFees)
+                                                                    {
+                                                                        if ((k.SemesterLevel.Level == (i + 1)) && k.SemesterLevel.SemesterSession == 2)
+                                                                        {
+                                                                <tr>
+                                                                    <td style="width:40%">
+                                                                        @k.Name
+
+                                                                    </td>
+
+
+                                                                    <td style="text-align: right; width: 20%;">
+                                                                        UGX @k.Fee.ToString("N0")
+                                                                    </td>
+                                                                    <td style="text-align: center">
+                                                                        @if (k.PaymentStatus == (int)PaymentStatus.Pending)
+                                                                                    {
+                                                                        <p>Pending</p>
+                                                                                    }
+                                                                        @if (k.PaymentStatus == (int)PaymentStatus.PartiallyPayed)
+                                                                                    {
+                                                                        <p>Half Paid</p>
+                                                                                    }
+                                                                        @if (k.PaymentStatus == (int)PaymentStatus.Paid)
+                                                                                    {
+                                                                        <p>Paid</p>
+                                                                                    }
+                                                                    </td>
+
+                                                                </tr>
+                                                                        }
+                                                                    }
+                                                                    if (Model.ActiveSemesterId > 0)
+                                                                    {
+                                                                <tr>
+                                                                    <td><b>Total</b></td>
+                                                                    <td style="text-align: right"><b>UGX @Model.TotalPayment.ToString("N0") </b></td>
+                                                                    <td></td>
+                                                                </tr>
+                                                                    }
+
+                                                                }
+                                                            </tbody>
+                                                        </table>
+
+                                                    }
+                                                }
+                                            }
+
+
+
+                                            @if (Model.ActiveSemesterId > 0)
+                                            {
+                                                if ((Model.SemesterRegistrations.Any(x => x.SemesterLevel.Level == (i + 1) && x.SemesterLevel.SemesterSession == 2 && x.Semester.Id == Model.ActiveSemesterId)))
+                                                {
+                                                    using (Html.BeginForm("PrintBankSlip", "StudentFinance", FormMethod.Post))
+                                                    {
+                                                        <div class="col-lg-3 col-lg-offset-9">
+                                                            @Html.HiddenFor(model => model.ActiveSemesterId)
+                                                            @Html.HiddenFor(model => model.ActiveSemesterRegistrationId)
+                                                            <button type="submit" class="btn saveBtn">Print Invoice <i class="fa fa-print"></i></button>
+                                                            <div class="clearfix"></div>
+                                                        </div>
+                                                    }
+                                                    <h5><b>Follow Steps to Generate Bankslip</b></h5>
+
+                                                    <br />
+                                                    <div class="row">
+                                                        <div class="col-md-3">
+                                                            <p><b>Step One: </b></p>
+                                                        </div>
+                                                        <div class="col-md-9">
+                                                            <p><a class="showSpecialCharges btn btn-default">Add Special Charges (Optional)</a></p>
+
+                                                            <div class="SpecialCharges">
+
+                                                                @using (Html.BeginForm("SaveSpecialCharges", "StudentFinance", FormMethod.Post))
+                                                                {
+                                                                    <h5 style="color: #1d268f;">Select the additional charges you want to pay for this semester</h5>
+
+                                                                    <table class="table">
+                                                                        <thead>
+                                                                            <tr></tr>
+                                                                        </thead>
+
+                                                                        <tbody>
+                                                                            @if (Model.SpecialCharges.Any())
+                                                                            {
+                                                                                foreach (var k in Model.SpecialCharges)
+                                                                                {
+                                                                                    //if ((k.SemesterLevel.Level == (i + 1)) && k.SemesterLevel.SemesterSession == 2)
+                                                                                    //{
+                                                                            <tr>
+                                                                                <td>
+                                                                                    <input name="selectedFees" type="checkbox" autocomplete="off" value="@k.Id" @if(k.IsAlreadyAdded == true){ @(k.IsAlreadyAdded ? "class=alreadySelected" : "")  } />
+                                                                                </td>
+                                                                                <td>
+                                                                                    @k.Name
+                                                                                </td>
+                                                                                <td style="text-align: right">
+                                                                                    UGX @k.Fee.ToString("N0")
+                                                                                </td>
+
+                                                                            </tr>
+                                                                                    //}
+                                                                                }
+                                                                            }
+                                                                        </tbody>
+                                                                    </table>
+
+                                                                    @Html.HiddenFor(model => model.ActiveSemesterId)
+                                                                    @Html.HiddenFor(model => model.ActiveSemesterRegistrationId)
+                                                                    <div class="col-lg-4 col-lg-offset-8">
+                                                                        <input type="submit" value="Add Charges" class="btn saveBtn" />
+                                                                        <input type="button" value="Cancel" class=" btn delbtn HideSpecialCharges" />
+                                                                        <div class="clearfix"> </div>
+                                                                        <br />
+                                                                    </div>
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <hr />
+
+
+                                                    using (Html.BeginForm("PrintBankSlip", "StudentFinance", FormMethod.Post))
+                                                    {
+                                                        <div class="row">
+                                                            <div class="col-md-3">
+                                                                <p><b>Step Two: </b></p>
+                                                            </div>
+                                                            <div class="col-md-9">
+                                                                <p>Select Payment Method</p>
+                                                                <label class="radio-inline paymentRadio"><input type="radio" value="0" name="PaymentMethod">Cash</label>
+                                                                <label class="radio-inline paymentRadio"><input type="radio" value="1" name="PaymentMethod">Cheque</label>
+                                                                <label class="radio-inline paymentRadio"><input type="radio" value="2" name="PaymentMethod">Wire Transfer</label>
+                                                            </div>
+                                                        </div>
+                                                        <hr />
+                                                        <div class="row">
+                                                            <div class="col-md-3">
+                                                                <p><b>Step Three: </b></p>
+                                                            </div>
+                                                            <div class="col-md-9">
+                                                                <p>Select Bank</p>
+                                                                <div class="">
+                                                                    @Html.DropDownWithModelSelectable(x => x.BankId, Model.Banks.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }), new SelectListItem() { Value = "0", Text = "-- Select --" })
+                                                                    @Html.ValidationMessageFor(model => model.BankId)
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <hr />
+                                                        @Html.HiddenFor(model => model.ActiveSemesterId)
+                                                        @Html.HiddenFor(model => model.ActiveSemesterRegistrationId)
+                                                        <input type="submit" value="Get Payslip" class="btn saveBtn" />
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    if (Model.ActiveSession == 2)
+                                                    {
+                                                        using (Html.BeginForm("PrintBankSlip", "StudentFinance", FormMethod.Post))
+                                                        {
+                                                            <hr />
+                                                            <h4 class="showSpecialCharges">Print Payslip for this Semester and Register Later</h4>
+                                                            <br />
+                                                            <div class="row">
+                                                                <div class="col-md-3">
+                                                                    <p><b>Payment Method: </b></p>
+                                                                </div><div class="col-md-9">
+                                                                    <p>Select Payment Method</p>
+                                                                    <label class="radio-inline"><input type="radio" value="0" name="PaymentMethod">Cash</label>
+                                                                    <label class="radio-inline"><input type="radio" value="1" name="PaymentMethod">Cheque</label>
+                                                                    <label class="radio-inline"><input type="radio" value="2" name="PaymentMethod">Wire Transfer</label>
+                                                                </div>
+                                                            </div>
+                                                            <hr />
+                                                            <div class="row">
+                                                                <div class="col-md-3">
+                                                                    <p><b>Bank: </b></p>
+                                                                </div><div class="col-md-9">
+                                                                    <p>Select Bank</p>
+                                                                    <div class="">
+                                                                        @Html.DropDownWithModelSelectable(x => x.BankId, Model.Banks.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }), new SelectListItem() { Value = "0", Text = "-- Select --" })
+                                                                        @Html.ValidationMessageFor(model => model.BankId)
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <hr />
+                                                            @Html.HiddenFor(model => model.ActiveSemesterId)
+                                                            @Html.HiddenFor(model => model.ActiveSemesterRegistrationId)
+                                                            <input type="submit" value="Get Payslip" class="btn saveBtn" />
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+            }
+
+            @Html.HiddenFor(model => model.StudentId)
+
+
+        </div>
+
+
+    }
+if (Model.ActiveSemesterId <= 0)
+ {
+     <p> <a class="showPrintSlip btn btn-default">Print Payslip</a></p>
+                <div class="printSlip">
+                    <p class="greyHeader">Generate Payslip for the Current Semester</p>
+                    @using (Html.BeginForm("PrintBankSlip", "StudentFinance", FormMethod.Post))
+                    {
+                        <hr />
+                        
+                        <div class="row">
+                            <div class="col-md-3">
+                                <p><b>Payment Method: </b></p>
+                            </div><div class="col-md-9">
+                                      <p>Select Payment Method</p>
+                                      <label class="radio-inline"><input type="radio" value="0" name="PaymentMethod">Cash</label>
+                                      <label class="radio-inline"><input type="radio" value="1" name="PaymentMethod">Cheque</label>
+                                      <label class="radio-inline"><input type="radio" value="2" name="PaymentMethod">Wire Transfer</label>
+                                  </div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-md-3">
+                                <p><b>Bank: </b></p>
+                            </div><div class="col-md-9">
+                                      <p>Select Bank</p>
+                                      <div class="">
+                                          @Html.DropDownWithModelSelectable(x => x.BankId, Model.Banks.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }), new SelectListItem() { Value = "0", Text = "-- Select --" })
+                                          @Html.ValidationMessageFor(model => model.BankId)
+                                      </div>
+                                  </div>
+                        </div>
+                        <hr />
+                        @Html.HiddenFor(model => model.Semester.Id)
+                        @Html.HiddenFor(model => model.Student.Id)
+                        @*@Html.HiddenFor(model => model.ActiveSemesterRegistrationId)*@
+                        <input type="submit" value="Print Payslip" class="btn saveBtn" />
+                        <input type="button" value="Cancel" class=" btn delbtn HidePrintSlip" />
+                    }
+                </div>
+ }
+}
+<script>
+    $(".SpecialCharges").css("display", "none");
+    $(".showSpecialCharges").click(function () {
+        $(".SpecialCharges").removeAttr("style");
+        $(".showSpecialCharges").css("display", "none");
+    });
+
+    $(".HideSpecialCharges").click(function () {
+        $(".showSpecialCharges").removeAttr("style");
+        $(".SpecialCharges").css("display", "none");
+    });
+
+    $('.alreadySelected').attr("disabled", "disabled");
+    
+    $(".printSlip").css("display", "none");
+    $(".showPrintSlip").click(function () {
+        $(".printSlip").removeAttr("style");
+        $(".showPrintSlip").css("display", "none");
+    });
+
+    $(".HidePrintSlip").click(function () {
+        $(".showPrintSlip").removeAttr("style");
+        $(".printSlip").css("display", "none");
+    });
+    //$('.alreadySelected').attr("checked", "checked");
+</script>

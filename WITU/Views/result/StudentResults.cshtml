@@ -1,0 +1,109 @@
+﻿@using WITU.Core.Model
+@model WITU.Models.Result.StudentProgressionResult
+
+@{
+    ViewBag.Title = Model.Student.Person.FullName+"'s Results";
+}
+
+<div class="col-md-12">
+
+    <div class="well col-md-12">
+        <div class="col-md-12">
+            <div class="col-md-6">
+                <label>Current Status: </label>
+                <span>@Html.DisplayEnumFor(m => m.CurrentStudentStatus, typeof(StudentStatus))</span>
+            </div>
+            <div class="col-md-offset-6"></div>
+
+            @if (Model.LatestResultDetail != null)
+            {
+                <hr />
+                <div class="col-md-3">
+                    <strong>CTCUs: </strong> @Model.LatestResultDetail.StudentResultSummary.CumulativeTotatlCreditUnits
+                </div>
+                <div class="col-md-3">
+                    <strong>GPA: </strong> @Model.LatestResultDetail.StudentResultSummary.GradePointAverage
+                </div>
+                <div class="col-md-3">
+                    <strong>CGPA: </strong> @Model.LatestResultDetail.StudentResultSummary.CumulativeGradePointAverage
+                </div>
+                <div class="col-md-3">
+                    <strong>Award: </strong> @Model.LatestResultDetail.StudentResultSummary.Award
+                </div>
+                <div class="col-md-12">
+                    <strong>Remark: </strong> @Model.LatestResultDetail.StudentResultSummary.Remark
+                </div>
+                <div class="col-md-12">
+                    <strong>Minimum Graduation Load: </strong> @Model.Student.Program.MinimumLoad
+                </div>
+            }
+        </div>
+    </div>
+
+    
+    <div class="pull-right voffset1 btn-group btn-group-sm">
+
+        <a class="btn btn-default btn-sm" href="@Url.Action("PrintStudentResult", new {})" target="_blank">
+            <span class="fa fa-download"></span>
+            <span>Provisional Results</span>
+            <span class="fa fa-file-pdf-o"></span>
+        </a>
+
+    </div>
+
+
+    <div class="tabs col-md-12 voffset2">
+        <ul class="nav nav-pills programUl">
+            @for (var i = 1; i <= Model.NumberOfYears; i++)
+            {
+                <li><a role="tab" data-toggle="tab" href="#tab-student-progression-body-@i">Year @i</a></li>
+            }
+        </ul>
+        @for (var i = 1; i <= Model.NumberOfYears; i++)
+        {
+            <div id="tab-student-progression-body-@i">
+                @for (var j = 1; j <= 2; j++)
+                {
+                    var semesterResultDetail = Model.SemesterResultDetails.FirstOrDefault(x => x.SemesterLevel.Level == i && x.SemesterLevel.SemesterSession == j);
+                    var semLevel = Model.SemesterLevels.FirstOrDefault(x => x.Level == i && x.SemesterSession == j);
+
+                    <div class="col-md-12 row">
+                        <h4 class="col-md-6">Semester @j</h4>
+                        <div class="col-md-offset-6">
+                            
+                        </div>
+                    </div>
+
+                    if (semesterResultDetail != null)
+                    {
+                        @Html.Partial("_StudentSemesterResultDetail", semesterResultDetail)
+                    }
+
+                    else
+                    {
+                        <div>
+                            <div class="text-center">
+                                <span class="fa fa-5x fa-warning"></span>
+                            </div>
+                            <div class="text-center">
+                                No Results for this semester.
+                            </div>
+                        </div>
+                    }
+
+                    <hr />
+                }
+            </div>
+        }
+
+    </div>
+
+
+
+    <div class="col-md-12 voffset1">
+
+    </div>
+
+
+
+</div>

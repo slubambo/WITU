@@ -1,0 +1,39 @@
+﻿@model WITU.Core.Model.SpecialisationCore
+@{
+    Layout = null;
+}
+
+<div class="container">
+    @if (Model.Description != null)
+    {
+        <p>
+            @Model.Description
+        </p>
+    }
+    else
+    {
+        <p class="text-info">
+            No Description Added.
+        </p>
+    }
+    
+    <hr/>
+    <h4>Locations of this Specialisation</h4>
+    <div class="col-md-12">
+        <ul class="list-group">
+            @if (Model.Specialisations.Any())
+            {
+                foreach (var sp in Model.Specialisations)
+                {
+                    <li class="list-group-item">
+                        <label class="text">@sp.Program.ProgramCore.Name at @sp.Program.Campus.Name</label>
+                    </li>
+                }
+            }
+            else
+            {
+                <li class="list-group-item">No Campus with this specialisation</li>
+            }
+        </ul>
+    </div>
+</div>

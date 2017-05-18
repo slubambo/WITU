@@ -1,0 +1,31 @@
+﻿@{
+    ViewBag.Title = "Staff";
+    Layout = "~/Views/Shared/_LayoutStaff.cshtml";
+}
+@model WITU.Models.StaffHomeView
+
+
+<div class="row">
+    <div class="col-md-12" style="line-height:25px">
+        <h4 class="maroonHeader ">Staff Information</h4>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-3">
+        <img src="@User.ApplicationUserProfilePhoto()" class="img-responsive" style="width: 110px; height: auto; margin:10px auto; border: 1px solid #E9C3CC" />
+    </div>
+    <div class="col-md-9 row-top" style="line-height:20px">
+        <div class="row"><div class="col-xs-3"><p class="detailLabel">Name:</p></div><div class="col-xs-9"><p> @Model.staff.Person.FullName</p></div></div>
+        <div class="row"><div class="col-xs-3"><p class="detailLabel">Email Address</p></div><div class="col-xs-9"><p>@Model.staff.Person.EmailAddress</p></div></div>
+        <div class="row"><div class="col-xs-3"><p class="detailLabel">Phone Number</p></div><div class="col-xs-9"><p>@Model.staff.Person.TelephoneContact</p></div></div>
+        <div class="row">
+            <div class="col-xs-3"></div>
+            <div class="col-xs-9">
+                @Html.ActionLink("Edit", "EditStaffProfile", "Staff", null, new { @class = "btn btn-default btn-xs" })
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+<br />
+

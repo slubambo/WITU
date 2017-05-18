@@ -1,0 +1,50 @@
+﻿@using ARMSv2.Utils
+@model ARMSv2.Models.AdminUnits.EditDepartmentCore
+
+@{
+    Layout = null;
+}
+
+<script src="~/Scripts/base/jquery.validate.js"></script>
+<script src="~/Scripts/base/jquery.validate.unobtrusive.js"></script>
+
+<div>
+    @using (Ajax.BeginForm("EditDepartmentCore", "AdministrativeUnits",
+        new AjaxOptions()
+        {
+            OnBegin = "EditFacultyCoreOnBegin",
+            LoadingElementId = "sp-loading-icon",
+            OnComplete = "EditFacultyCoreOnComplete",
+            HttpMethod = "POST",
+            OnSuccess = "EditFacultyCoreOnSuccess",
+            OnFailure = "EditFacultyCoreOnFailure"
+        },
+        new { @class = "form form-horizontal" }))
+    {
+        @Html.HiddenFor(x => x.Id)
+        @Html.HiddenFor(x => x.CoreName)
+
+        @Html.ValidationSummary(false)
+
+        <div class="alert alert-success well-sm hide" id="dv-edit-faculty-core-success">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            <span>
+                <span class="glyphicon glyphicon-saved"></span>
+                <span class="" id="sp-edit-faculty-core-success">
+                    Changes successfully saved.
+                </span>
+            </span>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, new { @class = "control-label col-sm-3" })
+            <div class="col-md-9 progCoreInput">
+                @Html.TextBoxFor(model => model.Name, new { @class = "facultycore_input", autocomplete = "off" })
+            </div>
+        </div>
+        <button type="submit" class="btn saveBtn" id="btn-edit-faculty-core">
+            Save
+        </button>
+        <span id="sp-loading-icon" class="fa fa-2x fa-spinner fa-spin hide"></span>
+    }
+</div>

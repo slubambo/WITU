@@ -1,0 +1,43 @@
+﻿@using ARMSv2.Models
+@model ARMSv2.Models.CountryIndex
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="container">
+    
+    <div class="well-lg">
+        <div class="col-md-12">
+            <span class="col-md-4">Number of Countries</span>
+            <span class="col-md-8">@Model.Countries.Count()</span>
+        </div>
+        
+        <div class="col-md-12">
+            <span class="col-md-4">Number of Districts</span>
+            <span class="col-md-8">@Model.Districts.Count()</span>
+        </div>
+        
+        <div class="col-md-12">
+            <span class="col-md-4">Number of Counties</span>
+            <span class="col-md-8">@Model.TotalCounties</span>
+        </div>
+    </div>
+    
+    <div>
+        <h4>Countries</h4>
+        <div>
+            @Html.Partial("_TableView", Model.CountryTableViews)
+        </div>
+    </div>
+    
+    <div>
+        <h4>Districts</h4>
+        <div>
+            @Html.Partial("_TableView", Model.Districts.Select(x => new TableView
+            {
+                Name = x.Name, Code = x.Code, CreatedOn = x.CreatedOn ?? DateTime.Now
+            }))
+        </div>
+    </div>
+</div>

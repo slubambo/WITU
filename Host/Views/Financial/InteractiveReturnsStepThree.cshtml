@@ -1,0 +1,76 @@
+﻿@model ARMSv2.Models.Finance.InteractiveReturnsProcessor
+@{
+    ViewBag.Title = "Step Three Import Returns";
+}
+
+<div>
+    <h2 class="blueHeader">Import Returns</h2>
+    
+    @if (Model.IsValidEntry == false)
+    {
+    <h3 class="maroonHeader">The following errors were found with the record entered</h3>
+        
+        <ul>
+            
+            @foreach (var errorRecords in Model.ErrorsList)
+            {
+                <li>
+                    @errorRecords
+                </li>
+            }
+        </ul>
+        <br/>
+        <button class="btn delBtn" value="cancel" type="button" name="saveStatus"
+                        onclick="javascript: cancelSubmission('@Url.Action("Returns", "Financial")', 'Click Ok to re-enter payment details'); ">
+                    <span class="glyphicon glyphicon-remove"></span>
+                    Return
+        </button>
+    }
+    else
+    {
+        <h3 class="greyHeader">Step 3: Confrim the submitted financial Record</h3>
+        <p class="text text-success">
+            The following record shall be saved.
+        </p>
+        
+        <table class="table dataTable">
+            <thead>
+                <tr>
+                    <th>Fees Number</th>
+                    <th>Name</th>
+                    <th>Payslip Serial Number</th>
+                    <th>Amount</th>
+                    <th>Date Paid</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>@Model.SuccessImport.FeesNumber</td>
+                    <td>@Model.SuccessImport.StudentName</td>
+                    <td>UGX @Model.SuccessImport.Amount.ToString("N0")</td>
+                    <td>@Model.SuccessImport.PayslipSerial</td>
+                    <td>@Model.SuccessImport.DatePaid.ToString("MM/dd/yyyy")</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <br />
+        <div>
+            @using (Html.BeginForm("InteractiveReturnsSave", "Financial", null, FormMethod.Post,
+            new { @class = "form-horizontal", role = "form"}))
+{
+                <button class="btn delBtn" value="cancel" type="button" name="saveStatus"
+                        onclick="javascript: cancelSubmission('@Url.Action("Returns", "Financial")', 'Are you sure you want to cancel Results Upload? Changes will not be saved.'); ">
+                    <span class="glyphicon glyphicon-remove"></span>
+                    Cancel
+                </button>
+
+                <button class="btn saveBtn pull-right" value="save" name="saveStatus" type="submit">
+                    Save
+                    <span class="glyphicon glyphicon-chevron-right"></span>
+                </button>
+            }
+        </div>
+
+    }
+</div>

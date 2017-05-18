@@ -1,0 +1,70 @@
+﻿@model IEnumerable<ARMSv2.Core.Model.Student>
+@{
+    ViewBag.Title = "Qualified Students List";
+}
+
+<div class="table-responsive">
+    <table class="table" id="tbl-qualified-students">
+        <thead>
+            <tr>
+
+                <th>Reg No.</th>
+                <th>Name</th>
+                <th>
+                    Gender
+                </th>
+                <th>
+                    Program Name
+                </th>
+                <th>
+                    CGPA
+                </th>
+                <th>
+                    CTCUs
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var student in Model)
+            {
+                <tr>
+
+
+                    <td>@student.RegistrationNumber</td>
+                    <td>@student.Person.FullNameWithNoTitle</td>
+                    <td>
+                        @Html.DisplayEnum(@student.Person.Gender)
+
+                    </td>
+                    <td>
+                        @student.ProgramName
+                    </td>
+                    <td>
+                        @Math.Round(student.CurrentCGPA, 2)
+                    </td>
+                    <td>
+                        @student.CurrentCTCU
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>   
+<button id="btn-gobackto-detail" class=" btn btn-default btn-sm" onclick="location.href = '@Url.Action("Qualified", "Graduation", null)'">
+    <span class="glyphicon glyphicon-arrow-left"></span>
+    Back
+</button>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#tbl-qualified-students").dataTable(
+            {
+                dom: 'lBfrtip',
+                buttons: [
+                'csv', 'pdf'
+                ], "bSort": false, "bDestroy": true, responsive: true
+            }
+            );
+    })
+</script>
+

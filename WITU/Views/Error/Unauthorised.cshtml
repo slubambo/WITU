@@ -1,0 +1,9 @@
+﻿@model WITU.Models.MessengerModel
+@{
+    ViewBag.Title = "Unauthorised";
+}
+
+
+<h1>Error 401! Unauthorized</h1>
+<p class="greyHeader">You are not authorized to perform the requested action, @Html.ActionLink("here", "Index", "Home", null, new { @class = "maroonTxt" }) to return to Home Page</p>
+<p class="text-info">Contact Administrator for Assistance</p>

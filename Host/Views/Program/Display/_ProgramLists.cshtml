@@ -1,0 +1,11 @@
+﻿@model IEnumerable<ARMSv2.Core.Model.Program>
+           
+<ul class="list-group">
+    @foreach (var prog in Model)
+    {
+        <li class="list-group-item ">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+            @Html.ActionLink(prog.ProgramCore.Name, "View", new { id = @prog.Id, controller = "Program" })
+        </li>
+    }
+</ul>

@@ -1,0 +1,60 @@
+﻿@model ARMSv2.Models.semester.EditGradingScheme
+
+@{
+    ViewBag.Title = (Model.Id == 0 ? "Add " : "Edit ") + "Grading Scheme";
+}
+
+<div>
+    @(Model.Id == 0 ? "Add Grading Scheme to " : "Edit Grading Scheme for ") <strong>@Model.AwardTypeName</strong> Programs
+</div>
+
+@using (Html.BeginForm()) 
+    {
+        @Html.AntiForgeryToken()
+        
+        <div class="form-horizontal">
+            <h4>GradingScheme</h4>
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(model => model.StartAcademicYearId, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownWithModelSelectable(m => m.StartAcademicYearId, Model.AcademicYearOptions,
+                        Model.DefaultFirstItem,
+                        new { @class = "form-control", id = "drpdwn-start-academic-year" })
+                    <small><em>The academic year when the grading scheme should start being used.</em></small>
+                    @Html.ValidationMessageFor(model => model.StartAcademicYearId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+    
+            <div class="form-group">
+                @Html.LabelFor(model => model.EndAcademicYearId, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    
+                    @Html.DropDownWithModelSelectable(m => m.EndAcademicYearId, Model.AcademicYearOptions,
+                        Model.DefaultFirstItem,
+                        new { @class = "form-control", id = "drpdwn-end-academic-year" })
+                    <small><em>The academic year when the grading scheme should stop being used. If left empty, this becomes the active grading scheme on saving</em></small>
+                    @Html.ValidationMessageFor(model => model.EndAcademicYearId, "", new { @class = "text-danger" })
+
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="@(Model.Id > 0? "Update" : "Save")" class="btn btn-default" onclick="javascript: showLoadingDialog(' @(Model.Id > 0 ? "Updating Grading Scheme and updating Students Results. This may take a while" : "Adding Grading Scheme and updating student results. This may take a while")');" />
+                </div>
+            </div>
+        </div>
+    
+    @Html.HiddenFor(x => x.Id)
+    @Html.HiddenFor(x => x.AwardTypeId)
+    @Html.HiddenFor(x => x.AwardTypeName)
+    }
+    
+    <div>
+    <button id="btn-gobackto-gradescheme-orall" class=" btn btn-default btn-sm" onclick="location.href = '@(Model.Id > 0 ? Url.Action("ViewGradingScheme", new { id = Model.Id }) : Url.Action("GradingScheme", "Semester"))'">
+        <span class="glyphicon glyphicon-arrow-left"></span>
+        Back to @(Model.Id > 0 ? "Grading Scheme" : "List")
+    </button>
+</div>

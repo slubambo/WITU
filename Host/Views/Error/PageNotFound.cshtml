@@ -1,0 +1,11 @@
+﻿
+@{
+    ViewBag.Title = "Page Not Found";
+}
+
+<h1>Error 404! Page Not Found</h1>
+
+@if (TempData[ApplicationConstants.Error404Notification] != null)
+{
+    <h3>@Html.Raw(TempData[ApplicationConstants.Error404Notification])</h3>
+}

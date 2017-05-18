@@ -1,0 +1,114 @@
+﻿@model WITU.Models.Result.FormulaModel
+@using WITU.Utils
+@using WITU.Models.UserManagement
+@{ var sessionDetails = (SessionUserManagementDetails)HttpContext.Current.Session["LoggedInUserRoles"]; }
+@{
+    ViewBag.Title = "Result Calculations";
+}
+
+<div class="form-horizontal tabs bodytext tabs-pilled noborder">
+
+    <ul class="grading-ul">
+
+
+
+        @foreach (var m in Model.AwardTypeOptions)
+        {
+
+            <li class="row">
+                <a href="#div-tab-@m.Id" role="tab" data-toggle="tab">
+                    @m.Name
+                </a>
+            </li>
+
+        }
+    </ul>
+
+    @foreach (var m in Model.AwardTypeOptions)
+    {
+
+        <div id="div-tab-@m.Id" class="bodytext tab-pane nopadding">
+            <div class="clearfix">
+                <br />
+            </div>
+
+            @for (int yr = 2; yr <= 5; yr++)
+            {
+                <div class="panel-heading facultyName">
+                    <h4 class="">
+                        <span class="maroonHeader">
+                           @yr Year - @m.Name Academic Programs &nbsp;&nbsp;
+                        </span>
+                        <a href="#year-body-@yr-at-@m.Id" data-toggle="collapse" onclick="javascript: YearCalculationIconAccordionChanger('@m.Id','@yr');">
+                            <span class="faculty-department-accordion-icon glyphicon @(yr == 2 ? "glyphicon-minus" : "glyphicon-plus")" id="year-accordion-icon-@yr-at-@m.Id"></span>
+                        </a>
+                    </h4>
+                </div>
+    <div class="year-accordion-@yr-at-@m.Id faculty-department-accordion panel-collapse collapse @(yr == 2 ? "in" : "")" id="year-body-@yr-at-@m.Id">
+        <div>
+            @if (Model.ResultCalculations.Any(x => x.AwardType.Id == m.Id && x.MinimumDuration == yr))
+            {
+                var calculations = Model.ResultCalculations.Where(x => x.AwardType.Id == m.Id && x.MinimumDuration == yr);
+
+                <div class="table-responsive ">
+                    <table class="table dataTable">
+                        <thead>
+                            <tr>
+                                <th>Start Academic Year</th>
+                                <th>End Academic Year</th>
+                                <th>For</th>
+                                <th>Status</th>
+                                <th>CGPA Formula</th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var calc in calculations.OrderBy(x => x.StartAcademicYear.StartYear))
+                            {
+                                <tr>
+                                    @*TODO: Uncomment code below as soon as ROBAC is added and graduates have been considered*@
+                                    @*<td>@Html.ActionLink(calc.StartAcademicYear.Name, "EditResultCalculation", "Result", new {id = calc.Id}, null)</td>
+                                    <td>@Html.ActionLink(calc.EndAcademicYear != null ? calc.EndAcademicYear.Name: "N/A", "EditResultCalculation", "Result", new {id = calc.Id}, null)</td>
+                                    <td>@Html.ActionLink(calc.MinimumDuration +" year programs", "EditResultCalculation", "Result", new{id = calc.Id}, null)</td>
+                                    <td>@Html.ActionLink(calc.EndAcademicYear != null ? "Inactive": "Active", "EditResultCalculation", "Result", new{id=calc.Id}, null)</td>
+                                    <td>@Html.ActionLink(calc.Contributions, "EditResultCalculation", "Result", new{id = calc.Id}, null)</td>*@
+                                    
+                                    <td>@calc.StartAcademicYear.Name</td>
+                                    <td>@(calc.EndAcademicYear != null ? calc.EndAcademicYear.Name : "N/A")</td>
+                                    <td>@(calc.MinimumDuration + " year programs")
+                                    <td>@(calc.EndAcademicYear != null ? "Inactive" : "Active")</td>
+                                    <td>@calc.Contributions</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="clearfix"></div>
+            }
+            else
+            {
+                <h3 class="blueHeader">Using Default CGPA Calculation i.e. Cumulative Approach</h3>
+            }
+
+            @*<a class="btn saveBtn pull-right">Add Calculation</a>*@
+@if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) WITU.Models.ServiceDetail.CGPACalculation
+                                                                         && (x.Role.CanCreate == true || x.Role.CanUpdate == true || x.Role.CanDelete == true)))
+{
+    //TODO: Uncomment code below as soon as graduates and student result recalculation has been considered.
+    @*@Html.ActionLink("Add Calculation", "AddResultCalculation", new {minimumDuration = yr, awardTypeId = m.Id, controller = "Result"}, new {@class = "btn saveBtn pull-right"})*@
+}
+    </div>
+    </div> <br/>
+
+            }
+
+
+
+
+        </div>
+
+    }
+
+
+
+</div>

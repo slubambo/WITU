@@ -1,0 +1,339 @@
+﻿@model ARMSv2.Models.MessageDetail
+@{
+    ViewBag.Title = "Compose";
+}
+
+<link href="~/Scripts/FileUpload/css/jquery.fileupload.css" rel="stylesheet" />
+
+<div>
+    
+    @Html.HiddenFor(model => model.Subject, new { id = "forwardSubject" })
+    @Html.HiddenFor(model => model.Content, new { id = "forwardContent" })
+    @Html.HiddenFor(model => model.Id, new { id = "forwardMessageId" })
+    @Html.HiddenFor(model => model.MessageStatus, new { id = "MessageTypeId" })
+    <div class="pull-right">
+        <div class="btn"><span class="fa fa-inbox"></span>  @Html.ActionLink("Inbox", "Inbox", "Messenger")</div>
+        <div class="btn"><span class="fa fa-paper-plane"></span>  @Html.ActionLink("Sent", "SentMessages", "Messenger")</div>
+        <div class="btn"><span class="fa fa-floppy-o"></span>  @Html.ActionLink("Drafts", "Drafts", "Messenger")</div>
+        <div class="btn"><span class="fa fa-trash-o"></span>  @Html.ActionLink("Trash", "Trash", "Messenger")</div>
+    </div>
+    <div class="pull-left">
+        <h2 class="blueHeader">Compose</h2>
+        @*<div class="btn saveBtn"><span class="fa fa-pencil"></span>  @Html.ActionLink("Compose", "Compose", "Messenger")</div>*@
+    </div>
+    <br />
+    <br />
+
+    <div class="row form-group" id="Ms_ToSelect">
+        <p class="col-md-3 control-label">Recipient User Type</p>
+        <div class="col-md-9 progCoreInput">
+            <select id="drpUserType" autocomplete="off">
+                <option value="0" selected>-- Select User Type -- </option>
+                <option value="1">Staff</option>
+                <option value="2">Students</option>
+            </select>
+
+        </div>
+    </div>
+
+
+    <div class="row form-group" id="Ms_StaffRoles">
+        <p class="col-md-3 control-label">Staff Category</p>
+        <div class="col-md-6 progCoreInput">
+            <select id="sendtoType" class=""></select>
+            <div class="checkbox pull-right">
+                <input type="checkbox" id="chkRoleCategory" autocomplete="off" class="checkbox-inline" title="Include Staff Roles" />
+                <span id="spnRoles" class="checkbox-inline">Include</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row form-group" id="Ms_position">
+        <p class="col-md-3 control-label">Position</p>
+        <div class="col-md-6 progCoreInput">
+            <select id="drpPosition"></select>
+            <div class="checkbox pull-right">
+                <input type="checkbox" id="chkPosition" autocomplete="off" class="checkbox-inline" title="Include Staff Position" />
+                <span id="spnPosition" class="checkbox-inline">Include</span>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row form-group" id="Ms_campus">
+        <p class="col-md-3 control-label">Campus</p>
+        <div class="col-md-9 progCoreInput">
+            <select id="drpcampus" class=""></select>
+        </div>
+    </div>
+
+    <div class="row form-group" id="Ms_faculty">
+        <p class="col-md-3 control-label">Faculty</p>
+        <div class="col-md-6 progCoreInput">
+            <select id="drpfaculty" class=""></select>
+            <div class="checkbox pull-right">
+                <input type="checkbox" id="chkFaculty" autocomplete="off" class="checkbox-inline" title="Include Faculty" />
+                <span id="spnFaculty" class="checkbox-inline">Include</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row form-group" id="Ms_department">
+        <p class="col-md-3 control-label">Department</p>
+        <div class="col-md-6 progCoreInput">
+            <select id="drpdepartment" class=""></select>
+            <div class="checkbox pull-right">
+                <input type="checkbox" id="chkDepartment" autocomplete="off" class="checkbox-inline" title="Include Faculty" />
+                <span id="spnDepartment" class="checkbox-inline">Include</span>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row form-group studentOnly" id="Ms_programme">
+        <p class="col-md-3 control-label">Programme</p>
+        <div class="col-md-6 progCoreInput">
+            <select id="drpprogramme" class=""></select>
+            <div class="checkbox pull-right">
+                <input type="checkbox" id="chkProgramme" autocomplete="off" class="checkbox-inline" title="Include Faculty" />
+                <span id="spnProgramme" class="checkbox-inline">Include</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row form-group studentOnly" id="Ms_specialisation">
+        <p class="col-md-3 control-label">Specialisation</p>
+        <div class="col-md-6 progCoreInput">
+            <select id="drpSpecialisation" class=""></select>
+            <div class="checkbox pull-right">
+                <input type="checkbox" id="chkSpecialisation" autocomplete="off" class="checkbox-inline" title="Include Faculty" />
+                <span id="spnSpecialisation" class="checkbox-inline">Include</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row form-group studentOnly" id="Ms_studyPeriod">
+        <p class="col-md-3 control-label">Study Type</p>
+        <div class="col-md-6 progCoreInput">
+            <select id="drpStudyPeriod" class=""></select>
+            <div class="checkbox pull-right">
+                <input type="checkbox" id="chkStudyPeriod" autocomplete="off" class="checkbox-inline" title="Include Faculty" />
+                <span id="spnStudyPeriod" class="checkbox-inline">Include</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row form-group studentOnly" id="Ms_academicYear">
+        <p class="col-md-3 control-label">Academic Year</p>
+        <div class="col-md-6 progCoreInput">
+            <select id="drpAcademicYear" class=""></select>
+            <div class="checkbox pull-right">
+                <input type="checkbox" id="chkAcademicYear" autocomplete="off" class="checkbox-inline" title="Include Faculty" />
+                <span id="spnAcademicYear" class="checkbox-inline">Include</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row form-group studentOnly" id="Ms_yearOfStudy">
+        <p class="col-md-3 control-label">Year of Study</p>
+        <div class="col-md-6 progCoreInput">
+            <select id="drpYearOfStudy">
+                <option value="0" selected="true">All</option>
+                <option value="1">Year I</option>
+                <option value="2">Year II</option>
+                <option value="3">Year III</option>
+                <option value="4">Year IV</option>
+                <option value="5">Year V</option>
+            </select>
+            <div class="checkbox pull-right">
+                <input type="checkbox" id="chkYearOfStudy" autocomplete="off" class="checkbox-inline" title="Include Faculty" />
+                <span id="spnYearOfStudy" class="checkbox-inline">Include</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row form-group studentOnly" id="Ms_semester">
+        <p class="col-md-3 control-label">Semester</p>
+        <div class="col-md-6 progCoreInput">
+            <select id="drpSemester">
+                <option value="0" selected="true">All</option>
+                <option value="1">Semester 1</option>
+                <option value="2">Semester 2</option>
+            </select>
+            <div class="checkbox pull-right">
+                <input type="checkbox" id="chkSemester" autocomplete="off" class="checkbox-inline" title="Include Faculty" />
+                <span id="spnSemester" class="checkbox-inline">Include</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row form-group studentOnly" id="Ms_course">
+        <p class="col-md-3 control-label">Course</p>
+        <div class="col-md-6 progCoreInput">
+            <select id="drpCourse" class=""></select>
+            <div class="checkbox pull-right">
+                <input type="checkbox" id="chkCourse" autocomplete="off" class="checkbox-inline" title="Include Faculty" />
+                <span id="spnCourse" class="checkbox-inline">Include</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row form-group" id="customList">
+        <p class="col-md-3 control-label">Custom Lists</p>
+        <div class="col-md-6 progCoreInput">
+            <select id="drpCustomLists" class=""></select>
+
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <div class="col-md-5 col-xs-push-3">
+            <select id="drpFieldSpecifier" class="pull-left">
+                <option value="0">To</option>
+                <option value="1">Cc</option>
+                <option value="2">Bcc</option>
+            </select>
+            <input type="button" value="Add" id="btnAdd" class="saveBtn" />
+            <input type="button" value="Filter" id="btnFilter" class="saveBtn" />
+            <div class="pull-right">
+                <ins class="cc-style" id="cc-show">Cc</ins>
+                <ins class="cc-style" id="bcc-show">Bcc</ins>
+            </div>
+            
+        </div>
+    </div>
+
+    <div class="row form-group" id="Ms_To">
+        <p class="col-md-3 control-label">To: </p>
+        <div class="col-md-9 progCoreInput">
+            <select class="js-example-tokenizer form-control" multiple="multiple"></select>
+
+        </div>
+    </div>
+
+    <div class="row form-group" id="fb_holderCC">
+        <p class="col-md-3 control-label">Cc: </p>
+        <div class="col-md-9 progCoreInput">
+            <select class="js-example-tokenizerCC form-control" multiple="multiple" id="fb_inputboxCC"></select>
+
+        </div>
+    </div>
+
+
+    <div class="row form-group" id="fb_holderBCC">
+        <p class="col-md-3 control-label">Bcc: </p>
+        <div class="col-md-9 progCoreInput">
+            <select class="js-example-tokenizerBCC form-control" multiple="multiple" id="fb_inputboxBCC"></select>
+
+        </div>
+    </div>
+
+    <div class="row form-group" id="Ms_Subject">
+        <p class="col-md-3 control-label">Subject</p>
+        <div class="col-md-9 progCoreInput">
+            <input id="msgSubject" type="text" autocomplete="off" />
+
+        </div>
+    </div>
+
+    <div class="">
+        <input id="msgeBody" class="tinymce-textarea" autocomplete="off" />
+
+    </div>
+    <div class="clearfix"></div>
+    <br />
+    <div id="progress2" class="progress">
+        <div class="progress-bar progress-bar-success"></div>
+    </div>
+    <div>
+        <div id="files2" class="files"></div>
+    </div>
+   
+
+    <div class="pull-right">
+       
+        <div  class="btn image-upload">
+            <label for="Ms-file-input" class="">
+                <img class="attachFiles" src="//notrealdomain1.com/banner.png" />
+            </label>
+            
+            <input id="Ms-file-input" type="file" name="files[]" multiple />
+
+            <div>
+                <input id="UploadedFileType2" type="hidden" />
+                <input id="UploadFileId2" type="hidden" />
+                
+            </div>
+        </div>
+        <i id="saveDraft" title="Save as Draft" class="btn fa fa-floppy-o fa-lg"></i>
+        <input type="button" value="Send" id="BtnSendMsg" class="saveBtn" />
+
+        <input type="button" value="Cancel"
+               onclick="javascript: cancelSubmission('@Url.Action("Inbox", "Messenger")');" class="btn delBtn" />
+    </div>
+    
+    <div class="clearfix"></div>
+
+
+</div>
+
+
+
+
+<script type="x-jquery-tmpl" id="tmpl-uploaded-file2">
+    <div class="row upload-div-temp">
+        <h5>Attachments</h5>
+        
+        <div class="col-md-3 ">
+            {{if IsImage}}
+            <img class="img img-responsive text-center" src="${ThumbnailUrl}" />
+
+            {{else FileType == "pdf"}}
+            <span class="fa fa-file-pdf-o fa-align-center"></span>
+
+            {{else FileType == "doc" || FileType == "docx"}}
+            <span class="fa fa-file-word-o fa-align-center"></span>
+
+            {{else FileType == "xls" || FileType == "xlsx" }}
+            <span class="fa fa-file-excel-o fa-align-center"></span>
+
+            {{else}}
+            <span class="fa fa-file fa-align-centerr"></span>
+            {{/if}}
+            
+        </div>
+
+        <div class="col-md-6">
+            <div>
+                <div class="attachRow">
+                    <label class="sr-only" for="friendly-name">File Name</label>
+                    <p class="">${OriginalFileName} (${SizeKb}<b>K</b>) </p>
+                </div>
+                              
+            </div>
+           
+        </div>
+
+        <div class="col-md-3">
+            <button type="button" class="btn delBtn"
+                    onclick="javascript: RemoveAttachedFile(this, '${OriginalFileName}', '${Name}', '${IsImage}')">
+                <span class="glyphicon glyphicon-trash"></span>
+                Remove
+            </button>
+            
+            <input class="hidden attachment-folder-path" value="${FolderPath}" />
+            <input class="hidden attachment-Name" value="${Name}" />
+            <input class="hidden attachment-is-image" value="${IsImage}" />
+            <input class="hidden attachment-attachment-type" value="${AttachmentType}" />
+            <input class="hidden attachment-original-name" value="${OriginalFileName}" />
+        </div>
+
+        <div class="clearfix"></div>
+        <br />
+    </div>
+
+</script>
+@Scripts.Render("~/bundles/FileUpload")
+
+
+

@@ -1,0 +1,61 @@
+﻿@model ARMSv2.Models.Result.ProgressionStudents
+
+@{
+    ViewBag.Title = "Student's Progression";
+}
+
+<div>
+    <hgroup>
+        <h2 class="blueHeader">Progression Results</h2>
+        <h3>@Model.Program.ProgramCore.Name @Model.IntakeAcademicYear.Name</h3>
+
+        @if (Model.Specialisation != null)
+        {
+            <h4>@Model.Specialisation.SpecialisationCore.Name</h4>
+        }
+    </hgroup>
+    
+    <div>
+        <table id="progression-students-table" class="table">
+            <thead>
+                <tr>
+                    <td>Registration Number</td>
+                    <td>Name</td>
+                    <td>Gender</td>
+                    <td>CTCUs</td>
+                    <td>CGPA</td>
+                    <td>Progression</td>
+                    <td>Remark</td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ps in Model.StudentProgressionSummaries)
+                {
+                    <tr>
+                        <td>@Html.ActionLink(ps.Student.RegistrationNumber, "StudentProgressionResult", new { studentId = ps.Student.Id })</td>
+                        <td>@Html.ActionLink(ps.Student.Person.FullName, "StudentProgressionResult", new { studentId = ps.Student.Id })</td>
+                        <td>@Html.ActionLink(ps.Student.Person.Gender.ToString(), "StudentProgressionResult", new { studentId = ps.Student.Id })</td>
+                        <td>@Html.ActionLink(ps.ResultSummary.CumulativeTotatlCreditUnits.ToString(), "StudentProgressionResult", new { studentId = ps.Student.Id })</td>
+                        <td>@ps.ResultSummary.CumulativeGradePointAverage</td>
+                        <td>@Html.DisplayEnum(ps.ResultSummary.StudentStatus)</td>
+                        <td>@ps.ResultSummary.Remark</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    
+    <div>
+        <a class="btn btn-default pull-left" href="@Url.Action("Progression", "Result", routeValues:Model.RouteObject)">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+            Back to Filter
+        </a>
+
+        <a class="btn btn-default pull-right" href="@Url.Action("PrintProgressionStudents", routeValues: Model.RouteObject)" target="_blank">
+            <span class="fa fa-download fa-2x"></span>
+            <span class="fa fa-file-pdf-o fa-2x"></span>
+        </a>
+    </div>
+
+</div>
+

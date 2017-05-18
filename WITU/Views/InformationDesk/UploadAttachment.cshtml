@@ -1,0 +1,106 @@
+﻿@using WITU.Utils
+@model WITU.Models.UploadAttachment
+
+@{
+    ViewBag.Title = "Upload Attachment";
+}
+
+@*@Scripts.Render("~/Content/file-upload")*@
+
+<link href="~/Scripts/FileUpload/css/jquery.fileupload.css" rel="stylesheet" />
+
+<div class="">
+    <h2 class="blueHeader pull-left">Upload Attachements</h2>
+    <div class="btn saveBtn pull-right fileinput-button">
+        <i class="glyphicon glyphicon-plus"></i>
+        <span>Add Files</span>
+        <input id="fileUpload" type="file" name="files[]" multiple>
+    </div>
+    <div class="col-md-12">
+        @Html.HiddenFor(x => x.Type, new {id = "UploadedFileType"})
+        @Html.HiddenFor(x => x.Id, new {id = "UploadFileId"})
+    </div>
+    
+    
+
+    <div class="clearfix"></div>
+    
+    <div id="progress" class="progress">
+        <div class="progress-bar progress-bar-success"></div>
+    </div>
+ 
+    <div>
+        <h4>Files</h4>
+        <div id="files" class="files"></div>
+    </div>
+    
+    <div class="pull-right">
+        <button class="btn saveBtn" id="upload-btn-save" onclick="javascript: SaveFileInformation();">Upload File(s)</button>
+        <span class="fa fa-spinner fa-spin fa-2x spinner-loading" id="sp-load-spin"></span>
+    </div>
+    
+ 
+</div>
+     
+<script type="x-jquery-tmpl" id="tmpl-uploaded-file">
+    <div class="row upload-div-temp">
+        <div class="col-md-3 ">
+            {{if IsImage}}
+            <img class="img img-responsive text-center" src="${ThumbnailUrl}" />
+
+            {{else FileType == "pdf"}}
+            <span class="fa fa-file-pdf-o fa-3x fa-align-center"></span>
+
+            {{else FileType == "doc" || FileType == "docx"}}
+            <span class="fa fa-file-word-o fa-3x fa-align-center"></span>
+
+            {{else FileType == "xls" || FileType == "xlsx" }}
+            <span class="fa fa-file-excel-o fa-3x fa-align-center"></span>
+
+            {{else}}
+            <span class="fa fa-file fa-3x fa-align-centerr"></span>
+            {{/if}}
+            <p class="">${OriginalFileName}</p>
+        </div>
+
+        <div class="col-md-6">
+            <div>
+                <div class="attachRow">
+                    <label class="sr-only" for="friendly-name">File Name</label>
+                    <input type="text" class="form-control upload-friendly-name" id="friendly-name" placeholder="File Name" value="${FriendlyName}" />
+                </div>
+
+                <div class="attachRow">
+                    <label class="sr-only" for="target-academic-year">Target Academic Year</label>
+                    @Html.DropDownWithModelSelectable("${AcademicYearId}", Model.AcademicYears, new SelectListItem() { Text = "-- Select Academic Year --", Value = "0" },
+                        new { placeholder = "Target Academic Year", @class = "form-control upload-academic-year" })
+                </div>
+            </div>
+            @*<div class="clearfix"></div>
+                <br/>
+                <div >
+                    <label class="sr-only" for="description">Description</label>
+                    <textarea class="form-control" id="description" placeholder="Description"></textarea>
+                </div>*@
+        </div>
+
+        <div class="col-md-3">
+            <button type="button" class="btn delBtn"
+                    onclick="javascript: RemoveFile(this,'${OriginalFileName}', '${Name}', '${Id}', '${IsImage}', '${AttachmentType}')">
+                <span class="glyphicon glyphicon-trash"></span>
+                Remove
+            </button>
+            <input class="hidden upload-id" value="${Id}" />
+            <input class="hidden upload-folder-path" value="${FolderPath}" />
+            <input class="hidden upload-Name" value="${Name}" />
+            <input class="hidden upload-is-image" value="${IsImage}" />
+            <input class="hidden upload-attachment-type" value="${AttachmentType}" />
+            <input class="hidden upload-original-name" value="${OriginalFileName}" />
+        </div>
+
+        <div class="clearfix"></div>
+        <br />
+    </div>
+</script>
+
+@Scripts.Render("~/bundles/FileUpload")

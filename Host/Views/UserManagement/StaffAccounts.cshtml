@@ -1,0 +1,96 @@
+﻿@using ARMSv2.Core.Model
+@using ARMSv2.Utils
+@model ARMSv2.Models.UserInfoViewModel
+@{ ViewBag.Title = "Staff Accounts";}
+
+<h2 class="blueHeader">Staff Accounts</h2>
+
+<div class="table-responsive ">
+    <table class="table dataTable">
+        <thead>
+
+            <tr>
+                <th>
+                    Full Name
+                </th>
+                <th>
+                    Position(s)
+                </th>
+                <th>
+                    Courses
+                </th>
+                <th>
+                    Email
+                </th>
+                <th>
+                    Phone Number
+                </th>
+                
+            </tr>
+
+        </thead>
+        <tbody>
+
+
+            @foreach (var m in Model.UserInfos)
+            {
+                <tr>
+
+                    <td>
+                        <a href="@Url.Action("StaffDetails", "UserManagement", new { id = @m.UserId })">@m.FullName</a>
+                    </td>
+                    <td>
+                        <a href="@Url.Action("StaffDetails", "UserManagement", new {id = @m.UserId})">
+                            @if (m.Positions.Any())
+                            {
+                                foreach (var position in m.Positions)
+                                {
+                                    <a href="@Url.Action("StaffDetails", "UserManagement", new {id = @m.UserId})"><p>@position.Position.Name,</p><span> </span></a>
+                                }
+                            }
+                            else
+                            {
+                                <a href="@Url.Action("StaffDetails", "UserManagement", new {id = @m.UserId})"><p>No Position(s)</p><span> </span></a>
+                            }
+                        </a>
+                        @*@if (m.Department != null)
+            {
+                <a href="@Url.Action("ViewDepartment", "AdministrativeUnits", new { id = @m.Department.Id })">@m.Department.DepartmentCore.Name</a>
+            }*@
+                    </td>
+
+                    <td>
+                           @* Consider staff courses for active staff positions*@
+                            @if (m.StaffCourses.Any(x => x.StaffPosition.IsActive))
+                            {
+                                foreach (var courses in m.StaffCourses)
+                                {
+                                    <p>@courses.Course.Code,</p>
+                                }
+                            }
+                            else
+                            {
+                                <p>No Course(s)</p>
+                            }
+                        
+                    </td>
+                    <td>
+                        @if (m.Person != null)
+                        {
+                            <a href="mailto:@m.Person.EmailAddress">@m.Person.EmailAddress</a>
+                        }
+                    </td>
+                    <td>
+                        @if (m.Person != null)
+                        {
+                            <a href="@Url.Action("StaffDetails", "UserManagement", new {id = @m.UserId})">@m.Person.TelephoneContact</a>
+                        }
+                    </td>
+
+                </tr>
+            }
+
+        </tbody>
+    </table>
+
+</div>

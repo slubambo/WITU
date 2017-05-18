@@ -1,0 +1,226 @@
+﻿
+@model WITU.Models.widgets.ProgramSelectItem
+           
+@Html.EditorFor(m => m.AdministrativeSelectItem)
+
+<div class="form-group col-sm-12">
+    <div class="col-md-4 col-sm-4">
+        @Html.LabelFor(m => m.ProgramId, new {@class = "control-label"})
+        <br/>
+        @*<input type="checkbox" name="oldprog" id="chkbx-include-oldprograms"> <small>Include Old Programs</small>*@
+
+        @Html.CheckBoxFor(x => x.IncludeOldPrograms, new { @class = "", id = "chkbx-include-oldprograms" })
+        @Html.LabelFor(x => x.IncludeOldPrograms, new { @class = "control-label", @for = "chkbx-include-oldprograms" })
+
+    </div>
+
+    <div class="col-md-8 col-sm-8">
+
+        @Html.DropDownWithModelSelectable(m => m.ProgramId, Model.ProgramOptions, Model.AdministrativeSelectItem.DefaultFirstItem,
+            new {@class = "form-control drpdwn-campus-change drpdwn-faculty-change drpdwn-department-change drpdwn-call-course-change", id = "drpdwn-program"})
+        <span class="spn-faculty-spinner hide">
+                    <span class="fa fa-circle-o-notch fa-spin"></span>
+
+                </span>
+
+
+    </div>
+</div>
+
+<div class="form-group col-sm-12">
+    @Html.LabelFor(m => m.SpecialisationId, new { @class = "col-md-4 col-sm-4 control-label" })
+    <div class="col-md-8 col-sm-8">
+        @Html.DropDownWithModelSelectable(m => m.SpecialisationId, Model.SpecialisationOptions, Model.AdministrativeSelectItem.DefaultFirstItem,
+            new { @class = "form-control drpdwn-campus-change drpdwn-faculty-change drpdwn-department-change drpdwn-program-change drpdwn-call-course-change", id = "drpdwn-specialisation" })
+    </div>
+</div>
+@Html.Hidden("levelId", 5)
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        if ($('#drpdwn-faculty')) {
+            $('#drpdwn-faculty').change(function () {
+                onFacultyChangeInProgramSelect();
+            });
+        }
+
+        if ($('#drpdwn-department')) {
+            $('#drpdwn-department').change(function () {
+                onDepartmentChange();
+
+            });
+        }
+
+        if ($('#drpdwn-program')) {
+            $('#drpdwn-program').change(function() {
+                onProgramChange();
+            });
+        }
+
+        if ($('#chkbx-include-oldprograms')) {
+            $('#chkbx-include-oldprograms').change(function() {
+                onOldProgCheckboxChange();
+            });
+        }
+
+        //preparing already loaded data..
+        var facultyId = '@Model.AdministrativeSelectItem.FacultyId';
+        var departmentId = '@Model.AdministrativeSelectItem.DepartmentId';
+        var programId = '@Model.ProgramId';
+        var specialisationId = '@Model.SpecialisationId';
+
+        if (departmentId > 0) {
+            retrieveDepartmentPrograms(departmentId, programId);
+        }
+
+        else if (facultyId > 0) {
+            retrieveFacultyPrograms(facultyId, programId);
+        }
+
+        //for specialisation...
+        if (programId > 0) {
+            retrieveSpecialisation(programId, specialisationId);
+        }
+        
+    });
+
+    function onFacultyChangeInProgramSelect() {
+        var facultyId = $("#drpdwn-faculty :selected").val();
+
+        $(".drpdwn-faculty-change").empty();
+
+        $(".drpdwn-faculty-change").map(function (i, ele) {
+            $(ele).append($('<option></option>').val('@Model.AdministrativeSelectItem.DefaultFirstItem.Value').html('@Model.AdministrativeSelectItem.DefaultFirstItem.Text'));
+        });
+
+        if (facultyId > 0) {
+            retrieveFacultyPrograms(facultyId);
+        }
+    }
+
+    function retrieveFacultyPrograms(facultyId, programId) {
+
+        var staffId = '@Model.AdministrativeSelectItem.StaffId';
+
+        var reqUrl = parseInt(staffId) > 0 ? baseUrl + "Api/UtilsApi/FacultyPrograms/" + facultyId + "?staffId=" + staffId : baseUrl + "Api/UtilsApi/FacultyPrograms/" + facultyId;
+
+        if (document.getElementById('chkbx-include-oldprograms').checked) {
+            //Include old programs
+            reqUrl = parseInt(staffId) > 0 ? reqUrl + "&includeOldProg=" + true : reqUrl + "?includeOldProg=" + true;
+        } else {
+            //Don't include old programs
+        }
+
+        $.get(reqUrl, function (data) {
+            //$('.spn-faculty-spinner').hide();
+            $.each(data, function (i, program) {
+                $('#drpdwn-program').append($('<option></option>').val(program.Value).html(program.Text));
+            });
+
+            if (programId != undefined) {
+                $('#drpdwn-program').val(programId);
+            }
+        });
+    }
+
+    function onDepartmentChange() {
+        var departmentId = $("#drpdwn-department :selected").val();
+
+        $(".drpdwn-department-change").empty();
+
+        $(".drpdwn-department-change").map(function (i, ele) {
+            $(ele).append($('<option></option>').val('@Model.AdministrativeSelectItem.DefaultFirstItem.Value').html('@Model.AdministrativeSelectItem.DefaultFirstItem.Text'));
+        });
+
+        if (departmentId > 0) {
+            retrieveDepartmentPrograms(departmentId);
+        } else {
+            //get faculty and reetrieve items based on faculty... well if its greater than 0
+            onFacultyChangeInProgramSelect();
+
+        }
+    }
+
+    function retrieveDepartmentPrograms(departmentId, programId) {
+
+        var staffId = '@Model.AdministrativeSelectItem.StaffId';
+
+        
+
+        var reqUrl = parseInt(staffId) > 0 ? baseUrl + "Api/UtilsApi/Programmes/" + departmentId + "?staffId=" + staffId : baseUrl + "Api/UtilsApi/Programmes/" + departmentId;
+
+        if (document.getElementById('chkbx-include-oldprograms').checked) {
+            //Include old programs
+            reqUrl = parseInt(staffId) > 0 ? reqUrl + "&includeOldProg=" + true : reqUrl + "?includeOldProg=" + true;
+        } else {
+            //Don't include old programs
+        }
+
+        $.get(reqUrl, function (data) {
+            //$('.spn-faculty-spinner').hide();
+            $.each(data, function (i, program) {
+                $('#drpdwn-program').append($('<option></option>').val(program.Value).html(program.Text));
+            });
+
+            if (programId != undefined) {
+                $('#drpdwn-program').val(programId);
+            }
+        });
+    }
+
+    function onProgramChange() {
+        var programId = $("#drpdwn-program :selected").val();
+
+        $(".drpdwn-program-change").empty();
+
+        $(".drpdwn-program-change").map(function (i, ele) {
+            $(ele).append($('<option></option>').val('@Model.AdministrativeSelectItem.DefaultFirstItem.Value').html('@Model.AdministrativeSelectItem.DefaultFirstItem.Text'));
+        });
+
+        if (programId > 0) {
+            retrieveSpecialisation(programId);
+        }
+    }
+
+    function retrieveSpecialisation(programId, specialisationId) {
+
+        $.get(baseUrl + "Api/UtilsApi/Specialisation/" + programId, function (data) {
+            //$('.spn-faculty-spinner').hide();
+            $.each(data, function (i, special) {
+                $('#drpdwn-specialisation').append($('<option></option>').val(special.Value).html(special.Text));
+            });
+
+            if (specialisationId > 0) {
+                $('#drpdwn-specialisation').val(specialisationId);
+            }
+        });
+    }
+
+    function onOldProgCheckboxChange() {
+
+        var facultyId = $("#drpdwn-faculty :selected").val();
+
+        var departmentId = $("#drpdwn-department :selected").val();
+
+        if (departmentId > 0) {
+            $(".drpdwn-department-change").empty();
+
+            $(".drpdwn-department-change").map(function (i, ele) {
+                $(ele).append($('<option></option>').val('@Model.AdministrativeSelectItem.DefaultFirstItem.Value').html('@Model.AdministrativeSelectItem.DefaultFirstItem.Text'));
+            });
+
+            retrieveDepartmentPrograms(departmentId);
+        } else if (facultyId > 0) {
+            $(".drpdwn-faculty-change").empty();
+
+            $(".drpdwn-faculty-change").map(function (i, ele) {
+                $(ele).append($('<option></option>').val('@Model.AdministrativeSelectItem.DefaultFirstItem.Value').html('@Model.AdministrativeSelectItem.DefaultFirstItem.Text'));
+            });
+            retrieveFacultyPrograms(facultyId);
+        } else {
+            //Do nothing
+        }
+        
+    }
+
+</script>

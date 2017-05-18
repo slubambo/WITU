@@ -1,0 +1,142 @@
+﻿@model List<ARMSv2.Models.AwardClassificationsView>
+@using ARMSv2.Utils
+@{
+    ViewBag.Title = "Add or Edit Award Type Classification";
+    Layout = "~/Views/Shared/_LayoutStaff.cshtml";
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.EditGradesTable').dataTable({
+            "bPaginate": false,
+            "bLengthChange": false,
+            "bFilter": false,
+            "bInfo": false,
+            "bAutoWidth": false,
+            "order": [[0, 'asc']],
+        });
+    });
+</script>
+
+<h2 class="blueHeader">@ViewBag.heading Award Type Classification</h2>
+<br />
+@using (Html.BeginForm("AddOrEditAwardClassification", "Semester", FormMethod.Post))
+{
+    if (ViewBag.heading == "Edit")
+    {
+        <div class="row form-group">
+            @Html.LabelFor(model => model[0].AcademicYear, new { @class = "control-label col-md-3" })
+            <div class="col-md-9 progCoreInput">
+                @Html.DropDownWithModelSelectable(m => m[0].SelectedAcademicYearId,
+                Model[0].AcademicYearItems.ToList(), new SelectListItem() { Value = "0", Text = "-- Select Academic Year --" }, new { @readonly = "readonly" })
+
+            </div>
+        </div>
+
+        <div class="row form-group">
+            @Html.LabelFor(model => model[0].AwardType, new { @class = "control-label col-md-3" })
+            <div class="col-md-9 progCoreInput">
+                @Html.DropDownWithModelSelectable(m => m[0].SelectedAwardTypeId,
+                                                     Model[0].AwardTypeItems.ToList(), new SelectListItem() { Value = "0", Text = "-- Select Award Type --" }, new { @class = "readonly" })
+
+            </div>
+        </div>
+    }
+
+    if (ViewBag.heading == "Add")
+    {
+        <div class="row form-group">
+            @Html.LabelFor(model => model[0].AcademicYear, new { @class = "control-label col-md-3" })
+            <div class="col-md-9 progCoreInput">
+                @Html.DropDownWithModelSelectable(m => m[0].SelectedAcademicYearId,
+                Model[0].AcademicYearItems.ToList(), new SelectListItem() { Value = "0", Text = "-- Select Academic Year --" })
+
+            </div>
+        </div>
+
+        <div class="row form-group">
+            @Html.LabelFor(model => model[0].AwardType, new { @class = "control-label col-md-3" })
+            <div class="col-md-9 progCoreInput">
+                @Html.DropDownWithModelSelectable(m => m[0].SelectedAwardTypeId,
+                                                    Model[0].AwardTypeItems.ToList(), new SelectListItem() { Value = "0", Text = "-- Select Award Type --" })
+
+            </div>
+        </div>
+    }
+
+
+
+
+
+    <table class="table EditGradesTable noborder">
+        <thead>
+
+            <tr>
+
+                <th>
+                    Award
+                </th>
+
+                <th>
+                    Start CGPA
+                </th>
+                <th class="end-cgpa">
+                    End CGPA
+                </th>
+
+            </tr>
+
+
+
+        </thead>
+
+        <tbody>
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                <tr>
+                    <td>
+                        @Html.HiddenFor(m => m[i].Id)
+                        @Html.HiddenFor(m => m[i].SelectedAcademicYearId, new { @id = "SelectedAcademicYearId" })
+                        @Html.HiddenFor(m => m[i].SelectedAwardTypeId, new { @class = "SelectedAwardTypeId" })
+                        @Html.DropDownListFor(model => model[i].Award,
+                            new SelectList(
+                                new List<Object>
+                                {
+                                    new { value = "First Class (Honours)" , text = "First Class (Honours)" },
+                                    new { value = "Second (Honours) Upper Division" , text = "Second (Honours) Upper Division Class"},
+                                    new { value = "Second (Honours) Lower Division" , text = "Second (Honours) Lower Division Pass"},
+                                    new { value = "Pass (Honours)" , text = "Pass (Honours)"}
+                                },
+                                "value",
+                                "text",
+                                Model[i].Award
+                                )
+                            )
+
+                    </td>
+                    <td class="">
+
+                        @Html.TextBoxFor(model => model[i].StartCgpa)
+                    </td>
+                    <td class="end-cgpa-table">
+                        @Html.TextBoxFor(model => model[i].EndCgpa)
+                    </td>
+
+
+
+                </tr>
+            }
+
+        
+
+        </tbody>
+
+    </table>
+
+    <div class="pull-right">
+        <input type="submit" value="Save" class="btn saveBtn " />
+        <input type="button" value="Cancel"
+               onclick="javascript: cancelSubmission('@Url.Action("AddOrEditAwardClassification", "Semester", new { })');" class="btn delBtn " />
+
+    </div>
+
+}

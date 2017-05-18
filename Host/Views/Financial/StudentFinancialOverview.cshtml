@@ -1,0 +1,513 @@
+﻿@using System.Globalization
+@using ARMSv2.Core.Model
+@model ARMSv2.Models.Finance.FinanceOverview
+@{
+    ViewBag.Title = "Student Financial Overview";
+    string basePhotoUrl = ApplicationConstants.StudentResourcesFolderUrl;
+    Html.EnableClientValidation();
+}
+
+@if (Model != null)
+{
+    <input type="hidden" id="studentId" value="@Model.Student.Id" />
+    <div class="row">
+        <div class="col-md-12" style="line-height:25px">
+            <h4 class="maroonHeader">Student Financial Information</h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            @if (ViewBag.StudentPhoto != null)
+            {
+                <img src="@ViewBag.StudentPhoto" class="img-responsive" style="width: 110px; height: auto; margin:10px auto; border: 1px solid #E9C3CC" />
+
+
+            }
+        </div>
+        <div class="col-md-9 row-top" style="line-height:20px">
+            <div class="row"><div class="col-xs-3"><p class="detailLabel">NAME:</p></div><div class="col-xs-9"><p> @Model.Student.Person.FullName</p></div></div>
+            <div class="row"><div class="col-xs-3"><p class="detailLabel">REG No:</p></div><div class="col-xs-9"><p>@Model.Student.RegistrationNumber</p></div></div>
+            <div class="row"><div class="col-xs-3"><p class="detailLabel">FEES No:</p></div><div class="col-xs-9"><p>@Model.Student.StudentNumber</p></div></div>
+            <div class="row"><div class="col-xs-3"><p class="detailLabel">PROGRAMME:</p></div><div class="col-xs-9"><p>@Model.Student.Program.ProgramCore.Name</p></div></div>
+
+        </div>
+    </div>
+    <br />
+            int i;
+            for (i = 0; i < Model.Program.ProgramCore.MaximumDuration; i++)
+            {
+                <div>
+                    @Html.ValidationSummary(true)
+
+                </div>
+
+                <div class="form-horizontal tabs bodytext tabs-pilled noborder">
+                    <ul class="">
+
+                        @for (i = 0; i < Model.Program.ProgramCore.MaximumDuration; i++)
+                        {
+                            <li class="@(Model.Student.CurrentYear == (i + 1) ? "ui-tabs-active ui-state-active" : "") ">
+                                <a href="#Year@(i)" role="tab" data-toggle="tab"> Year @(i + 1) </a>
+                            </li>
+                        }
+                    </ul>
+
+                    @for (i = 0; i < Model.Program.ProgramCore.MaximumDuration; i++)
+                    {
+                        <div id="Year@(i)" class="bodytext tab-pane nopadding ">
+                            <div class="clearfix">
+                                <br />
+                            </div>
+
+                            <div class="form-horizontal noborder">
+
+                                <div class="accordionMenu">
+                                    <div class="menuSection">
+                                        <div class="">
+                                            <div class="menuElement">
+                                                <h4 class="panel-title">
+                                                    <span class="menuAccordion">
+                                                        <span class="icon resultsIcon" title="Semester I"></span><a data-toggle="collapse" data-parent="#accordion" href="#sem-one@(i)">
+                                                            <span class="hidden-xs">Semester I</span>
+                                                        </a>
+                                                    </span>
+                                                </h4>
+
+                                                <div id="sem-one@(i)" class="iconElements panel-collapse collapse @(Model.SemesterRegistrations.Any(x => x.SemesterLevel.Level == (i + 1) && x.SemesterLevel.SemesterSession == 1 && x.Semester.Id == Model.Semester.Id) ? "in" : "")">
+                                                    <span class="iconElementsArrow"></span>
+                                                    @if (!(Model.SemesterRegistrations.Any(x => x.SemesterLevel.Level == (i + 1) && x.SemesterLevel.SemesterSession == 1)))
+                                                    {
+                                                        <p><b>There is no Registration Record for this semester</b></p>
+                                                    }
+                                                    else
+                                                    {
+                                                        if (Model.SemesterPaymentsList != null && !(Model.SemesterPaymentsList.Any(x => x.SemesterLevel.Level == (i + 1) && x.SemesterLevel.SemesterSession == 1)))
+                                                        {
+                                                            <p><b>No Fees Found for this Semester</b></p>
+                                                        }
+                                                        else
+                                                        {
+                                                            <table class="table" id="">
+                                                                <thead>
+
+                                                                    <tr>
+                                                                        <th>
+                                                                            Fee
+                                                                        </th>
+                                                                        <th class="centerTh">
+                                                                            Paid (UGX)
+                                                                        </th>
+                                                                        <th class="centerTh">
+                                                                            Balance (UGX)
+                                                                        </th>
+                                                                    </tr>
+
+                                                                </thead>
+                                                                <tbody>
+                                                                    @if (Model.SemesterPaymentsList != null)
+                                                                    {
+                                                                        foreach (var k in Model.SemesterPaymentsList)
+                                                                        {
+                                                                            if ((k.SemesterLevel.Level == (i + 1)) && k.SemesterLevel.SemesterSession == 1)
+                                                                            {
+                                                                    <tr>
+                                                                        <td style="width:40%">
+                                                                            @k.FeeName
+
+                                                                        </td>
+
+
+                                                                        <td style="text-align: right; width: 20%;">
+                                                                            @k.Paid.ToString("N0")
+                                                                        </td>
+                                                                        <td style="text-align:center">
+                                                                            @k.Balance.ToString("N0")
+                                                                        </td>
+
+                                                                    </tr>
+
+                                                                            }
+                                                                        }
+                                                                    }
+
+                                                                </tbody>
+                                                            </table>
+
+                                                            if (Model.Semester != null)
+                                                            {
+                                                                if (Model.SemesterRegistrations.Any(x => x.SemesterLevel.Level == (i + 1) && x.SemesterLevel.SemesterSession == 1 && x.Semester.Id == Model.Semester.Id))
+                                                                {
+                                                                    <div class="col-md-9">
+                                                                        <p> <a class="showSpecialCharges btn btn-default">Add Special Charges (Optional)</a></p>
+
+                                                                        <div class="SpecialCharges">
+
+                                                                            @using (Html.BeginForm("SaveSpecialCharges", "Financial", FormMethod.Post))
+                                                                            {
+                                                                                <h5 style="color: #1d268f;">Select the additional charges you want to pay for this semester</h5>
+
+                                                                                <table class="table">
+                                                                                    <thead>
+                                                                                        <tr></tr>
+                                                                                    </thead>
+
+                                                                                    <tbody>
+                                                                                        @if (Model.SpecialCharges.Any())
+                                                                                        {
+                                                                                            foreach (var k in Model.SpecialCharges)
+                                                                                            {
+                                                                                                //if ((k.SemesterLevel.Level == (i + 1)) && k.SemesterLevel.SemesterSession == 2)
+                                                                                                //{
+                                                                                    <tr>
+                                                                                        <td>
+                                                                                            <input name="selectedFees" type="checkbox" autocomplete="off" value="@k.Id" />
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @k.Name
+                                                                                        </td>
+                                                                                        <td style="text-align: right">
+                                                                                            UGX @k.Fee.ToString("N0")
+                                                                                        </td>
+
+                                                                                    </tr>
+                                                                                                //}
+                                                                                            }
+                                                                                        }
+                                                                                    </tbody>
+                                                                                </table>
+
+                                                                                @Html.HiddenFor(model => model.Semester.Id)
+                                                                                @Html.HiddenFor(model => model.Student.Id)
+                                                                                <div class="col-lg-6 col-lg-offset-8">
+                                                                                    <input type="submit" value="Add Charges" class="btn saveBtn" />
+                                                                                    <input type="button" value="Cancel" class=" btn delbtn HideSpecialCharges" />
+                                                                                    <div class="clearfix"> </div>
+                                                                                    <br />
+                                                                                </div>
+                                                                            }
+                                                                        </div>
+                                                                    </div>
+
+                                                                }
+
+                                                            }
+                                                        }
+                                                    }
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+
+                                <div class="clearfix"></div>
+
+                                <div class="accordionMenu">
+                                    <div class="menuSection">
+                                        <div class="">
+                                            <div class="menuElement">
+                                                <h4 class="panel-title">
+                                                    <span class="menuAccordion">
+                                                        <span class="icon resultsIcon" title="Semester II"></span><a data-toggle="collapse" data-parent="#accordion" href="#sem-two@(i)">
+                                                            <span class="hidden-xs">Semester II</span>
+                                                        </a>
+                                                    </span>
+                                                </h4>
+
+                                                <div id="sem-two@(i)" class="iconElements panel-collapse collapse @(Model.SemesterRegistrations.Any(x => x.SemesterLevel.Level == (i + 1) && x.SemesterLevel.SemesterSession == 2 && x.Semester.Id == Model.Semester.Id) ? "in" : "")">
+                                                    <span class="iconElementsArrow"></span>
+
+                                                    @if (!(Model.SemesterRegistrations.Any(x => x.SemesterLevel.Level == (i + 1) && x.SemesterLevel.SemesterSession == 2)))
+                                                    {
+                                                        <p><b>There is no Registration Record for this semester</b></p>
+                                                    }
+                                                    else
+                                                    {
+                                                        if (Model.SemesterPaymentsList == null)
+                                                        {
+                                                            <p><b>No Fees Found for this Semester</b></p>
+                                                        }
+                                                        else
+                                                        {
+                                                            if (!(Model.SemesterPaymentsList.Any(x => x.SemesterLevel.Level == (i + 1) && x.SemesterLevel.SemesterSession == 2)))
+                                                            {
+                                                                <p><b>No Fees Found for this Semester</b></p>
+                                                            }
+                                                            else
+                                                            {
+                                                                <table class="table" id="">
+                                                                    <thead>
+
+                                                                        <tr>
+                                                                            <th>
+                                                                                Fee
+                                                                            </th>
+                                                                            <th class="centerTh">
+                                                                                Paid (UGX)
+                                                                            </th>
+                                                                            <th class="centerTh">
+                                                                                Balance (UGX)
+                                                                            </th>
+                                                                            <th>
+
+                                                                            </th>
+                                                                            <th>
+
+                                                                            </th>
+                                                                        </tr>
+
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        @if (Model.SemesterPaymentsList != null)
+                                                                        {
+                                                                            foreach (var k in Model.SemesterPaymentsList)
+                                                                            {
+                                                                                if ((k.SemesterLevel.Level == (i + 1)) && k.SemesterLevel.SemesterSession == 2)
+                                                                                {
+                                                                        <tr>
+                                                                            <td style="width:40%">
+                                                                                @k.FeeName
+
+                                                                            </td>
+
+
+                                                                            <td style="text-align: right; width: 20%;">
+                                                                                @k.Paid.ToString("N0")
+                                                                            </td>
+                                                                            <td style="text-align: center">
+                                                                                @k.Balance.ToString("N0")
+                                                                            </td>
+                                                                            <td>
+                                                                                @if (k.InvoiceType != (int)InvoiceType.Tuition && k.InvoiceType != (int)InvoiceType.FunctionalFee)
+                                                                                {
+                                                                                    if (k.Paid > 0)
+                                                                                    {
+                                                                                        <a onclick="EditFee(@k.InvoiceDetailId)" class="editFee btn-default">Edit</a>
+                                                                                        <span>/</span>
+                                                                                    }
+
+                                                                                    <a onclick="DeleteFee(@k.InvoiceDetailId)" class=" btn-default">Delete</a>
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    if (k.Paid > 0)
+                                                                                    {
+                                                                                        <a onclick="EditFee(@k.InvoiceDetailId)" class="editFee btn-default">Edit</a>
+                                                                                    }
+                                                                                }
+                                                                            </td>
+                                                                            <th>
+                                                                                @k.SemesterRegistration.Semester.Id
+                                                                            </th>
+                                                                        </tr>
+                                                                                }
+                                                                            }
+
+                                                                        }
+                                                                    </tbody>
+                                                                </table>
+
+
+                                                                if (Model.Semester != null)
+                                                                {
+                                                                    if (Model.SemesterRegistrations.Any(x => x.SemesterLevel.Level == (i + 1) && x.SemesterLevel.SemesterSession == 2 && x.Semester.Id == Model.Semester.Id))
+                                                                    {
+                                                                        <div class="col-md-9">
+                                                                            <p> <a class="showSpecialCharges btn btn-default">Add Special Charges</a></p>
+
+                                                                            <div class="SpecialCharges">
+
+                                                                                @using (Html.BeginForm("SaveSpecialCharges", "Financial", FormMethod.Post))
+                                                                                {
+                                                                                    <h5 style="color: #1d268f;">Select the additional charges you want to pay for this semester</h5>
+
+                                                                                    <table class="table">
+                                                                                        <thead>
+                                                                                            <tr></tr>
+                                                                                        </thead>
+
+                                                                                        <tbody>
+                                                                                            @if (Model.SpecialCharges.Any())
+                                                                                            {
+                                                                                                foreach (var k in Model.SpecialCharges)
+                                                                                                {
+                                                                                                    //if ((k.SemesterLevel.Level == (i + 1)) && k.SemesterLevel.SemesterSession == 2)
+                                                                                                    //{
+                                                                                                    <tr>
+                                                                                                        <td>
+                                                                                                            <input name="selectedFees" type="checkbox" autocomplete="off" value="@k.Id" />
+                                                                                                        </td>
+                                                                                                        <td>
+                                                                                                            @k.Name
+                                                                                                        </td>
+                                                                                                        <td style="text-align: right">
+                                                                                                            UGX @k.Fee.ToString("N0")
+                                                                                                        </td>
+
+                                                                                                    </tr>
+                                                                                                    //}
+                                                                                                }
+                                                                                            }
+                                                                                        </tbody>
+                                                                                    </table>
+
+                                                                                    @Html.HiddenFor(model => model.Semester.Id)
+                                                                                    @Html.HiddenFor(model => model.Student.Id)
+
+                                                                                    <div class="col-lg-6 col-lg-offset-8">
+                                                                                        <input type="submit" value="Add Charges" class="btn saveBtn" />
+                                                                                        <input type="button" value="Cancel" class=" btn delbtn HideSpecialCharges" />
+                                                                                        <div class="clearfix"> </div>
+                                                                                        <br />
+                                                                                    </div>
+                                                                                }
+                                                                            </div>
+                                                                        </div>
+
+                                                                    }
+
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+
+
+                            </div>
+                        </div>
+
+                    }
+
+
+                </div>
+                <p> <a class="showPrintSlip btn btn-default">Print Student Payslip</a></p>
+                <div class="printSlip">
+                    <p class="greyHeader">Generate Payslip for the Current Semester</p>
+                    @using (Html.BeginForm("PrintStdBankSlip", "Financial", FormMethod.Post))
+                    {
+                        <hr />
+                        
+                        <div class="row">
+                            <div class="col-md-3">
+                                <p><b>Payment Method: </b></p>
+                            </div><div class="col-md-9">
+                                      <p>Select Payment Method</p>
+                                      <label class="radio-inline"><input type="radio" value="0" name="PaymentMethod">Cash</label>
+                                      <label class="radio-inline"><input type="radio" value="1" name="PaymentMethod">Cheque</label>
+                                      <label class="radio-inline"><input type="radio" value="2" name="PaymentMethod">Wire Transfer</label>
+                                  </div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-md-3">
+                                <p><b>Bank: </b></p>
+                            </div><div class="col-md-9">
+                                      <p>Select Bank</p>
+                                      <div class="">
+                                          @Html.DropDownWithModelSelectable(x => x.BankId, Model.Banks.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }), new SelectListItem() { Value = "0", Text = "-- Select --" })
+                                          @Html.ValidationMessageFor(model => model.BankId)
+                                      </div>
+                                  </div>
+                        </div>
+                        <hr />
+                        @Html.HiddenFor(model => model.Semester.Id)
+                        @Html.HiddenFor(model => model.Student.Id)
+                        @*@Html.HiddenFor(model => model.ActiveSemesterRegistrationId)*@
+                        <input type="submit" value="Print Payslip" class="btn saveBtn" />
+                        <input type="button" value="Cancel" class=" btn delbtn HidePrintSlip" />
+                    }
+                </div>
+    <br/>
+                <div class="">
+                    <p class="greyHeader">Print Financial Statement</p>
+                    @using (Html.BeginForm("PrintFinancialStatement", "Financial", FormMethod.Post))
+                    {
+                    <div class="form-horizontal tabs bodytext tabs-pilled noborder" id="dateDiv">
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.StartDateTime, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9 progCoreInput">
+                                <div class="input-group">
+                                    <label class="input-group-addon btn  noborder" for="StartDate"><span class="glyphicon glyphicon-calendar" data-for="StartDate"></span></label>
+                                    @Html.TextBoxFor(m => m.StartDateTime, "{0:dd/MM/yyyy}", new { @id = "date-start-date0", @class = "noborder uneditable-input", @autocomplete = "off" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.EndDateTime, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9 progCoreInput">
+                                <div class="input-group">
+                                    <label class="input-group-addon btn noborder" for="EndDate"><span class="glyphicon glyphicon-calendar " data-for="EndDate"></span></label>
+                                    @Html.TextBoxFor(m => m.EndDateTime, "{0:dd/MM/yyyy}", new { @id = "date-end-date0", @class = "noborder uneditable-input", @autocomplete = "off" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="fleft">
+                        <span class="pdfIcon" onclick="$(this).closest('form').submit(); return false;"></span>
+                        @*<button type="submit">Printable PDF <span class="fa-file-pdf-o"></span></button>*@
+                    </div>
+                    <div class="fleft" style="margin-left: 10px;">
+                        <div class="checkbox" style="margin-left:0px">
+                            @Html.CheckBoxFor(m => m.HasSetDates, new { @id = "chkDateRange", @class = "checkbox-inline dateCheckbox", @autocomplete = "off" })
+                            <span id="spnDateRange" class="checkbox-inline">Include Date Range for Print</span>
+
+                        </div>
+                    </div>
+                    }
+                </div>
+
+                <br />
+
+
+                <br />
+                <div class="clearfix"></div>
+                <div class="col-lg-5 fright">
+                    <tr class="fright">
+                        <td><b>Overall Balance:</b></td>
+                        <td style="text-align: right"><b>UGX @Model.StudentTotalbalance.ToString("N0") /=</b></td>
+                        <td></td>
+                    </tr>
+
+                </div>
+                <br />
+            }
+
+}
+
+<script>
+    $(".SpecialCharges").css("display", "none");
+    $(".showSpecialCharges").click(function () {
+        $(".SpecialCharges").removeAttr("style");
+        $(".showSpecialCharges").css("display", "none");
+    });
+
+    $(".HideSpecialCharges").click(function () {
+        $(".showSpecialCharges").removeAttr("style");
+        $(".SpecialCharges").css("display", "none");
+    });
+
+    $(".printSlip").css("display", "none");
+    $(".showPrintSlip").click(function () {
+        $(".printSlip").removeAttr("style");
+        $(".showPrintSlip").css("display", "none");
+    });
+
+    $(".HidePrintSlip").click(function () {
+        $(".showPrintSlip").removeAttr("style");
+        $(".printSlip").css("display", "none");
+    });
+    $('.alreadySelected').attr("disabled", "disabled");
+    //$('.alreadySelected').attr("checked", "checked");
+</script>

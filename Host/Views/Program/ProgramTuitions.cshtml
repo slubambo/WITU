@@ -1,0 +1,104 @@
+﻿@using ARMSv2.Core.Model
+@using ARMSv2.Models.UserManagement
+@{ var sessionDetails = (SessionUserManagementDetails)HttpContext.Current.Session["LoggedInUserRoles"]; }
+@model ARMSv2.Models.ProgramTuititions
+@{
+    ViewBag.Title = "Program Tuitions";
+}
+
+<h2>Program Tuitions - @Model.Program.ProgramCore.Name</h2>
+
+<p>
+    History of tuition for this program.
+</p>
+<div class="bodytext noborder borderedTabs" id="dvProgramTuitionsTab">
+
+    @if (Model.Program.StudyPeriodPrograms.Any())
+    {
+        <ul class="nav">
+            @for (var i = 1; i <= Model.Program.ProgramCore.MinimumDuration; i++)
+            {
+                <li><a role="tab" data-toggle="tab" href="#tab-courses-body-@i">Year @i</a></li>
+            }
+        </ul>
+
+        for (var i = 1; i <= Model.Program.ProgramCore.MinimumDuration; i++)
+        {
+            <div id="tab-courses-body-@i" class="tab-pane semProgTabs">
+                @foreach (var period in Model.Program.StudyPeriodPrograms)
+                {
+                    <h4>
+                        @period.StudyPeriod.Name
+                        @if (Request.IsAuthenticated)
+                        {
+                            if (User.ApplicationUserType() == (int)UserTypes.Staff)
+                            {
+                                if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) ARMSv2.Models.ServiceDetail.Programme
+                                                                                         && (x.Role.CanCreate == true || x.Role.CanUpdate == true || x.Role.CanDelete == true)))
+                                {
+
+                                    <button class="pull-right btn btn-primary"
+                                            onclick="javascript: AddTuition('@Model.Program.Id', '@period.Id', '@i', 'Add Tuition for @Model.Program.ProgramCore.Name, year @i @period.StudyPeriod.Name');">
+                                        Update Fees
+                                    </button>
+
+                                }
+                            }
+
+                        }
+
+                    </h4>
+                    <hr />
+                    <table class="table dataTable dataTableDisabledSort">
+                        <thead>
+                            <tr>
+                                <th>Start Academic Year</th>
+                                <th>National Fees</th>
+                                <th>International Fees</th>
+                                <th>End Academic Year</th>
+                                <th>Last Modified Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var tuition in Model.Tuitions.Where(x => x.StudyPeriodProgram.Id == period.Id && x.YearOfStudy == i)
+                                .OrderByDescending(x => x.StartAcademicYear.Name))
+                            {
+                                <tr>
+                                    <td>@tuition.StartAcademicYear.Name</td>
+                                    <td>@tuition.NationalFee</td>
+                                    <td>@tuition.InternationalFee</td>
+                                    <td>
+                                        @if (tuition.EndAcademicYear != null)
+                                        {
+                                            <span>@tuition.EndAcademicYear.Name</span>
+                                        }
+                                    </td>
+                                    <td>@tuition.LastModified.ToString("f")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <hr />
+                }
+            </div>
+        }
+    }
+    else
+    {
+        <p>
+            No Study Period Programs Available for this course.
+        </p>
+    }
+</div>
+
+<script>
+    $(document).ready(function () {
+        console.log("DefaultYear: " + '@Model.DefaultYear');
+        $("#dvProgramTuitionsTab").tabs({
+
+        });
+
+        $('#dvProgramTuitionsTab').tabs("option", "active", (parseInt('@Model.DefaultYear') - 1));
+        //        $('#dvProgramTuitionsTab').tabs({  });
+    });
+</script>

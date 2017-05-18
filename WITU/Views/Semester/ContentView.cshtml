@@ -1,0 +1,29 @@
+﻿@using WITU.Core.Model
+@model WITU.Models.semester.RegulationProcedureModel
+@{
+    ViewBag.Title = Model.Title;
+}
+
+<div class="homeWrap homePages">
+
+    @if (Request.IsAuthenticated)
+    {
+        <div class="pull-right">
+            @if (User.ApplicationUserType() == (int) UserTypes.Staff)
+            {
+                @Html.ActionLink("Edit", "AddorEditRegulation", "Semester", new { id = Model.Id }, new { @class = "btn saveBtn" })
+                
+            }
+            @Html.ActionLink("Back", "RegulationsAndProcedures", "Semester", new { id = Model.Id }, new { @class = "btn" })
+        </div>
+    }
+    <h2 class="sectionHeader">@Model.Title</h2>
+    <div class="col-md-12 text-justify">
+        <div id="info-attached-files">
+            @Html.HiddenFor(x => Model.Id, new { id = "UploadFileId" })
+        </div>
+        @Html.Raw(@Model.Content)
+    </div>
+    <div class="clearfix"></div>
+</div>
+

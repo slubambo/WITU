@@ -1,0 +1,72 @@
+﻿@using WITU.Core.Model
+@model IEnumerable<WITU.Core.Model.Campus>
+@using WITU.Utils
+@using WITU.Models.UserManagement
+@{ var sessionDetails = (SessionUserManagementDetails)HttpContext.Current.Session["LoggedInUserRoles"]; }
+@{
+    ViewBag.Title = "Campuses";
+}
+
+
+<h2 class="blueHeader">Campuses</h2>
+@if (Request.IsAuthenticated)
+{
+    if (User.ApplicationUserType() == (int)UserTypes.Staff)
+    {
+        if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) WITU.Models.ServiceDetail.Campus
+                                                                                && (x.Role.CanCreate == true || x.Role.CanUpdate == true || x.Role.CanDelete == true)))
+        {
+            <span class="pull-right">
+                @Html.ActionLink("Add New Campus", "AddorEditCampus", new {id = 0}, new {@class = "btn saveBtn newCampusBtn"})
+            </span>
+            <span class="clearfix">
+
+            </span>
+        }
+    }
+}
+    <table class=" dataTable">
+    <thead>
+        <tr>
+
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ShortName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Code)
+            </th>
+            <th>
+             Available  Faculties
+            </th>
+            
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var campus in Model)
+        {
+            <tr>
+
+                <td title="View this Campus">
+                    @Html.ActionLink(campus.Name, "ViewCampus", new {id = campus.Id})
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => campus.ShortName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => campus.Code)
+                </td>
+                
+                <td>
+                    @foreach (var faculty in campus.Faculties.ToList())
+                    {
+                        @Html.ActionLink(faculty.FacultyCore.CoreName, "ViewFaculty", new {id = faculty.Id}) <br/>
+                        
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

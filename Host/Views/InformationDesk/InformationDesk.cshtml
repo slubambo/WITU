@@ -1,0 +1,52 @@
+﻿@using ARMSv2.Core.Model
+@using ARMSv2.UserManagement.Identity
+@using ARMSv2.Utils
+@using ARMSv2.Models.UserManagement
+@{ var sessionDetails = (SessionUserManagementDetails)HttpContext.Current.Session["LoggedInUserRoles"]; }
+@model IEnumerable<ARMSv2.Core.Model.InformationDesk>
+@{
+    ViewBag.Title = "Information Desk";
+
+    //if (Request.IsAuthenticated)
+    //{
+    //    switch (User.ApplicationUserType())
+    //    {
+    //        case (int)UserTypes.Staff:
+    //            Layout = "~/Views/Shared/_LayoutStaff.cshtml";
+    //            break;
+    //        case (int)UserTypes.Student:
+    //            Layout = "~/Views/Shared/_LayoutStudent.cshtml";
+    //            break;
+    //        default:
+    //            Layout = "~/Views/Shared/_Layout.cshtml";
+    //            break;
+    //    }
+    //}
+    //else
+    //{
+    //    Layout = "~/Views/Shared/_Layout.cshtml";
+    //}
+    
+}
+
+<div class="col-md-12">
+    <div>
+        <span class="blueHeader">News and Events</span>
+        @if (Request.IsAuthenticated)
+        {
+            if (User.ApplicationUserType() == (int)UserTypes.Staff)
+            {
+                if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) ARMSv2.Models.ServiceDetail.InformationDesk
+                                                                                        && (x.Role.CanCreate == true || x.Role.CanUpdate == true || x.Role.CanDelete == true)))
+                {
+                    <span class="pull-right">
+                        @Html.ActionLink("Add Event", "EditInformationDesk", null, new {@class = "btn saveBtn"})
+                    </span>
+                }
+            }
+        }
+    </div>
+
+    @Html.Partial("~/Views/Shared/Display/_InformationDeskItems.cshtml", Model)
+
+</div>

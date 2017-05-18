@@ -1,0 +1,72 @@
+﻿@model ARMSv2.Models.student.ImportStudentSelector
+@{
+    ViewBag.Title = "Batched Enrollment";
+    Html.EnableClientValidation();
+}
+
+<h3 class="greyHeader"><strong>Step 1:</strong> Upload the spreadsheet</h3>
+<h3 class="blueHeader">Instructions </h3>
+<p class="text-justify">Fill in the details of the students to upload using the User Account SpreadSheet whose template can be downloaded from the link below:</p>
+
+<a href="@string.Concat(ApplicationConstants.DocumentsFolderUrl, "/Templates/StudentAccountImportation.xlsx" )" target="_blank">
+    <span class="fa fa-file-excel-o fa-align-center text-center"></span>
+    <span>Student Spreadsheet</span>
+</a>
+<h3 class="greyHeader">The following fields must be specified for each student within the spreadsheet for successful account creation. </h3>
+<ul>
+    <li>Surname</li>
+    <li>Given Names</li>
+    <li>Registration Number</li>
+    <li>Gender</li>
+    <li>Date of Birth</li>
+    <li>Nationality</li>
+    <li>Study Period</li>
+    @*<li>Marital Status</li>
+    <li>Religion</li>
+    <li>Residence Status</li>
+    <li>Hall of Residence </li>*@
+</ul>
+
+
+@using (Html.BeginForm("BatchedEnrollment", "Student", null, FormMethod.Post,
+        new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    <h3 class="greyHeader">Please specify the program and specialisation (if applicable) for which you're uploading students</h3>
+    <div class="form-horizontal">
+
+        <div>
+            @Html.Raw(Html.UnEncodedValidationSummary())
+        </div>
+
+        @Html.EditorFor(m => m.YearSemesterPogramSelectItem)
+
+        <div class="form-group col-md-12">
+            @Html.LabelFor(m => m.AcademicYearId, new { @class = "col-md-4 control-label" })
+            <div class="col-md-8">
+                @Html.DropDownWithModelSelectable(m => m.AcademicYearId, Model.AcademicYearOptions,
+                        Model.YearSemesterPogramSelectItem.ProgramSelectItem.AdministrativeSelectItem.DefaultFirstItem,
+                        new { @class = "form-control", id = "drpdwn-academic-year" })
+                <small><em>The academic year to admit students to.</em></small>
+            </div>
+        </div>
+        <p class="well-sm">
+            Please browse for the spreadsheet and click Next to upload.
+        </p>
+        <div class="form-group col-md-12">
+            @Html.LabelFor(m => m.ExcelFle, new { @class = "col-md-4 control-label" })
+            <div class="col-md-8">
+                @Html.TextBoxFor(x => x.ExcelFle, new { @class = "", @type = "file" })
+            </div>
+                    </div>
+        <div class="pull-right">
+            @*<input type="submit" value="Save" class="btn saveBtn" />*@
+            <button type="submit" class="btn saveBtn">
+                Next
+                <span class="glyphicon glyphicon-chevron-right"></span>
+            </button>
+            @*<input type="button" value="Cancel"
+                onclick="javascript: cancelSubmission('@Url.Action("GeneralInformation", "InformationDesk", new {id = Model.Id})');" class="btn delBtn" />*@
+        </div>
+    </div>
+}

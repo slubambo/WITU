@@ -1,0 +1,70 @@
+﻿@using System.Globalization
+@using System.Activities.Expressions
+@using WITU.Core.Model
+@using WITU.Utils
+@model WITU.Models.RegistrationView
+
+@{
+    ViewBag.Title = "Exemptions - Students";
+    Html.EnableClientValidation();
+}
+
+<h2 class="blueHeader">Registration Management - Exemptions</h2>
+<p class="greyHeader">Current Exemption Requests: Student List</p>
+@{
+    int i = 1;
+}
+<div class="table-responsive">
+
+    <table class="table dataTable">
+        <thead>
+
+            <tr>
+                <th>
+                    SN
+                </th>
+                <th>
+                    Registration Number
+                </th>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Program
+                </th>
+
+            </tr>
+
+        </thead>
+        <tbody>
+            @if (Model.Students != null)
+            {
+                foreach (var m in Model.Students)
+                {
+                    <tr onclick="location.href = '@Url.Action("StudentExemptions", "Registration", new {id = @m.Id})'" style="cursor: pointer;" title="View Exemption Request Details">
+                        <td>
+                            @i.ToString()
+                        </td>
+
+                        <td>
+                            @m.RegistrationNumber
+
+                        </td>
+                        <td>
+                            @m.Person.FullNameWithNoTitle
+                        </td>
+                        <td>
+                            @m.ProgramName - @m.Program.Faculty.FacultyCore.Name (@m.Program.Campus.Name)
+                        </td>
+
+                    </tr>
+                    i++;
+                }
+            }
+
+
+        </tbody>
+
+    </table>
+
+</div>

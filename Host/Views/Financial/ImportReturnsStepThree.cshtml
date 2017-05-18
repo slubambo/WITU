@@ -1,0 +1,84 @@
+﻿@model ARMSv2.Models.Finance.ImportReturnsStepThree
+@{
+    ViewBag.Title = "Step Three Import Returns";
+}
+
+<div>
+    <h2 class="blueHeader">Import Returns</h2>
+
+    <h3 class="greyHeader">Step 3: Confrim imported financial Records</h3>
+
+    <p class="text text-success">
+        The following records shall be saved.
+    </p>
+    <table class="table dataTable">
+        <thead>
+            <tr>
+                <th>Registration Number</th>
+                <th>Fees Number</th>
+                <th>Academic Programme</th>
+                <th>Amount</th>
+                <th>Payslip Serial Number</th>
+                <th>Date Paid</th>
+                </tr>
+        </thead>
+        <tbody>
+            @foreach (var successfulRecord in Model.SuccessImportReturns)
+            {
+                <tr>
+                    <td>@successfulRecord.RegistrationNumber</td>
+                    <td>@successfulRecord.StudentNumber</td>
+                    <td>@successfulRecord.ProgramDetails</td>
+                    <td>@successfulRecord.Amount</td>
+                    <td>@successfulRecord.PayslipSerial</td>
+                    <td>@successfulRecord.DatePaid</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <p class="text text-warning">
+        The following Rows have Errors
+    </p>
+    <table class="table dataTable">
+        <thead>
+            <tr>
+                <th>Row Number</th>
+                <th>Error(s)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var failedRecords in Model.ErrorImportReturns)
+            {
+                <tr>
+                    <td>@failedRecords.RowExcelNumber</td>
+                    <td>
+                        <ul>
+                            @foreach (var error in failedRecords.Errors)
+                            {
+                                <li>@error</li>
+                            }
+                        </ul>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <br />
+    <div>
+        @using (Html.BeginForm())
+        {
+            <button class="btn delBtn" value="cancel" type="button" name="saveStatus"
+                    onclick="javascript: cancelSubmission('@Url.Action("Returns", "Financial")', 'Are you sure you want to cancel Results Upload? Changes will not be saved.');">
+                <span class="glyphicon glyphicon-remove"></span>
+                Cancel
+            </button>
+
+            <button class="btn saveBtn pull-right" value="save" name="saveStatus" type="submit">
+                Save
+                <span class="glyphicon glyphicon-chevron-right"></span>
+            </button>
+        }
+    </div>
+</div>

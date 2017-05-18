@@ -1,0 +1,77 @@
+﻿@model WITU.Models.Result.PurgeUploadsModel
+@{
+    ViewBag.Title = "Purge Uploads";
+}
+
+<div>
+    <h2 class="blueHeader">Purge Uploads</h2>
+
+    <div>
+        @using (Html.BeginForm("PurgeUploads", "Result", null, FormMethod.Post,
+            new { @class = "form-horizontal", role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <div>
+                @Html.Raw(Html.UnEncodedValidationSummary())
+            </div>
+
+            @Html.EditorFor(m => m.YearSemesterProgramSelectItem)
+
+            <div class="form-group col-md-12">
+                @Html.LabelFor(m => m.AcademicYearId, new {@class = "col-md-4 control-label"})
+                <div class="col-md-8">
+                    @Html.DropDownWithModelSelectable(m => m.AcademicYearId, Model.AcademicYearOptions,
+                        Model.YearSemesterProgramSelectItem.ProgramSelectItem.AdministrativeSelectItem.DefaultFirstItem,
+                        new {@class = "form-control", id = "drpdwn-academic-year"})
+                    <small><em>The academic year when the course was done.</em></small>
+                </div>
+            </div>
+            
+            <div class="form-group col-md-12">
+                @Html.LabelFor(m => m.SemesterToUse, new { @class = "col-md-4 control-label" })
+                <div class="col-md-8">
+                    @Html.DropDownWithModelSelectable(m => m.SemesterToUse, Model.SemesterToUseOptions,
+                     Model.YearSemesterProgramSelectItem.ProgramSelectItem.AdministrativeSelectItem.DefaultFirstItem,
+                        new { @class = "form-control", id = "drpdwn-semestercourse-done" })
+                    <small><em>The semester when the course was done.</em></small>
+                </div>
+            </div>
+
+            
+            
+            <div class="pull-right">
+                <button type="submit" class="btn saveBtn" onclick="javascript: showLoadingDialog('Loading Results...');">
+                    Load Results
+                    <span class=" glyphicon glyphicon-chevron-right">
+                    </span>
+                </button>
+            </div>
+        }
+    </div>
+</div>
+
+@*<script>
+    $(document).ready(function () {
+        
+        if ($('#drpdwn-campus')) {
+            $('#drpdwn-campus').change(function () {
+            loadSemesters();
+        });
+        }
+
+        if ($('#drpdwn-faculty')) {
+        $('#drpdwn-faculty').change(function () {
+            loadSemesters();
+        });
+        }
+        
+        if ($('#drpdwn-department')) {
+            $('#drpdwn-department').change(function () {
+                loadSemesters();
+
+            });
+        }
+        
+    });
+</script>*@

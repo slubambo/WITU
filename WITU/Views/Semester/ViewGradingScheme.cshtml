@@ -1,0 +1,211 @@
+﻿@model ARMSv2.Core.Model.GradingScheme
+@using ARMSv2.Core.Model
+@using ARMSv2.Models.UserManagement
+@{ var sessionDetails = (SessionUserManagementDetails)HttpContext.Current.Session["LoggedInUserRoles"]; }
+
+@{
+    ViewBag.Title = "View Grading Scheme";
+
+    var canDeleteGradingScheme = false;
+
+    var canEditOrDeleteGrade = false;
+
+    var canAddGrade = false;
+
+    var showGradMessage = false;
+
+    var showEditSchemeButton = false;
+
+    if (Request.IsAuthenticated)
+    {
+        // If Logged User is staff member and 
+        if (User.ApplicationUserType() == (int)UserTypes.Staff)
+        {
+            
+            if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(urole => urole.Role.Service.Id == (int)ARMSv2.Models.ServiceDetail.GradingScheme
+                                                                                            && (urole.Role.CanCreate == true || urole.Role.CanUpdate == true)))
+            {
+                //If Grading scheme doesn't affect graduates then show certain the buttons
+                if (!ViewBag.ContainsGraduates) 
+                {
+                    //For now only logged in staff, no roles considered can edit Grading Scheme
+                    canDeleteGradingScheme = true;
+
+                    //For now only logged in staff, no roles considered can edit Grades
+                    canEditOrDeleteGrade = true;
+
+                    //For now only logged in staff, no roles considered can add Grades
+                    canAddGrade = true;
+
+                    showEditSchemeButton = true;
+
+                }
+                else
+                {
+                    showEditSchemeButton = true;
+                    showGradMessage = true;
+                }
+
+            }
+            
+
+        }
+    }
+}
+
+<h3 class="blueTxt">View Grading Scheme for @Model.AwardType.Name (@Model.StartAcademicYear.Name - @(Model.EndAcademicYear == null ? " To Date" : Model.EndAcademicYear.Name))</h3>
+
+
+<div class="pull-right btn-group btn-group-xs">
+    @if (showEditSchemeButton)
+    {
+        <button id="btn-scheme-edit" class="btn btn-primary" onclick="location.href ='@Url.Action("AddOrEditGradingScheme", new { id = Model.Id, awardTypeId = Model.AwardType.Id })'">
+            <span class="fa fa-pencil-square-o"></span>
+            Edit
+        </button>
+        
+    }
+       
+    @if (canDeleteGradingScheme)
+    {
+        <button id="btn-scheme-delete" class=" btn btn-default">
+            <span class="glyphicon glyphicon-remove"></span>
+            Delete
+        </button>
+    }
+</div>
+    
+
+
+@if (showGradMessage)
+{
+    <small>
+        The grades in this Grading Scheme can't be edited because it affects graduates
+    </small>
+    
+}
+
+<div class="table-responsive table-condensed">
+    <table class="table GradesTable">
+        <thead>
+
+            <tr>
+
+                <th>
+                    Grade Letter
+                </th>
+
+                <th>
+                    Start Mark
+                </th>
+                <th>
+                    End Mark
+                </th>
+                <th>
+                    Grade Point
+                </th>
+
+                @if (canEditOrDeleteGrade)
+                {
+                    <th>
+
+                    </th>
+
+                }
+
+
+
+            </tr>
+
+
+
+        </thead>
+
+        <tbody>
+            @foreach (var grade in Model.Grades)
+            {
+                <tr>
+                    <td>
+                        @grade.GradeLetter
+                    </td>
+                    <td>
+                        @grade.StartMark
+                    </td>
+                    <td>
+                        @grade.EndMark
+                    </td>
+                    <td>
+                        @grade.GradePoint
+                    </td>
+
+                    @if (canEditOrDeleteGrade)
+                    {
+                        <td>
+
+
+                            <div class="pull-right btn-group btn-group-xs">
+                                <button id="btn-grade-edit-@grade.Id" class="btn btn-primary" onclick="location.href ='@Url.Action("AddOrEditGrade", new { id = grade.Id, gradingSchemeId = grade.GradingScheme.Id })'">
+                                    Edit
+                                </button>
+
+                                <button id="btn-grade-delete-@grade.Id" class=" btn btn-default">
+                                    Delete
+                                </button>
+                            </div>
+
+
+                        </td>
+
+                    }
+
+
+
+
+                </tr>
+            }
+        </tbody>
+
+        @if (canAddGrade)
+        {
+            <tfoot>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        <div class="pull-right btn-group btn-group-xs">
+                            <button id="btn-grade-add" class=" btn btn-default" onclick="location.href ='@Url.Action("AddOrEditGrade", new { gradingSchemeId = Model.Id })'">
+                                Add Grade
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tfoot>
+
+        }
+
+
+    </table>
+</div>
+
+<div>
+    <button id="btn-gobackto-gradeschemes" class=" btn btn-default btn-sm" onclick="location.href = '@Url.Action("GradingScheme", "Semester")'">
+        <span class="glyphicon glyphicon-arrow-left"></span>
+        Back to List
+    </button>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.GradesTable').dataTable({
+            "bPaginate": false,
+            "bLengthChange": false,
+            "bFilter": false,
+            "bInfo": false,
+            "bAutoWidth": false,
+            "bSortable": false,
+            "order": [[2, 'desc']]
+        });
+    });
+</script>

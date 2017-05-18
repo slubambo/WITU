@@ -1,0 +1,48 @@
+﻿@using WITU.Core.Model
+@using WITU.Models
+@using WITU.Utils
+@using WITU.Models.UserManagement
+@{ var sessionDetails = (SessionUserManagementDetails)HttpContext.Current.Session["LoggedInUserRoles"]; }
+@model IEnumerable<WITU.Models.Courses.CourseModel>
+
+<div>
+    @*@if (User.ApplicationUserType() == (int)UserTypes.Staff)
+    {
+        if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int)ServiceDetail.Programme
+                                                                                         && (x.Role.CanCreate || x.Role.CanUpdate || x.Role.CanDelete)))
+        {
+            <div class="addProgBtn">
+                @Html.ActionLink("Add Program", "EditProgram", new { campusId = Model.FirstOrDefault().Program.Campus.Id, controller = "Program" }, new { @class = "saveBtn btn-primary" })
+            </div>
+        }
+    }*@
+
+    <div class="table-responsive ">
+        <table class="table dataTable tbl-campus-programs">
+            <thead>
+                <tr>
+                    <th>Course Name</th>
+                    <th>Category</th>
+                    <th>
+                        Time Frame
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var course in Model)
+                {
+                    <tr>
+                        <td>@course.Course.Name</td>
+                        <td>@course.Course.CourseCategory.Name</td>
+                        <td>
+                            @course.Course.TimeFrame Months
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="clearfix"></div>
+    <br/>
+    <br/>
+</div>

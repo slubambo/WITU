@@ -1,0 +1,77 @@
+﻿@model ARMSv2.Models.widgets.CourseProgramSelectItem
+           
+@Html.EditorFor(m => m.YearSemesterPogramSelectItem)
+
+<div class="form-group col-md-12">
+    @Html.LabelFor(m => m.CourseId, new { @class = "col-md-4 control-label" })
+    <div class="col-md-8">
+        @Html.DropDownWithModelSelectable(m => m.CourseId, Model.CourseOptions, Model.YearSemesterPogramSelectItem.ProgramSelectItem.AdministrativeSelectItem.DefaultFirstItem,
+             new { @class = "form-control drpdwn-campus-change drpdwn-faculty-change drpdwn-department-change drpdwn-program-change", id = "drpdwn-course" })
+    </div>
+</div>
+@Html.Hidden("levelId", 6)@*//Check this*@
+<script type="text/javascript">
+    $(document).ready(function () {
+        //check for updates on page load...
+        var programId = '@Model.YearSemesterPogramSelectItem.ProgramSelectItem.ProgramId';
+        var specialisationId = '@Model.YearSemesterPogramSelectItem.ProgramSelectItem.SpecialisationId';
+        var yearOfStudy = '@Model.YearSemesterPogramSelectItem.Year';
+        var semester = '@Model.YearSemesterPogramSelectItem.Semester';
+
+        if (programId > 0 && yearOfStudy > 0 && semester > 0) {
+            retrieveCourses(programId, yearOfStudy, semester, specialisationId);
+        }
+
+        //ensuring the ingrediates for the change are present...
+        if ($('.drpdwn-call-course-change') && $('#drpdwn-course')) {
+            $('.drpdwn-call-course-change').change(updateCourses);
+        }
+    });
+
+    function updateCourses() {
+        
+        //clear the previous courses and add the default components...
+        $("#drpdwn-course").empty();
+
+        //adding our empty elements...
+        $("#drpdwn-course").append($('<option></option>').val('@Model.YearSemesterPogramSelectItem.ProgramSelectItem.AdministrativeSelectItem.DefaultFirstItem.Value')
+            .html('@Model.YearSemesterPogramSelectItem.ProgramSelectItem.AdministrativeSelectItem.DefaultFirstItem.Text'));
+
+        //getting the components needed...
+        var programId = $('#drpdwn-program :selected').val();
+        var specializationId = $('#drpdwn-specialisation :selected').val();
+        var yearOfStudy = $('#drpdwn-year :selected').val();
+        var semester = $('#drpdwn-semester :selected').val();
+
+        console.log("ProgramId: " + programId + " yearOfStudy: " + yearOfStudy + " semester: " + semester);
+
+
+        retrieveCourses(programId, yearOfStudy, semester, specializationId);
+    }
+
+    function retrieveCourses(programId, yearOfStudy, semester, specialisationId) {
+        //adding the filters...
+        if (programId != 0 && yearOfStudy != 0 && semester != 0) {
+
+            var staffId = '@Model.YearSemesterPogramSelectItem.ProgramSelectItem.AdministrativeSelectItem.StaffId';
+
+            var reqUrl = parseInt(staffId) > 0 ? baseUrl + "api/utilsapi/getCourses?staffId=" + staffId : baseUrl + "api/utilsapi/getCourses";
+
+
+            //now for the processing changes...
+            $.get(
+                 reqUrl,
+                {
+                    programId: programId,
+                    specialisationId: specialisationId,
+                    yearOfStudy: yearOfStudy,
+                    semester: semester
+                },
+                function (data) {
+                    $.each(data, function (i, program) {
+                        $('#drpdwn-course').append($('<option></option>').val(program.Value).html(program.Text));
+                    });
+                });
+        }
+    }
+</script>

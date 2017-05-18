@@ -1,0 +1,107 @@
+﻿@using System.Globalization
+@using ARMSv2.Core.Model
+@model ARMSv2.Models.Finance.FinanceOverview
+@{
+    ViewBag.Title = "Faculty Financial Overview";
+    Html.EnableClientValidation();
+}
+
+<h2 class="blueHeader">
+    @Model.Faculty.FacultyCore.Name Financial Overview
+   <span class="greyHeader">
+
+            @Model.Faculty.Campus.Name @Model.Semester.AcademicYear.Name Semester @{
+                                                                                      if (Model.Semester.SemesterSession == 1)
+                                                                                      {
+                                                                                          <span>I</span>
+                                                                                      }
+                                                                                      else
+                                                                                      {
+                                                                                          <span>II</span>
+                                                                                      }
+                                                                                  }
+        </span>
+   </h2>
+<p></p>
+<div class="row">
+    @using (Html.BeginForm("FacultyFinancialOverview", "Financial", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-group">
+            @Html.LabelFor(m => m.AcademicYearSelectedId, new { @class = "col-md-2" })
+            <div class="col-md-3">
+                @Html.DropDownWithModelSelectable(m => m.AcademicYearSelectedId, Model.AcademicYears,
+                    new SelectListItem() { Text = "-- Academic Year -- ", Value = "0" }, new { @class = "form-control addControl" })
+            </div>
+            @Html.LabelFor(m => m.SemesterSession, new { @class = "col-md-2" })
+            <div class="col-md-3">
+                @Html.DropDownWithModelSelectable(m => m.SemesterSession, Model.SemesterSessions,
+                    new SelectListItem() { Text = "-- Semester Session -- ", Value = "0" }, new { @class = "form-control addControl" })
+            </div>
+            <div class="">
+                <input type="submit" class="btn saveBtn" value="Load">
+            </div>
+        </div>
+    }
+
+</div>
+<div class="clearfix"></div>
+<p></p>
+<table class="table dataTable" id="inboxTable">
+    <thead>
+        <tr>
+            <th>
+                Programme
+            </th>
+            <th>
+                Total Returns (UGX)
+            </th>
+            <th>
+                Pending Payments (UGX)
+            </th>
+            <th>
+                Enrollement
+            </th>
+            <th>
+                Defaulters
+            </th>
+        </tr>
+
+    </thead>
+    <tbody>
+        @foreach (var m in Model.FacultyFinanceSummaries)
+        {
+            if (m.Program != null)
+            {
+                <tr onclick="location.href = '@Url.Action("ProgramFinancialOverviewByYear", "Financial", new { id = @m.Program.Id })' " style="cursor: pointer;">
+                
+                    <td>
+                        @m.Program.ProgramCore.Name 
+
+                    </td>
+
+                    <td>
+                        @m.TotalReturns.ToString("N0")
+                    </td>
+
+                    <td>
+                        @m.PendingReturns.ToString("N0")
+                    </td>
+                    <td>
+                        @m.Enrollement
+                    </td>
+                    <td>
+                        @m.DefaultersCount
+                    </td>
+
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+<br/>
+<div class="clearfix row col-lg-3 col-lg-offset-10">
+    <a class="" href="@Url.Action("PrintFacultySummary", new { facultyId = @Model.Faculty.Id })" target="_blank">
+        <span class="pdfIcon"></span>
+    </a>
+</div>

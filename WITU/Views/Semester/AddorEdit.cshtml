@@ -1,0 +1,155 @@
+﻿@model List<WITU.Models.SemesterView>
+@{
+    ViewBag.Title = "Add or Edit Semester";
+}
+
+
+<h2 class="blueHeader">@Html.Raw(ViewBag.heading) Semester</h2>
+@using (Html.BeginForm("AddorEdit", "Semester", FormMethod.Post))
+{
+    int i;
+    for (i = 0; i < 2; i++)
+    {
+        <div>
+            @Html.ValidationSummary(true)
+
+        </div>
+
+        <div class="form-horizontal tabs bodytext tabs-pilled noborder">
+            <ul class="">
+
+                @for (i = 0; i < 2; i++)
+                {
+                    <li>
+                        <a href="#div-Semester@(i)" role="tab" data-toggle="tab">
+                            Semester @{if (i == 0)
+                            {<span>I</span>}
+                            else
+                            {<span>II</span>}
+                            }
+                        </a>
+                    </li>
+                }
+            </ul>
+
+            @for (i = 0; i < 2; i++)
+            {
+                <div id="div-Semester@(i)" class="bodytext tab-pane nopadding ">
+                    <div class="clearfix">
+                        <br />
+                    </div>
+
+                    <div class="form-horizontal noborder">
+
+                        @Html.HiddenFor(m => m[i].SemesterSession, new { Value = i + 1 })
+                        @Html.HiddenFor(m => m[i].Id)
+                        @Html.HiddenFor(m => m[i].AcademicYearId)
+
+                        @{
+                var className = "date-start-date" + i;
+                        }
+
+                        @{
+                var className2 = "date-end-date" + i;
+                        }
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m[i].StartDate, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9 progCoreInput">
+                                <div class="input-group">
+                                    <label class="input-group-addon btn  noborder" for="StartDate"><span class="glyphicon glyphicon-calendar" data-for="StartDate"></span></label>
+                                    @Html.TextBoxFor(m => m[i].StartDate, "{0:dd/MM/yyyy}", new { @id = className, @class = "date-start-date noborder uneditable-input" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m[i].EndDate, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9 progCoreInput">
+                                <div class="input-group">
+                                    <label class="input-group-addon btn noborder" for="EndDate"><span class="glyphicon glyphicon-calendar " data-for="EndDate"></span></label>
+                                    @Html.TextBoxFor(m => m[i].EndDate, "{0:dd/MM/yyyy}", new { @id = className2, @class = "date-end-date noborder uneditable-input" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <br />
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m[i].RegistrationDeadline, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9 progCoreInput">
+                                <div class="input-group">
+                                    <label class="input-group-addon btn noborder" for="RegistrationDeadline"><span class="glyphicon glyphicon-calendar " data-for="RegistrationDeadline"></span></label>
+                                    @Html.TextBoxFor(m => m[i].RegistrationDeadline, "{0:dd/MM/yyyy}", new { @class = "date-picker noborder uneditable-input" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <br />
+                        <div class="form-group hidden">
+                            @Html.LabelFor(m => m[i].AssessmentStartDate, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9 progCoreInput">
+                                <div class="input-group">
+                                    <label class="input-group-addon btn noborder" for="AssessmentStartDate"><span class="glyphicon glyphicon-calendar " data-for="AssessmentStartDate"></span></label>
+                                    @Html.TextBoxFor(m => m[i].AssessmentStartDate, "{0:dd/MM/yyyy}", new { @class = "noborder uneditable-input" })
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group hidden">
+                            @Html.LabelFor(m => m[i].AssessmentEndDate, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9 progCoreInput">
+                                <div class="input-group">
+                                    <label class="input-group-addon btn noborder" for="AssessmentEndDate"><span class="glyphicon glyphicon-calendar" data-for="AssessmentEndDate"></span></label>
+                                    @Html.TextBoxFor(m => m[i].AssessmentEndDate, "{0:dd/MM/yyyy}", new { @class = "noborder uneditable-input" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <br />
+                        <div class="form-group">
+                            @Html.LabelFor(m => m[i].ResultsUploadDeadline, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9 progCoreInput">
+                                <div class="input-group">
+                                    <label class="input-group-addon btn noborder" for="ResultsUploadDeadline"><span class="glyphicon glyphicon-calendar" data-for="ResultsUploadDeadline"></span></label>
+                                    @Html.TextBoxFor(m => m[i].ResultsUploadDeadline, "{0:dd/MM/yyyy}", new { @class = "date-picker noborder uneditable-input" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group hidden">
+                            @Html.LabelFor(m => m[i].Status, new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.TextBoxFor(m => m[i].Status)
+                                @Html.ValidationMessageFor(m => m[i].Status)
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+            }
+
+
+
+        </div>
+
+        <div class="pull-right ">
+            <input type="submit" value="Save" class="btn saveBtn" />
+
+            <input type="button" value="Cancel"
+                   onclick="javascript: cancelSubmission('@Url.Action("Index", "Semester", new { })');" class="btn delBtn" />
+
+
+
+            <div class="clearfix"> </div>
+        </div>
+
+
+
+    }
+
+}
+

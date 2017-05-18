@@ -1,0 +1,32 @@
+﻿/*These are Jojo's*/
+
+/*Profile image*/
+.profile-image { width: 169px; margin-left: 59px; margin-top: 10px; margin-bottom: 10px; }
+
+/*Semester-color*/
+.ui-tabs-nav .ui-state-active a { color: #fff !important; }
+
+/*Semester-boxes*/
+.box { height: 42px; }
+
+
+
+.ui-tabs .ui-tabs-nav.grading-ul li.ui-tabs-active { margin-bottom: 10px; }
+
+.table.noborder > thead > tr > th{border-bottom: 0px none ;}
+
+.noborder.table > tbody > tr > td{border-top: 0px none ;}
+
+.end-cgpa{text-align: center;}
+
+.end-cgpa-table{float: right;}
+
+.index-margin{margin-top: -10px; margin-bottom: 35px; }
+
+.news-events{margin-bottom: 25px;}
+
+.news-add{margin-top: -50px;}
+
+.grading{margin-top: -61px;}
+
+.award{margin-top: -30px;}

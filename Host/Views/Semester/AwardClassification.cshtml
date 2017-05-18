@@ -1,0 +1,132 @@
+﻿@{
+    ViewBag.Title = "Award Classifications";
+    Layout = "~/Views/Shared/_LayoutStaff.cshtml";
+}
+
+@model ARMSv2.Models.AwardClassifications
+@using ARMSv2.Utils
+@using ARMSv2.Models.UserManagement
+@{ var sessionDetails = (SessionUserManagementDetails)HttpContext.Current.Session["LoggedInUserRoles"]; }
+
+
+@if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) ARMSv2.Models.ServiceDetail.ClassificationOfAwards
+                                                                         && (x.Role.CanCreate == true || x.Role.CanUpdate == true)))
+{
+    <div class="pull-right">
+        @*TODO: Uncomment the code below when graduates and student result calculation is considered*@
+        @*@Html.ActionLink("Add Award Classification", "AddOrEditAwardClassification", "Semester", new {@class = "btn saveBtn"})*@
+    </div>
+}
+<br />
+<p class="blueHeader award ">Award Classification</p>
+<div class="form-horizontal tabs bodytext tabs-pilled noborder">
+
+    <ul class="grading-ul">
+
+
+
+        @foreach (var m in Model.AwardTypes)
+        {
+
+            <li class="row">
+                <a href="#div-tab-@m.Id" role="tab" data-toggle="tab">
+                    @m.Name
+                </a>
+            </li>
+
+        }
+    </ul>
+
+    @foreach (var m in Model.AwardTypes)
+    {
+
+        <div id="div-tab-@m.Id" class="bodytext tab-pane nopadding">
+            <div class="clearfix">
+                <br />
+            </div>
+
+            <table class="table dataTable">
+                <thead>
+
+                    <tr>
+                        <th>
+                            Academic Year
+                        </th>
+                        <th>
+                            Award
+                        </th>
+                        <th>
+                            Start CGPA
+                        </th>
+                        <th>
+                            End CGPA
+                        </th>
+                        
+                    </tr>
+
+                </thead>
+                <tbody>
+                    @foreach (var x in Model.AwardClassificationsViews.Where(x => x.AwardType.Id == m.Id))
+                    {
+                        if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(y => y.Role.Service.Id == (int) ARMSv2.Models.ServiceDetail.ClassificationOfAwards
+                                                                                                && (y.Role.CanCreate == true || y.Role.CanUpdate == true)))
+                        {
+                            @*TODO: Uncomment the code below when graduates and student result calculation is considered*@
+                            <tr @(m.Name == "Active" ? String.Empty : "class=\"danger\"") @*onclick="location.href = '@Url.Action("AddOrEditAwardClassification", "Semester", new {id = @x.Id})' "*@ style="cursor: pointer;" @*title="Edit"*@>
+                                @if (x.AwardType.Name == m.Name)
+                                {
+                                    <td>
+                                        @x.AcademicYear.Name
+                                    </td>
+                                    <td>
+                                        @x.Award
+                                    </td>
+                                    <td>
+                                        @x.StartCgpa
+                                    </td>
+                                    <td>
+                                        @x.EndCgpa
+                                   
+                                    </td>
+                                }
+
+
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr @(m.Name == "Active" ? String.Empty : "class=\"danger\"")>
+                                @if (x.AwardType.Name == m.Name)
+                                {
+                                    <td>
+                                        @x.AcademicYear.Name
+                                    </td>
+                                    <td>
+                                        @x.Award
+                                    </td>
+                                    <td>
+                                        @x.StartCgpa
+                                    </td>
+                                    <td>
+                                        @x.EndCgpa
+                                   
+                                    </td>
+                                }
+
+
+                            </tr>
+                        }
+
+                    }
+                </tbody>
+            </table>
+
+        </div>
+
+    }
+
+
+
+</div>
+
+

@@ -1,0 +1,14 @@
+﻿@using ARMSv2.Core.Model
+@model ARMSv2.Models.WeightingCriteriaSummaryView
+
+@if (Model.WeightingCriteriaIncluded)
+{
+    @Html.Partial("~/Views/Shared/Display/_NameValueView.cshtml",
+        new KeyValuePair<string, string>(WeightingCriteriaNames.Essential.ToString(), Model.EssentialSummary))
+
+    @Html.Partial("~/Views/Shared/Display/_NameValueView.cshtml",
+        new KeyValuePair<string, string>(WeightingCriteriaNames.Relevant.ToString(), Model.RelevantSummary))
+
+    @Html.Partial("~/Views/Shared/Display/_NameValueView.cshtml",
+        new KeyValuePair<string, string>(WeightingCriteriaNames.Desirable.ToString(), Model.DesirableSummary))
+}

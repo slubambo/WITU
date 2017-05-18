@@ -1,0 +1,147 @@
+﻿@using System.Globalization
+@using ARMSv2.Core.Model
+@model ARMSv2.Models.Finance.ImportReturnsSelector
+
+@{
+    ViewBag.Title = "Financial Returns";
+    Html.EnableClientValidation();
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+
+    <h2 class="blueHeader">Import Returns</h2>
+    
+    <div class="importType">
+        <h3 class="greyHeader"><strong>Step 1:</strong> Specify how you would like to Add Returns</h3>
+        <p>
+            Select Batched (to upload spreadsheet with student's payments) or interactive.
+        </p>
+
+        <div class="form-group">
+            <p class="control-label col-md-2  col-md-push-1">Type</p>
+            <div class="col-md-6">
+                <select class="returnsType">
+                    <option value="0">Batched</option>
+                    <option value="1">Interactive</option>
+                </select>
+            </div>
+            <div class="col-md-3  col-md-pull-3">
+                <input type="button" value="Proceed" class="btn saveBtn import-proceed" />
+            </div>
+        </div>
+    </div>
+    
+    <div class="Batched-returns">
+        <h3 class="greyHeader"><strong>Step 2:</strong> Upload the Speadsheet</h3>
+        <p>The following fields must be specified for each payment record within the spreadsheet for successful upload </p>
+        <ul>
+            <li>Fees Number</li>
+            <li>Receipt Number</li>
+            <li>Amount Paid</li>
+            <li>Date Paid</li>
+        </ul>
+        <p class="greyHeader">
+            Please browse for the spreadsheet and click Next to upload
+        </p>
+        @using (Html.BeginForm("Returns", "Financial", null, FormMethod.Post,
+            new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+
+                <div>
+                    @Html.Raw(Html.UnEncodedValidationSummary())
+                </div>
+
+
+                <div class="form-group col-md-12">
+                    @Html.LabelFor(m => m.ExcelFle, new { @class = "col-md-4 control-label" })
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(x => x.ExcelFle, new { @class = "", @type = "file" })
+                    </div>
+
+                </div>
+                <div class="col-md-3  col-md-push-5">
+                    <button type="submit" class="btn saveBtn">
+                        Next
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                    </button>
+
+                </div>
+            </div>
+        }
+    </div>
+    
+    
+    <div class="interactive-returns">
+        <h3 class="greyHeader"><strong>Step 2: </strong>Enter payment Details</h3>
+        <p>The following fields must be specified for the payment record</p>
+        <ul>
+            <li>Fees Number</li>
+            <li>Receipt Number</li>
+            <li>Amount Paid</li>
+            <li>Date Paid</li>
+        </ul>
+        <p class="greyHeader">
+            Please fill form and click Next to upload
+        </p>
+        
+        @using (Html.BeginForm("InteractiveReturn", "Financial", FormMethod.Post))
+        {
+             @Html.AntiForgeryToken()
+                <div class="form-horizontal tabs bodytext tabs-pilled noborder">
+                    
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.StudentNumber, new { @class = "control-label col-sm-3" })
+                        <div class="col-md-9 progCoreInput">
+                            <div class="input-group">
+                                @Html.TextBoxFor(model => model.StudentNumber, new { @class = "noborder uneditable-input" })
+                                @Html.ValidationMessageFor(model => model.StudentNumber)
+                            </div>
+                        </div>
+                    </div>
+                    
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.PayslipSerial, new { @class = "control-label col-sm-3" })
+                        <div class="col-md-9 progCoreInput">
+                            <div class="input-group">
+                                @Html.TextBoxFor(model => model.PayslipSerial, new { @class = "noborder uneditable-input" })
+                                @Html.ValidationMessageFor(model => model.PayslipSerial)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Amount, new { @class = "control-label col-sm-3" })
+                        <div class="col-md-9 progCoreInput">
+                            <div class="input-group">
+                                @Html.TextBoxFor(model => model.Amount, new { @class = "noborder uneditable-input" })
+                                @Html.ValidationMessageFor(model => model.Amount)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.DatePaid, new { @class = "control-label col-md-3" })
+                        <div class="col-md-9 progCoreInput">
+                            <div class="input-group">
+                                <label class="input-group-addon btn  noborder"><span class="glyphicon glyphicon-calendar" data-for="StartDate"></span></label>
+                                @Html.TextBoxFor(m => m.DatePaid, "{0:dd/MM/yyyy}", new { @class = "date-picker noborder uneditable-input", @autocomplete = "off" })
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4 col-md-push-7 ">
+                        <button type="submit" class="btn saveBtn">
+                            Next
+                            <span class="glyphicon glyphicon-chevron-right"></span>
+                        </button>
+
+                    </div>
+                    
+                    
+                </div>
+                }
+            </div>

@@ -1,0 +1,148 @@
+﻿@using System.Globalization
+@using ARMSv2.Core.Model
+@using ARMSv2.Utils
+@using NHibernate.Criterion
+@model ARMSv2.Core.Model.FunctionalFee
+
+@{
+    ViewBag.Title = "Ndejje University Records Management System";
+}
+
+@*<h2>Functional Fee Details</h2>*@
+
+<div>
+    <h4 class="blueHeader">@Model.Name</h4>
+
+    <div>
+        <div class="col-md-6 nopadding">
+            <span class="fa fa-clock-o"></span>
+            <label>@Model.CreatedOn.ToString("f")</label>
+        </div>
+        <div class="col-md-6 ">
+            <div class="pull-right">
+                @Html.ActionLink("Add Fee", "AddOrEditFee", "Financial", new { functionalFeeId = Model.Id, id = 0 }, new { @class = "btn saveBtn" })
+                @Html.ActionLink("Edit", "AddOrEditFunctionalFees", "Financial", new { id = Model.Id }, new { @class = "btn delBtn" })
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div>
+        <div class="row">
+            <div class="col-md-2">
+                Payable Since
+                @*@Html.DisplayNameFor(model => model.StartAcademicYear)*@
+            </div>
+
+            <div class="col-md-10">
+                @Html.DisplayFor(model => model.StartAcademicYear.Name)
+            </div>
+        </div>
+
+        @if (Model.EndAcademicYear != null)
+        {
+            <div class="row">
+                <div class="col-md-2">
+                    @Html.DisplayNameFor(model => model.EndAcademicYear)
+                </div>
+
+                <div class="col-md-10">
+                    @Html.DisplayFor(model => model.EndAcademicYear.Name)
+                </div>
+            </div>
+        }
+    </div>
+
+    <p>
+        @Model.Description
+    </p>
+</div>
+
+<div>
+    @*<h4>Funcitonal Fee Details</h4>
+        <table class="table dataTable">
+            <thead>
+                <tr>
+                    <th>Year of Study</th>
+                    <th>Graduate Level</th>
+                    <th>Reguar Program /In-Service</th>
+                    <th>Payable</th>
+                    <th>Fee</th>
+                    <th>Academic Year Started</th>
+                    <th>Crated On</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ffd in Model.FunctionalFeeDetails)
+                {
+                    <tr>
+                        <td>@ffd.YearOfStudy</td>
+                        <td>@Html.DisplayEnum(ffd.GraduateLevel, typeof(GraduateLevel))</td>
+                        <td>@Html.DisplayEnum(ffd.StudyPeriodCategory, typeof(StudyPeriodCategory))</td>
+                        <td>@Html.DisplayCustomBoolean(@ffd.IsPayableOnce, "Per Semester", "Per Year")</td>
+                        <td>@ffd.Fee</td>
+                        <td>@ffd.StartAcademicYear.Name</td>
+                        <td>@ffd.CreatedOn.ToString("f")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>*@
+    <div class="borderedTableWrap table-responsive">
+
+        <table class="table table-hover table-bordered">
+            <thead>
+                <tr>
+                    <th rowspan="2">Year of Study</th>
+                    @foreach (GraduateLevel gl in Enum.GetValues(typeof(GraduateLevel)))
+                    {
+                        <th colspan="2" class="center">@Html.DisplayEnum(gl)</th>
+                    }
+                </tr>
+                <tr>
+                    @foreach (StudyPeriodCategory spc in Enum.GetValues(typeof(StudyPeriodCategory)))
+                    {
+                        <th>@Html.DisplayEnum(spc)</th>
+                    }
+                    @foreach (StudyPeriodCategory spc in Enum.GetValues(typeof(StudyPeriodCategory)))
+                    {
+                        <th>@Html.DisplayEnum(spc)</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @for (var i = 1; i <= 4; i++)
+                {
+                    <tr>
+                        <td><span>Year @i</span></td>
+                        @foreach (var gl in Enum.GetValues(typeof(GraduateLevel)))
+                        {
+                            foreach (var spc in Enum.GetValues(typeof(StudyPeriodCategory)))
+                            {
+                                <td>
+                                    @{
+                                var ffd = Model.FunctionalFeeDetails.FirstOrDefault(x => x.StudyPeriodCategory == (int)spc
+                                    && x.YearOfStudy == i && x.GraduateLevel == (int)gl && x.EndAcademicYear == null);
+                                    }
+                                    <span>
+                                        @if (ffd != null)
+                                        {
+                                            var title = string.Format("{0}, Year {1}", ffd.FunctionalFee.Name, ffd.YearOfStudy);
+                                            <label onclick="javascript: feeDetailComplete('@ffd.FunctionalFee.Id','@ffd.YearOfStudy', '@ffd.GraduateLevel', '@ffd.StudyPeriodCategory', '@title');">
+                                                @ffd.Fee.ToString("n0", CultureInfo.InvariantCulture)
+                                            </label>
+                                        }
+                                    </span>
+                                </td>
+                            }
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+@*<p>
+        @Html.ActionLink("Edit", "AddOrEditFunctionalFees", new { id = Model.Id }) |
+        @Html.ActionLink("Back ", "FunctionalFees") |
+        @Html.ActionLink("Add Fee", "AddOrEditFee", new { functionalFeeId = Model.Id, id = 0 })
+    </p>*@

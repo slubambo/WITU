@@ -1,0 +1,432 @@
+﻿@using WITU.Utils
+@using WITU.Models.UserManagement
+
+@{ var sessionDetails = (SessionUserManagementDetails)HttpContext.Current.Session["LoggedInUserRoles"]; }
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - WITU</title>
+    @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/font-awesome")
+    @Styles.Render("~/Content/chosen")
+    @Scripts.Render("~/bundles/modernizr")
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        var baseUrl = "@Url.Content("~/")";
+        var $window = $(window);
+        $(document).ready(function () {
+            // Execute on load
+            checkWidth();
+
+            // Bind event listener
+            $(window).resize(checkWidth);
+            /*Content Area*/
+            var leftHeight = $('#leftMenu').height();
+            var mainheight = $('#renderedBody').height();
+
+            if (leftHeight > 100) {
+                $('#renderedBody').css('min-height', leftHeight);
+            }
+            else {
+            }
+        });
+        // Function to handle changes to style classes based on window width
+        function checkWidth() {
+            if ($window.width() < 768) {
+                $('#leftMenu').removeClass('accordionMenu').addClass('iconMenu');
+            };
+
+            if ($window.width() >= 768) {
+                $('#leftMenu').removeClass('iconMenu').addClass('accordionMenu');
+            }
+        }
+    </script>
+
+    @*@Scripts.Render("~/bundles/jquery")*@
+
+</head>
+<body>
+
+    <div id="wrap">
+        @Html.Partial("Partials/_LayoutHeader")
+
+        <div id="body" class="container body-content">
+            <div class="row">
+                <div class="col-xs-2 col-sm-3">
+                    <div id="leftMenu" class="accordionMenu">
+                        <div class="menuSection">
+
+                            <div class="menuHead hidden-xs">My Tools</div>
+                            <div class="menuCont">
+                                <div class="menuElement">
+                                    <h4 class="panel-title">
+                                        <span class="menuAccordion">
+                                            <span class="icon staffIcon" title="Staff Home"></span>
+                                            <a href="@Url.Action("Index", "Staff", null)"><span class="hidden-xs">Staff Home</span></a>
+                                        </span>
+                                    </h4>
+                                </div>
+                                <div class="menuElement">
+                                    <h4 class="panel-title">
+                                        <span class="menuAccordion">
+                                            <span class="icon regIcon" title="Registration"></span><a data-toggle="collapse" data-parent="#accordion" href="#reg-Menu">
+                                                <span class="hidden-xs">Registration</span>
+                                            </a>
+                                        </span>
+                                    </h4>
+
+                                    <div id="reg-Menu" class="iconElements panel-collapse collapse">
+                                        <span class="iconElementsArrow"></span>
+                                        <ul class="panel-body">
+
+
+                                            <li>@Html.ActionLink("Exemptions", "Exemptions", "Registration")</li>
+
+
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="menuElement">
+                                    <h4 class="panel-title">
+                                        <span class="menuAccordion">
+                                            <span class="icon resultsIcon" title="Results"></span><a data-toggle="collapse" data-parent="#accordion" href="#results-Menu">
+                                                <span class="hidden-xs">Results</span>
+                                            </a>
+                                        </span>
+                                    </h4>
+
+
+                                    <div id="results-Menu" class="iconElements panel-collapse collapse">
+                                        <span class="iconElementsArrow"></span>
+                                        <ul class="panel-body">
+
+                                            <li>@Html.ActionLink("Import", "Import", "Result")</li>
+
+                                            <li>@Html.ActionLink("Academic Board", "AcademicBoard", "Result")</li>
+
+
+                                            <li>@Html.ActionLink("Progression", "Progression", "Result")</li>
+
+
+                                            <li>@Html.ActionLink("Publish", "PublishResults", "Result")</li>
+
+
+                                            <li>@Html.ActionLink("Changes", "Changes", "Result")</li>
+
+
+                                            <li>@Html.ActionLink("Purge Uploads", "PurgeUploads", "Result")</li>
+
+
+                                            <li>@Html.ActionLink("CGPA Calculations", "Formula", "Result")</li>
+
+                                        </ul>
+
+                                    </div>
+                                </div>
+                                
+                                <div class="menuElement">
+                                    <h4 class="panel-title">
+                                        <span class="menuAccordion">
+                                            <span class="icon studentIcon" title="Students"></span><a data-toggle="collapse" data-parent="#accordion" href="#students-Menu">
+                                                <span class="hidden-xs">Students</span>
+                                            </a>
+                                        </span>
+                                    </h4>
+
+                                    <div id="students-Menu" class="iconElements panel-collapse collapse">
+                                        <span class="iconElementsArrow"></span>
+                                        <ul class="panel-body">
+
+                                            <li>@Html.ActionLink("Accounts", "Import", "Student")</li>
+
+                                            <li>@Html.ActionLink("Lists", "Lists", "Student")</li>
+
+                                            <li>@Html.ActionLink("Specialisations", "ManageSpecialisation", "Student")</li>
+
+                                            <li>@Html.ActionLink("Search", "Search", "Student")</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+
+                                <div class="menuElement">
+                                    <h4 class="panel-title">
+                                        <span class="menuAccordion">
+                                            <span class="icon staffIcon" title="Staff"></span><a data-toggle="collapse" data-parent="#accordion" href="#staff-Menu">
+                                                <span class="hidden-xs">Staff</span>
+                                            </a>
+                                        </span>
+                                    </h4>
+
+                                    <div id="staff-Menu" class="iconElements panel-collapse collapse">
+                                        <span class="iconElementsArrow"></span>
+                                        <ul class="panel-body">
+
+                                            <li>@Html.ActionLink("Staff Accounts", "StaffAccounts", "UserManagement")</li>
+
+
+                                            <li>@Html.ActionLink("Add Staff Account", "StaffDetails", "UserManagement", new { id = 0 }, null)</li>
+
+                                        </ul>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="menuElement">
+                                    <h4 class="panel-title">
+                                        <span class="menuAccordion">
+                                            <span class="icon gradIcon" title="Graduation"></span><a data-toggle="collapse" data-parent="#accordion" href="#grad-Menu">
+                                                <span class="hidden-xs">Graduation</span>
+                                            </a>
+                                        </span>
+                                    </h4>
+
+                                    <div id="grad-Menu" class="iconElements panel-collapse collapse">
+                                        <span class="iconElementsArrow"></span>
+                                        <ul class="panel-body">
+
+                                            <li>@Html.ActionLink("Graduation List(s)", "Lists", "Graduation")</li>
+
+
+                                            <li>@Html.ActionLink("Graduation Ceremonies", "Index", "Graduation")</li>
+
+                                            <li>@Html.ActionLink("Qualified List(s)", "Qualified", "Graduation")</li>
+
+                                        </ul>
+                                    </div>
+                                </div>
+
+
+
+
+                                <div class="menuElement">
+                                    <h4 class="panel-title">
+                                        <span class="menuAccordion">
+                                            <span class="icon accountsIcon" title="Finance"></span><a data-toggle="collapse" data-parent="#accordion" href="#accounts-Menu">
+                                                <span class="hidden-xs">Finance</span>
+                                            </a>
+                                        </span>
+                                    </h4>
+
+                                    <div id="accounts-Menu" class="iconElements panel-collapse collapse">
+                                        <span class="iconElementsArrow"></span>
+                                        <ul class="panel-body">
+
+                                            <li>@Html.ActionLink("Summary", "Overview", "Financial")</li>
+
+
+                                            <li>@Html.ActionLink("Returns", "Returns", "Financial")</li>
+
+
+                                            <li>@Html.ActionLink("Bank Details", "BankDetails", "Financial")</li>
+                                            <li>@Html.ActionLink("Functional Fees", "FunctionalFees", "Financial")</li>
+                                            <li>@Html.ActionLink("Special Charges", "SpecialCharges", "Financial")</li>
+
+                                        </ul>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="menuSection">
+
+
+                            <div class="menuHead hidden-xs">Settings</div>
+                            <div class="menuCont">
+
+                                <div class="menuElement">
+                                    <h4 class="panel-title">
+                                        <span class="menuAccordion">
+                                            <span class="icon adminUnitIcon" title="Administrative Units"></span><a data-toggle="collapse" data-parent="#accordion" href="#adminUnits-Menu">
+                                                <span class="hidden-xs">Administrative Units</span>
+                                            </a>
+                                        </span>
+                                    </h4>
+
+                                    <div id="adminUnits-Menu" class="iconElements panel-collapse collapse">
+                                        <span class="iconElementsArrow"></span>
+                                        <ul class="panel-body">
+
+                                            <li>@Html.ActionLink("University", "University", "AdministrativeUnits", null, null)</li>
+
+                                            <li>@Html.ActionLink("Campuses", "Campuses", "AdministrativeUnits", null, null)</li>
+
+                                            <li>@Html.ActionLink("Faculties", "Faculties", "AdministrativeUnits", null, null)</li>
+
+                                            <li>@Html.ActionLink("Departments", "Departments", "AdministrativeUnits", null, null)</li>
+
+                                            <li>@Html.ActionLink("Programs", "Index", "Program", null, null)</li>
+
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="menuElement">
+                                    <h4 class="panel-title">
+                                        <span class="menuAccordion">
+                                            <span class="icon semesterIcon" title="Semester"></span><a data-toggle="collapse" data-parent="#accordion" href="#semester-Menu">
+                                                <span class="hidden-xs">Semester</span>
+                                            </a>
+                                        </span>
+                                    </h4>
+
+                                    <div id="semester-Menu" class="iconElements panel-collapse collapse">
+                                        <span class="iconElementsArrow"></span>
+                                        <ul class="panel-body">
+                                            <li>@Html.ActionLink("Configuration", "Index", "Semester")</li>
+                                            <li>@Html.ActionLink("Grading Scheme", "GradingScheme", "Semester")</li>
+                                            <li>@Html.ActionLink("Award Classification", "AwardClassification", "Semester")</li>
+                                            <li>@Html.ActionLink("Pass Marks", "PassMarks", "Semester")</li>
+                                            <li>@Html.ActionLink("Regulations and Procedures", "RegulationsAndProcedures", "Semester")</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                        <div class="menuSection">
+                            <div class="menuHead hidden-xs">Utilities</div>
+                            <div class="menuCont">
+                                <div class="menuElement">
+                                    <h4 class="panel-title">
+                                        <span class="menuAccordion">
+                                            <span class="icon infoIcon" title="Information Desk"></span><a data-toggle="collapse" data-parent="#accordion" href="#info-Menu">
+                                                <span class="hidden-xs">Information Desk</span>
+                                            </a>
+                                        </span>
+                                    </h4>
+
+                                    <div id="info-Menu" class="iconElements panel-collapse collapse">
+                                        <span class="iconElementsArrow"></span>
+                                        <ul class="panel-body">
+                                            <li><a href="#"></a>@Html.ActionLink("Calendar", "Calendar", "InformationDesk", null, new { @class = "hidden-xs" })</li>
+                                            <li><a href="#"></a>@Html.ActionLink("News and Events", "All", "InformationDesk", null, new { @class = "hidden-xs" })</li>
+                                            <li><a href="#"></a>@Html.ActionLink("General Information", "GeneralInformationAll", "InformationDesk", null, new { @class = "hidden-xs" })</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="menuElement">
+                                    <h4 class="panel-title">
+                                        <span class="menuAccordion">
+                                            <span class="icon msgIcon" title="Messenger"></span><a data-toggle="collapse" data-parent="#accordion" href="#msg-menu">
+                                                <span class="hidden-xs">Messenger</span>
+                                            </a>
+                                        </span>
+                                    </h4>
+
+                                    <div id="msg-menu" class="iconElements panel-collapse collapse">
+                                        <span class="iconElementsArrow"></span>
+                                        <ul class="panel-body">
+                                            <li>@Html.ActionLink("Compose", "Compose", "Messenger")</li>
+                                            <li>@Html.ActionLink("Inbox", "Inbox", "Messenger")</li>
+                                            <li>@Html.ActionLink("Sent", "SentMessages", "Messenger")</li>
+                                            <li>@Html.ActionLink("Trash", "Trash", "Messenger")</li>
+                                            <li>@Html.ActionLink("Custom Lists", "CustomLists", "Messenger")</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="menuElement">
+                                    <h4 class="panel-title">
+                                        <span class="menuAccordion">
+                                            <span class="icon auditIcon" title="Audit Trail"></span><a data-toggle="collapse" data-parent="#accordion" href="#audit-Menu">
+                                                <span class="hidden-xs">Audit Trail</span>
+                                            </a>
+                                        </span>
+                                    </h4>
+
+                                    <div id="audit-Menu" class="iconElements panel-collapse collapse">
+                                        <span class="iconElementsArrow"></span>
+                                        <ul class="panel-body">
+                                            <li>@Html.ActionLink("All Trail", "Index", "AuditTrail")</li>
+                                            <li>@Html.ActionLink("Staff Trail", "StaffTrail", "AuditTrail")</li>
+                                            <li>@Html.ActionLink("Student Trail", "StudentTrail", "AuditTrail")</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+
+                        </div>
+
+                    </div>
+                </div>
+
+
+                <div id="renderedBody" class="col-xs-10 col-sm-9">
+                    <div id="preview1" class="preview"></div>
+
+
+                    <div id="loadingAjax" class="">
+                        <p class="alert alert-success well-sm">
+                            <button data-dismiss="alert" class="close" type="button">×</button>
+                            <span>
+                                <span class="fa fa-spin fa-spinner fa-2x"></span>&nbsp; &nbsp; &nbsp;Loading Content, kindly wait ...
+                            </span>
+                        </p>
+                    </div>
+
+                    <div>
+                        @if (TempData[ApplicationConstants.SuccessNotification] != null)
+                        {
+                            <p class="alert alert-success well-sm">
+                                <button type="button" class="close" data-dismiss="alert">×</button>
+                                <span>
+                                    <span class="glyphicon glyphicon-saved"></span>
+                                    @Html.Raw(TempData[ApplicationConstants.SuccessNotification])
+                                </span>
+                            </p>
+                        }
+
+                        @if (TempData[ApplicationConstants.ErrorNotification] != null)
+                        {
+                            <p class="alert alert-danger well-sm">
+                                <button type="button" class="close" data-dismiss="alert">×</button>
+                                <span>
+                                    <span class="glyphicon glyphicon-warning-sign"></span>
+                                    @Html.Raw(TempData[ApplicationConstants.ErrorNotification])
+                                </span>
+                            </p>
+                        }
+                    </div>
+                    <!-- #region Breadcrumb -->
+                    @Html.Raw(Html.BuildBreadcrumbNavigation())
+                    <!-- #endregion -->
+                    @RenderBody()
+                </div>
+
+
+            </div>
+        </div>
+        <div id="push"></div>
+    </div>
+    <div id="footer" role="banner">@Html.Partial("Partials/_LayoutFooter")</div>
+
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/jquery-libs")
+    @Scripts.Render("~/bundles/custom")
+    @Scripts.Render("~/bundles/chosen")
+
+    <script src="~/Scripts/ckeditor/ckeditor.js"></script>
+    <script src="~/Scripts/ckeditor/adapters/jquery.js"></script>
+    <script src="~/Scripts/tinymce/tinymce.min.js"></script>
+
+
+
+    @RenderSection("scripts", required: false)
+
+</body>
+</html>

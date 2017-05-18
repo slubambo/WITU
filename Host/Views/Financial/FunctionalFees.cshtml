@@ -1,0 +1,62 @@
+﻿@using ARMSv2.Core.Model
+@model IEnumerable<ARMSv2.Core.Model.FunctionalFee>
+
+@{
+    ViewBag.Title = "Functional Fees";
+}
+
+@*<h2>Functional Fees</h2>*@
+
+<p>
+    Functional Fees are imposed on all students in the University and vary based on the Year, Level and Period of Study.
+</p>
+
+@if (Request.IsAuthenticated)
+{
+    if (User.ApplicationUserType() == (int) UserTypes.Staff)
+    {
+        <p>
+            @Html.ActionLink("Add Functional Fees", "AddOrEditFunctionalFees", null, new {@class = "btn saveBtn pull-right"})
+        </p>
+    }
+}
+    <div class="clearfix"></div><br/>
+<div class="borderedTableWrap table-responsive">
+    <table class="table dataTable">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.StartAcademicYear)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EndAcademicYear)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.LastModified)
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.ActionLink(item.Name, "FunctionalFeeDetails", new { id = item.Id })
+                    </td>
+                    <td>
+                        @Html.ActionLink(item.StartAcademicYear.Name, "FunctionalFeeDetails", new { id = item.Id })
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EndAcademicYear.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LastModified)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,90 @@
+﻿@using ARMSv2.Core.Model
+@using ARMSv2.Models.Result
+@model ARMSv2.Models.Result.SemesterResultDetail
+
+
+<div>
+    <div class="table-responsive">
+        <table class='table'>
+            <thead>
+                <tr>
+                    <th>Course Code</th>
+                    <th class="hidden-xs">Course Name</th>
+                    <th class="hidden-sm hidden-xs">Status</th>
+                    <th class="hidden-sm hidden-xs">Credit Units</th>
+                    @*<th>CA(/40)</th>
+                        <th>Exam Mark(/100)</th>*@
+                    <th>Total Mark</th>
+                    <th class="hidden-xs">GP</th>
+                    <th>Grade Letter</th>
+                    <th>Remark</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var sc in Model.StudentCourseDetails)
+                {
+
+                    if (sc.CourseScoreSummary.HasNoProblem)
+                    {
+                        <tr>
+
+                            <td>@sc.StudentCourse.Course.Code</td>
+                            <td class="hidden-xs">@sc.StudentCourse.Course.Name</td>
+                            <td class="hidden-sm hidden-xs">@Html.DisplayEnum(@sc.StudentCourse.Course.CourseType ?? @sc.StudentCourse.CourseType)</td>
+                            <td class ="hidden-sm hidden-xs">@sc.StudentCourse.Course.CreditUnits</td>
+                            @*<td class="text-center">@sc.StudentCourse.ContinousAssessment</td>
+                                <td class="text-center">@sc.StudentCourse.ExamMark</td>*@
+                            <td class="text-center">@sc.StudentCourse.FinalMark</td>
+                            <td class="hidden-xs">@sc.CourseScoreSummary.GradePoint</td>
+                            <td>@sc.CourseScoreSummary.Grade</td>
+                            <td>@sc.CourseRemark</td>
+
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr>
+                            <td><strong>@sc.StudentCourse.Course.Code</strong></td>
+                            <td class="hidden-xs"><strong>@sc.StudentCourse.Course.Name</strong></td>
+                            <td class="hidden-sm hidden-xs"><strong>@Html.DisplayEnum(@sc.StudentCourse.Course.CourseType ?? @sc.StudentCourse.CourseType)</strong></td>
+                            <td class="text-center hidden-sm hidden-xs"><strong>@sc.StudentCourse.Course.CreditUnits</strong></td>
+                            @*<td class="text-center"><strong>@sc.StudentCourse.ContinousAssessment</strong></td>
+                                <td class="text-center"><strong>@sc.StudentCourse.ExamMark</strong></td>*@
+                            <td class="text-center"><strong>@sc.StudentCourse.FinalMark</strong></td>
+                            <td class="hidden-xs"><strong>@sc.CourseScoreSummary.GradePoint</strong></td>
+                            <td>@sc.CourseScoreSummary.Grade</td>
+                            <td><strong>@sc.CourseRemark</strong></td>
+
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+        </div>
+
+
+        <br />
+
+        <div class="well col-md-12">
+            <div class="col-md-3">
+                <strong>CTCUs: </strong> @Model.StudentResultSummary.CumulativeTotatlCreditUnits
+            </div>
+            <div class="col-md-3">
+                <strong>GPA: </strong> @Model.StudentResultSummary.GradePointAverage
+            </div>
+            <div class="col-md-3">
+                <strong>CGPA: </strong> @Model.StudentResultSummary.CumulativeGradePointAverage
+            </div>
+            <div class="col-md-3">
+                <strong>Award: </strong> @Model.StudentResultSummary.Award
+            </div>
+            <div class="col-md-6">
+                <strong>Student Status: </strong> @Html.DisplayEnum(Model.StudentResultSummary.StudentStatus ?? StudentStatus.Unknown)
+            </div>
+            <div class="col-md-6">
+                <strong>Remark: </strong> @Model.StudentResultSummary.Remark
+            </div>
+        </div>
+
+    </div>

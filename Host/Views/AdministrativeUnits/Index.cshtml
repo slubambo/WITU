@@ -1,0 +1,39 @@
+﻿@using ARMSv2.Core.Model
+@model ARMSv2.Models.AdministrativeUnits
+@using ARMSv2.Utils
+@using ARMSv2.Models.UserManagement
+@{ var sessionDetails = (SessionUserManagementDetails)HttpContext.Current.Session["LoggedInUserRoles"]; }
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutStaff.cshtml";
+}
+
+<h2>Administrative Units</h2>
+@if (Request.IsAuthenticated)
+{
+    if (User.ApplicationUserType() == (int) UserTypes.Staff)
+    {
+        if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) ARMSv2.Models.ServiceDetail.Campus
+                                                                                && (x.Role.CanCreate == true || x.Role.CanUpdate == true || x.Role.CanDelete == true)))
+        {
+            @Html.ActionLink("Add Campus", "AddOrEditCampus", "AdministrativeUnits", null, new {@class = "btn btn-primary"})
+        }
+        if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) ARMSv2.Models.ServiceDetail.University
+                                                                                && (x.Role.CanCreate == true || x.Role.CanUpdate == true || x.Role.CanDelete == true)))
+        {
+            @Html.ActionLink("Add University Info", "AddOrEditUniversity", "AdministrativeUnits", null, new {@class = "btn btn-primary"})
+        }
+    }
+}
+<p>
+    
+    There are @Model.Campuses campuses.
+</p>
+
+<p>
+    There are @Model.Faculties faculties.
+</p>
+
+<p>
+    There are @Model.Departments departments.
+</p>

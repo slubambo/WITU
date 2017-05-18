@@ -1,0 +1,82 @@
+﻿@using WITU.Core.Model
+@using WITU.Utils
+@using WITU.Models.UserManagement
+@using Microsoft.Ajax.Utilities
+@{ var sessionDetails = (SessionUserManagementDetails)HttpContext.Current.Session["LoggedInUserRoles"]; }
+@model WITU.Models.CoursesListView
+<div>
+    @if (User.ApplicationUserType() == (int)UserTypes.Staff)
+{
+    if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int)WITU.Models.ServiceDetail.Course
+                                                                                 && (x.Role.CanCreate == true || x.Role.CanUpdate == true || x.Role.CanDelete == true)))
+    {
+        //If there are any graduated students, don't show add button
+        if (Model.EnableAddCourse)
+        {
+            <div class="addCourseProg">
+                @Html.ActionLink("Add Course", "AddCourse", "Program",
+                                        new { programId = Model.ProgramId, specialisationId = Model.SpecialisationId, year = Model.Year, semester = Model.Semester },
+                                        new { @class = "btn saveBtn" })
+            </div>
+        }
+        else
+        {
+            if (Model.SpecialisationId == 0)
+            {
+                <div class="row">
+                    <small><span class="col-sm-12">A course can't be added to this program because it already has graduates</span></small>
+                </div>
+            }
+            else
+            {
+                <div class="row">
+                    <small><span class="col-sm-12">A course can't be added to this Specialisation because it already has graduates</span></small>
+                </div>
+            }
+            
+        
+        }
+    }
+
+
+}
+    <div class="">
+        <table class=" table dataTable table-hover tbl-program-courses">
+            <thead>
+                <tr>
+                    <th>Course Name</th>
+                    <th>Course Code</th>
+                    <th>Credit Units</th>
+                    <th>Course Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var c in Model.Courses)
+                {
+                    if (Request.IsAuthenticated)
+                    {
+                        <tr onclick="javascript: ViewCourse('@c.Id', '@c.Name'); ">
+                            <td>@c.Name @(c.Status ==(int)(CourseStatus.InActive) ? "(Inactive)" : "")</td>
+                            <td>@c.Code</td>
+                            <td>@c.CreditUnits</td>
+                            <td>
+                                @Enum.GetName(typeof(CourseType), @c.CourseType)
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr>
+                            <td>@c.Name @(c.Status == (int)(CourseStatus.InActive) ? "(Inactive)" : "")</td>
+                            <td>@c.Code</td>
+                            <td>@c.CreditUnits</td>
+                            <td>
+                                @Enum.GetName(typeof(CourseType), @c.CourseType)
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

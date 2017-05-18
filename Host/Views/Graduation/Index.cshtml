@@ -1,0 +1,52 @@
+﻿@model ARMSv2.Models.graduation.GradCeremonyModel
+@using ARMSv2.Core.Model
+@using ARMSv2.Utils
+@using ARMSv2.Models.UserManagement
+@{
+    ViewBag.Title = "Graduation Ceremonies";
+}
+@{ var sessionDetails = (SessionUserManagementDetails)HttpContext.Current.Session["LoggedInUserRoles"]; }
+
+<h1 class="blueHeader">Graduation Ceremonies</h1>
+
+<div>
+    @if (Request.IsAuthenticated)
+    {
+        if (User.ApplicationUserType() == (int) UserTypes.Staff)
+        {
+            if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) ARMSv2.Models.ServiceDetail.GraduationCeremonies
+                                                                                    && (x.Role.CanCreate == true || x.Role.CanUpdate == true)))
+            {
+                <div class="addProgBtn">
+                    @Html.ActionLink("Add Grad Ceremony", "AddOrEditGradCeremony", new {id = 0, controller = "Graduation"}, new {@class = "saveBtn btn-primary"})
+                </div>
+            }
+        }
+    }
+    
+
+    <div class="table-responsive ">
+        <table class="table dataTable">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Duration</th>
+                <th>Completion Date</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var cer in Model.AllCeremonies)
+            {
+                <tr>
+                    <td>@Html.ActionLink(cer.Name, "View", new {id = @cer.Id, controller = "Graduation"})</td>
+                    <td>@Html.ActionLink(cer.GraduationDetails.Count > 0 ? cer.GraduationDetails.Count.ToString() + " days" : "Missing graduation details", "View", new {id = @cer.Id, controller = "Graduation"})</td>
+                    <td>@cer.CompletionDate.ToString("MMMM yyyy")</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+    <div class="clearfix"></div>
+    <br/>
+    <br/>
+</div>

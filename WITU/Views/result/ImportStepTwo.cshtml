@@ -1,0 +1,60 @@
+﻿@model WITU.Models.Result.ImportStepTwo
+@{
+    ViewBag.Title = "Step Two Import Results";
+}
+
+<h2 class="blueHeader">Import Results</h2>
+
+<h3>Select Location of Records</h3>
+
+<div class="well-sm">
+    <p>
+        Specify Start and Rows and Columns for Registration Numbers, Continous Assessment Mark and Examination Marks.
+    </p>
+</div>
+
+<div>
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+
+            <div>
+                @Html.Raw(Html.UnEncodedValidationSummary())
+            </div>
+            
+            <div class="form-group">
+                @Html.LabelFor(m => m.WorkSheetSelected, new { @class = "col-md-2 control-label" })
+                <div class="col-md-6 col-xs-7">
+                    @Html.DropDownWithModelSelectable(m => m.WorkSheetSelected, Model.WorkSheetNames, null,
+                        new { @class = "form-control"})
+                </div>
+            </div>
+            
+            <div class="form-group">
+                @Html.LabelFor(m => m.StartRow, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10 progCoreInput">
+                    @Html.EditorFor(m => m.StartRow, new { @class = "form-control" , type ="number"})
+                </div>
+            </div>
+            
+            <div class="form-group">
+                @Html.LabelFor(m => m.EndRow, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10 progCoreInput">
+                    @Html.EditorFor(m => m.EndRow, new { @class = "form-control", type = "number" })
+                </div>
+            </div>
+            
+            <div class="pull-right">
+                @*<input type="submit" value="Save" class="btn saveBtn" />*@
+                <button type="submit" class="btn saveBtn">
+                    Next
+                    <span class="glyphicon glyphicon-chevron-right"></span>
+                </button> 
+            </div>
+        </div>
+    }
+</div>
+
+@Scripts.Render("~/bundles/jqueryval")

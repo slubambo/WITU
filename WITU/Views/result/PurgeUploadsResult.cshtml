@@ -1,0 +1,130 @@
+﻿@model List<WITU.Models.Result.PurgeDataCollection>
+@using WITU.Utils
+@using WITU.Models.UserManagement
+@{ var sessionDetails = (SessionUserManagementDetails)HttpContext.Current.Session["LoggedInUserRoles"]; }
+          
+@{
+    ViewBag.Title = "Purge Uploads";
+}
+<div class="form-horizontal noborder">
+    @if (Model.Any())
+    {
+        foreach (var program in Model)
+        {
+            <div class="">
+                <h3 class="maroonHeader">@program.Faculty </h3>
+
+                @if (program.Department != null)
+                {
+                    <p class="blueHeader"> @program.Department</p>
+                }
+                <p class="blueHeader"> @program.Programme</p>
+            </div>
+
+
+
+
+            <div>
+                @if (program.Data.Any())
+                {
+                    if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) WITU.Models.ServiceDetail.Purge
+                                                                                            && (x.Role.CanCreate == true || x.Role.CanUpdate == true || x.Role.CanDelete == true)))
+                    {
+                        <div class="fright">
+                            <button id="btn-purge-result" class="saveBtn btn-multiselect">
+                                <span class="fa fa-pencil-square-o"></span>
+                                Purge Results
+                            </button>
+                        </div>
+                    }
+                    <br/>
+                    <br/>
+                    <div class="form-horizontal noborder">
+                        <table class="table" id="tbl-purge-result">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @*Select All Only if All Can be selected, i.e. None contains graduated Students*@
+                                        @if (!program.Data.Any(da => da.CotainsGradStudents))
+                                        {
+                                            <input type="checkbox" autocomplete="off" value="allChecked" class="pull-left"
+                                                   id="tbl-chbx-purge-all" />
+                                        }
+                                        
+                                    </th>
+                                    <th>Course Code</th>
+                                    <th>Course Name</th>
+                                    <th>Course Type</th>
+                                    <th>No. of Records</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var sc in program.Data)
+                                {
+
+                                    <tr class="">
+                                        <td>
+                                            @* If a course contains a graduated Student, it should NOT be selectable but visible in the table *@
+                                            @*BELOW, If course doesn't contain graduates*@
+                                            @if (!sc.CotainsGradStudents)
+                                            {
+                                                <input type="checkbox" value="@sc.CourseId" autocomplete="off"
+                                                       onchange=" javascript: purgeCheckBoxChange(this); " class="tbl-chbx-purge-sc pull-left" />
+                                            }
+                                            else
+                                            {
+                                                <b>*</b>
+                                            }
+                                            
+                                        </td>
+                                        <td>@sc.CourseCode </td>
+                                        <td>
+                                            <p>@sc.CourseName 
+                                            @if (!string.IsNullOrEmpty(sc.SpecialisationName))
+                                                {
+                                                    <span>- (@sc.SpecialisationName)</span>
+                                                }
+                                            </p>
+                                        </td>
+                                        <td>@Html.DisplayEnum(sc.CourseType)</td>
+                                        <td>@sc.Records</td>
+                                        <td title="Purge @sc.CourseName Results"></td>
+                                    </tr>
+
+                                }
+                            </tbody>
+                        </table>
+                        
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <p>
+                                <b>*</b> <small>These courses can't be purged because some students have graduated</small>
+                            </p>
+                        </div>
+
+                    </div>
+                    
+                        }
+                else
+                {
+                    <p>No Records Found</p>
+                }
+            </div>
+        }
+        var sample = Model.FirstOrDefault();
+        if (sample != null)
+        {
+            @*        <span id="span-semId" class="hidden">@sample.SemId</span>*@
+            @*        <span id="span-semLevelId" class="hidden">@sample.SemLevelId</span>*@
+            <input value="@sample.SemId" name="ResultSemId" id="ResultSemId" class="hidden" />
+            <input value="@sample.SemLevelId" name="ResultSemLevelId" id="ResultSemLevelId" class="hidden" />
+        }
+
+    }
+    else
+    {
+        <p>No Records found that match that criteria</p>
+    }
+</div>

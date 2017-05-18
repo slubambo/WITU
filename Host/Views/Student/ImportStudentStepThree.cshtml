@@ -1,0 +1,135 @@
+﻿@model ARMSv2.Models.student.ImportStudentStepThree
+
+@{
+    ViewBag.Title = "Step Three Import Students";
+        
+}
+
+<div>
+    <h2>Import Students</h2>
+    
+    <h3>Step Three: Confirm the  Records</h3>
+    
+    <p class="text text-success">
+        The following Students shall be saved. 
+    </p>
+    <table id="tbl-studentsuploaded-success" class="table">
+        <thead>
+            <tr>
+                <th>Surname</th>
+                <th>Given Name</th>
+                <th>Registration Number</th>
+                <th>Fees Number</th>
+                <th>Academic Programme</th>
+                <th>Gender</th>
+                <th>Marital Status</th>
+                <th>Religion</th>
+                <th>Nationality</th>
+                <th>Date of Birth</th>
+                <th>Residence Status</th>
+                <th>Hall of Residence</th>
+                <th>Study Period</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var successfulRecord in Model.SuccessImportStudents)
+            {
+                <tr>
+                    <td>@successfulRecord.Surname</td>
+                    <td>@successfulRecord.GivenName</td>
+                    <td>@successfulRecord.RegistrationNumber</td>
+                    @if (string.IsNullOrEmpty(successfulRecord.FeesNumber))
+                    {
+                        <td>N/A</td>
+                    }
+                    else
+                    {
+                        <td>@successfulRecord.FeesNumber</td>
+                    }
+                    
+                    <td>@successfulRecord.ProgramDetails</td>
+                    <td>@successfulRecord.Gender</td>
+                    @if (string.IsNullOrEmpty(successfulRecord.MaritalStatus))
+                    {
+                        <td>N/A</td>
+                    }
+                    else
+                    {
+                        <td>@successfulRecord.MaritalStatus</td>
+                    }
+                    @if (string.IsNullOrEmpty(successfulRecord.Religion))
+                    {
+                        <td>N/A</td>
+                    }
+                    else
+                    {
+                        <td>@successfulRecord.Religion</td>
+                    }
+                    <td>@successfulRecord.Nationality</td>
+                    <td>@Convert.ToDateTime(successfulRecord.DateOfBirth).ToShortDateString()</td>
+                    <td>@successfulRecord.ResidenceStatus</td>
+                    <td>
+                        @if (string.IsNullOrEmpty(successfulRecord.HallOfResidence))
+                        {
+                            <span>None Provided</span>
+                        }
+                        else
+                        {
+                            <span>@successfulRecord.HallOfResidence</span>
+                        }
+                        
+                    </td>
+                    <td>@successfulRecord.StudyPeriod</td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+    
+    <p class="text text-warning">
+        The following Rows in the uploaded spreadsheet have Errors
+    </p>
+    <table class="table dataTable">
+        <thead>
+            <tr>
+                <th>Row Number</th>
+                <th>Error(s)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var failedRecords in Model.ErrorImportStudents)
+            {
+                <tr>
+                    <td>@failedRecords.RowNumber</td>
+                    <td>
+                        <ul>
+                            @foreach (var error in failedRecords.Errors)
+                            {
+                                <li>@error</li>
+                            }
+                        </ul>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    
+    <br/>
+    <div>
+        @using (Html.BeginForm())
+        {
+            <button class="btn delBtn" value="cancel" type="button" name="saveStatus"
+                    onclick="javascript: cancelSubmission('@Url.Action("BatchedEnrollment", "Student" )', 'Are you sure you want to cancel Students Upload? Changes will not be saved.');">
+                <span class="glyphicon glyphicon-remove"></span>
+                Cancel
+            </button>
+
+            <button class="btn saveBtn pull-right" value="save" name="saveStatus"type="submit" >
+                Save
+                <span class="glyphicon glyphicon-chevron-right"></span>
+            </button>
+        }
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/jqueryval")

@@ -1,0 +1,65 @@
+﻿@using ARMSv2.Utils
+@using NHibernate.Linq
+@model ARMSv2.Core.Model.Timeline
+
+@{
+    ViewBag.Title = "Ndejje University Records Management System";
+}
+
+<div class="">
+    <h2 class="blueHeader">Edit Calendar</h2>
+    
+    @using (Html.BeginForm("EditCalendar", "InformationDesk", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    {
+        @Html.ValidationSummary()
+        
+        <div class="form-group">
+            @Html.LabelFor(m => m.Headline, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10 progCoreInput">
+                @Html.TextBoxFor(m => m.Headline, new { @class = "form-control" })
+            </div>
+        </div>
+        
+        <div class="form-group">
+            @Html.LabelFor(m => m.StartDate, new {@class = "col-md-2 control-label" })
+            <div class="col-md-10 progCoreInput">
+                <div class="input-group">
+                    <label class="input-group-addon noborder btn" for="start-date"><span class="glyphicon glyphicon-calendar" data-for="start-date"></span></label>
+                    @Html.DateTimeEditorFor(m => m.StartDate, "dd/MM/yyyy", new { @id = "start-date", @class = "noborder date-start-date uneditable-input" })
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            @Html.LabelFor(m => m.EndDate, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10 controls progCoreInput">
+                <div class="input-group">
+                        <label class="input-group-addon noborder  btn" for="end-date">
+                            <span class="glyphicon glyphicon-calendar" data-for="end-date"></span>
+                        </label>
+                        @Html.DateTimeEditorFor(m => m.EndDate, "dd/MM/yyyy", new { @id = "end-date", @class = "noborder date-end-date uneditable-input" })
+                    
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            @Html.LabelFor(m => m.Content, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(m => m.Content, new { @class = "form-control" })
+            </div>
+        </div>
+        
+        <div class="">
+            
+                <input type="submit" class="btn saveBtn pull-right"  value="Save" />
+            <div class="clearfix"> </div>
+        </div>
+        
+        @Html.HiddenFor(m => m.Id)
+        @Html.HiddenFor(m => m.ClassName)
+        @Html.HiddenFor(m => m.Type)
+        @Html.HiddenFor(m => m.Asset)
+    }
+</div>
+

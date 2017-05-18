@@ -1,0 +1,105 @@
+﻿@using ARMSv2.Core.Model
+@model ARMSv2.Models.AdminUnits.CampusView
+@using ARMSv2.Utils
+@using ARMSv2.Models.UserManagement
+@{ var sessionDetails = (SessionUserManagementDetails)HttpContext.Current.Session["LoggedInUserRoles"]; }
+@{
+    ViewBag.Title = "View Campus";
+}
+<div class="row">
+    <div class="col-md-12">
+        <h4 class="blueHeader">@Model.Campus.University.Name</h4>
+        <h2 class="greyHeader">@Model.Campus.Name</h2>
+        @if (!string.IsNullOrWhiteSpace(@Model.Campus.ShortName))
+        {
+            <h4 class="greyHeader">@Model.Campus.ShortName</h4>
+        }
+        else
+        {
+            //TODO: Add logic for no short name
+        }
+
+    </div>
+   
+</div>
+
+
+<hr/>
+<div class="row">
+
+    @if (string.IsNullOrWhiteSpace(Model.Campus.Description))
+    {
+        <span class="col-xs-12 col-sm-12 greyTxt text-justify">
+
+            No Description Available
+
+        </span>
+    }
+    else
+    {
+        <span class="col-xs-12 col-sm-12 text-justify">
+
+            @Model.Campus.Description
+
+        </span>
+    }
+
+</div>
+<div class="row">
+    <div class="col-md-12">
+        @if (Request.IsAuthenticated)
+        {
+
+            if (User.ApplicationUserType() == (int)UserTypes.Staff)
+            {
+                if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) ARMSv2.Models.ServiceDetail.Campus
+                                                                                        && (x.Role.CanCreate == true || x.Role.CanUpdate == true || x.Role.CanDelete == true)))
+                {
+                    <span class="pull-right">
+
+                        @Html.ActionLink("Edit Campus", "AddorEditCampus", new {id = Model.Campus.Id}, new {@class = "btn saveBtn"})
+                    </span>
+                    <span class="clearfix">
+
+                    </span>
+                }
+            }
+
+        }
+    </div>
+
+</div>
+<br />
+<div class="row">
+    <div class="col-md-12">
+        <h4 class="greyHeader">
+            Contact Information
+        </h4>
+    </div>
+
+</div>
+
+@Html.Partial("~/Views/AdministrativeUnits/_Contacts.cshtml", @Model.ContactViewEntended)
+
+<br/>
+<hr/>
+<br/>
+<div class="row">
+    <div class="col-md-12">
+        <h4 class="greyHeader">
+            Faculties
+        </h4>
+    </div>
+
+</div>
+@if (User.ApplicationUserType() == (int)UserTypes.Staff)
+{
+    if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) ARMSv2.Models.ServiceDetail.Faculty
+                                                                            && !(x.Role.CanCreate == true || x.Role.CanUpdate == true || x.Role.CanDelete == true)))
+    {
+        <div class="addProgBtn">
+            @Html.ActionLink("Add Faculty", "AddOrEditFaculty", new {campusId = Model.Campus.Id, controller = "AdministrativeUnits"}, new {@class = "saveBtn btn-primary"})
+        </div>
+    }
+}
+@Html.Partial("Display/_FacultyTables", Model.AllFaculties)

@@ -1,0 +1,155 @@
+﻿@{
+    ViewBag.Title = "Staff Accounts Management";
+    Layout = null;
+
+}
+@model WITU.Models.UserInfoViewModel
+
+<div class="row">
+    <div class="col-md-6">
+        <span class="form-group"></span>
+        @if (@Model.Person.ProfilePhotoUrl != null)
+        {
+            <img src="@Model.Person.ProfilePhotoUrl" class="img-circle img-responsive" />
+        }
+
+    </div>
+    <div class="col-md-6">
+        <h3 class="linkBtn small btn-sm pull-left">User Account Information</h3>
+        <div class="clearfix"></div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.User.Username, new { @class = "control-label col-md-4" })
+            @Model.User.Username
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <h3 class="linkBtn small btn-sm pull-left">Profile Information</h3>
+        <div class="clearfix"></div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Person.Title, new { @class = "control-label col-md-4" })
+            @Model.Person.Title
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Person.Surname, new { @class = "control-label col-md-4" })
+            @Model.Person.Surname
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Person.GivenName, new { @class = "control-label col-md-4" })
+            @Model.Person.GivenName
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Person.OtherName, new { @class = "control-label col-md-4" })
+            @Model.Person.OtherName
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Person.Gender, new { @class = "control-label col-md-4" })
+            @if (@Model.Person.Gender != null)
+        {
+            @Html.DisplayEnum(@Model.Person.Gender)
+
+        }
+        </div>
+
+
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Person.DateOfBirth, new { @class = "col-md-4 control-label" })
+            @if (@Model.Person.DateOfBirth != null)
+        {
+            @Model.Person.DateOfBirth.Value.ToLongDateString()
+        }
+
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Person.MaritalStatus, new { @class = "control-label col-md-4" })
+            @Model.Person.MaritalStatus
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Person.Religion, new { @class = "control-label col-md-4" })
+            @Model.Person.Religion
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Person.Country2, new { @class = "control-label col-md-4" })
+            @if (Model.Person.Country2 != null)
+        {
+            @Model.Person.Country2.Name
+
+        }
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <h3 class="linkBtn small btn-sm pull-left">Contact Information</h3>
+        <div class="clearfix"></div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Person.PostalAddress, new { @class = "control-label col-md-4" })
+            @Model.Person.PostalAddress
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Person.EmailAddress, new { @class = "control-label col-md-4" })
+            @Model.Person.EmailAddress
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Person.AltEmailAddress, new { @class = "control-label col-md-4" })
+            @Model.Person.AltEmailAddress
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Person.TelephoneContact, new { @class = "control-label col-md-4" })
+            @Model.Person.TelephoneContact
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Person.AltTelephoneContact, new { @class = "control-label col-md-4" })
+            @Model.Person.AltEmailAddress
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Person.NextOfKinName, new { @class = "control-label col-md-4" })
+            @Model.Person.NextOfKinName
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Person.NextOfKinRelationship, new { @class = "control-label col-md-4" })
+            @Model.Person.NextOfKinRelationship
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Person.NextOfKinContact, new { @class = "control-label col-md-4" })
+            @Model.Person.NextOfKinContact
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Person.NextOfKinAddress, new { @class = "control-label col-md-4" })
+            @Model.Person.NextOfKinAddress
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Person.WebsiteUrl, new { @class = "control-label col-md-4" })
+            @Model.Person.WebsiteUrl
+        </div>
+    </div>
+    <div class="">
+        <br />
+        @Html.HiddenFor(x => x.User.Id)
+        @Html.HiddenFor(x => x.Person.Id)
+        <input name="buttonClicked" class="btn saveBtn" type="submit" value="Edit" />
+        <div class="clearfix"> </div>
+    </div>
+</div>
+

@@ -1,0 +1,11 @@
+﻿@model IEnumerable<WITU.Core.Model.Faculty>
+
+<ul class="list-group">
+    @foreach (var fac in Model)
+    {
+        <li class="list-group-item ">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+            @Html.ActionLink(fac.FacultyCore.Name, "ViewFaculty", new { id = @fac.Id, controller = "AdministrativeUnits" })
+        </li>
+    }
+</ul>

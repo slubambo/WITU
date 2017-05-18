@@ -1,0 +1,65 @@
+﻿@using System.Globalization
+@using ARMSv2.Core.Model
+@model IEnumerable<ARMSv2.Core.Model.SpecialCharge>
+
+@{
+    ViewBag.Title = "Special Charges";
+}
+
+@*<h2>Special Charges</h2>*@
+
+<p>
+    These are utility charges that are applied when needed.
+</p>
+@if (Request.IsAuthenticated)
+{
+    if (User.ApplicationUserType() == (int) UserTypes.Staff)
+    {
+
+        <div>
+            @Html.ActionLink("Add Special Charge", "AddOrEditSpecialCharge", "Financial", null, new {@class = "btn saveBtn pull-right"})
+            <div class="clearfix"></div><br/>
+        </div>
+    }
+}
+    <div class="borderedTableWrap">
+    <table class="table table-bordered hoverTable dataTable">
+        <thead>
+            <tr>
+                <th>Particulars</th>
+                <th>Rate</th>
+                <th>USD</th>
+                <th>Added On</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var sp in Model)
+            {
+                <tr onclick="window.location.href = '@Url.Action("SpecialCharge", "Financial", new {id = sp.Id})'">
+                    <td>@sp.Name</td>
+                    @{
+                var currentSpd = sp.SpecialChargeDetails.FirstOrDefault(x => x.EndAcademicYear == null);
+                    }
+                    @if (currentSpd != null)
+                    {
+                        <td>@currentSpd.Rate.ToString("n0", CultureInfo.InvariantCulture)</td>
+                        <td>
+                            @if (@currentSpd.UsdRate != null)
+                            {
+                                @currentSpd.UsdRate.Value.ToString("n0", CultureInfo.InvariantCulture)
+                            }
+                        </td>
+                        <td>@currentSpd.CreatedOn</td>
+                    }
+                    else
+                    {
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>

@@ -1,0 +1,214 @@
+﻿@using ARMSv2.Core.Model
+@using System.Web.Configuration
+@model ARMSv2.Models.AdminUnits.UniversityView
+@using ARMSv2.Utils
+@using ARMSv2.Models.UserManagement
+@{ var sessionDetails = (SessionUserManagementDetails)HttpContext.Current.Session["LoggedInUserRoles"]; }
+@{
+    ViewBag.Title = "University";
+    var positionCategories = Model.UniversityPositions.Select(x => x.PositionCategory).Distinct();
+}
+<div class="row">
+    <div class="col-md-10">
+        <h2 class="blueHeader">@Model.University.Name</h2>
+        @if (!string.IsNullOrWhiteSpace(@Model.University.ShortName))
+        {
+            <h4 class="greyHeader">@Model.University.ShortName</h4>
+        }
+        else
+        {
+            //TODO: Add logic for no short name
+        }
+
+    </div>
+    <div class="col-md-2">
+        @if (!string.IsNullOrWhiteSpace(Model.University.LogoPathName))
+        {
+            <img src="@Url.Content(WebConfigurationManager.AppSettings["BaseResourcesUrl"] + @Model.University.LogoPathName)" class="img img-responsive" />
+        }
+    
+    </div>
+</div>
+
+   
+    <hr />
+  
+  
+<div class="row">
+    
+    @if (string.IsNullOrWhiteSpace(Model.University.Description))
+    {
+        <span class="col-xs-12 col-sm-12 text-justify"> 
+        
+            No Description Available
+
+        </span>
+    }
+    else
+    {
+        <span class="col-xs-12 col-sm-12 text-justify"> 
+        
+            @Model.University.Description
+
+        </span>
+    }
+    
+</div>
+<div class="row">
+    <div class="col-md-9"></div>
+    <div class="col-md-3">
+        @if (Request.IsAuthenticated)
+        {
+
+            if (User.ApplicationUserType() == (int)UserTypes.Staff)
+            {
+                if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) ARMSv2.Models.ServiceDetail.University
+                                                                                        && (x.Role.CanCreate == true || x.Role.CanUpdate == true || x.Role.CanDelete == true)))
+                {
+                    <span class="pull-right">
+         
+                        @Html.ActionLink("Edit University", "AddorEditUniversity", new {id = Model.University.Id}, new {@class = "btn saveBtn"})
+                    </span>
+              
+                    <span class="clearfix">
+            
+                    </span>
+                }
+            }
+    
+        }
+    </div>
+    
+</div>
+<br />
+<div class="row">
+    <div class="col-md-12">
+        <h4 class="greyHeader">
+            Campuses
+        </h4>
+    </div>
+
+</div>
+@foreach (var campus in Model.University.Campus)
+{
+    <div class="">
+        @Html.ActionLink(campus.Name, "ViewCampus", "AdministrativeUnits", new{id = campus.Id}, new{@class = "blueTxt"})
+        @if(string.IsNullOrEmpty(campus.Description) == false)
+        {
+        <p>@campus.Description</p>
+        } 
+    </div>
+}
+<br/>
+<div class="row">
+    <div class="col-md-12">
+        <h4 class="greyHeader">
+            Contact Information
+        </h4> 
+    </div>
+    
+</div>
+
+    @Html.Partial("~/Views/AdministrativeUnits/_Contacts.cshtml", @Model.ContactViewEntended)
+<br/>
+<h4 class="greyHeader">University Management</h4>
+<div class="tabs bodytext tabs-pilled noborder">
+    <ul class="nav nav-pills programUl">
+
+        <li class="" id="tab-header-mgt-boardmember"><a role="tab" data-togle="tab" href="#tab-div-mgt-boardmembers">Board of Directors</a></li>
+        @foreach (var positionCategory in positionCategories)
+        {
+            <li class="" id="tab-header-mgt-@positionCategory.Id"><a role="tab" data-togle="tab" href="#tab-div-mgt-@positionCategory.Id">@positionCategory.Name</a></li>
+        }
+
+    </ul>
+
+
+   
+    <div id="tab-div-mgt-boardmembers" class="tab-pane">
+        <div class="table-responsive ">
+            <table class="table dataTable tbl-university-mgt">
+                <thead>
+                    <tr>
+                        <th>Staff Member</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    @foreach (var stfPosition in Model.AllStaffPositions.Where(x => x.Position.Name == "Board Member"))
+                    {
+                        <tr>
+                            
+                            <td>
+                               <div class="row"> @Html.ActionLink(@stfPosition.Staff.Person.FullName, "StaffDetails", "UserManagement", new { id = stfPosition.Staff.User.Id }, null) </div>
+                                
+                            </td>
+
+                        </tr>
+                    }
+                        
+                </tbody>
+            </table>
+        </div>
+        <div class="clearfix"></div>
+        <br />
+    </div>
+
+
+
+    @foreach (var positionCategory in positionCategories)
+    {
+        <div id="tab-div-mgt-@positionCategory.Id" class="tab-pane">
+            <div class="table-responsive ">
+                <table class="table dataTable tbl-university-mgt">
+                    <thead>
+                        <tr>
+                            <th>Position</th>
+                            <th>Staff Member(s)</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var position in Model.UniversityPositions.Where(x => x.PositionCategory.Id == positionCategory.Id))
+                        {
+                            if (position.Name == "Board Member")
+                             {
+                                 continue;
+                             }
+                            <tr>
+                                <td>
+                                    @Html.ActionLink(@position.Name, "Position", "UserManagement", new{id = position.Id}, null)
+                                </td>
+                                <td>
+                                    @if (position.StaffPositions.Any())
+                                    {
+                                        foreach (var stfPosition in Model.AllStaffPositions.Where(x => x.Position.Id == position.Id))
+                                        {
+@*                                            <p> @stfPosition.Staff.Person.FullName - @stfPosition.Id | @stfPosition.Staff.Id </p>*@
+                                            <div class="row"> @Html.ActionLink(@stfPosition.Staff.Person.FullName, "StaffDetails", "UserManagement", new{id = stfPosition.Staff.User.Id}, null) </div>
+                                           
+
+                                        }
+                                        
+                                    }
+
+                                    else
+                                    {
+                                        <p> Unassigned </p>
+                                    }
+                                </td>
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="clearfix"></div>
+            <br />
+        </div>
+    }
+
+
+</div>
+

@@ -1,0 +1,114 @@
+﻿@model ARMSv2.Models.Registration.AddExemptionsModel
+@using ARMSv2.Core.Model
+@{
+    ViewBag.Title = "Add Exemption(s)";
+}
+
+<h3 class="blueHeader">Add Exemptions</h3>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    
+    <div>
+        @Html.Raw(Html.UnEncodedValidationSummary())
+    </div>
+    
+
+
+<div class="form-group col-sm-12">
+    @Html.LabelFor(m => m.ExemptionRequestId, new { @class = "col-md-3 col-sm-4 control-label" }) 
+    <div class="col-md-7 col-sm-6">
+        @Html.DropDownWithModelSelectable(m => m.ExemptionRequestId, Model.ExemptionRequestOptions, Model.DefaultFirstItem,
+            new { @class = "form-control chosen-select", id = "drpdwn-exp-request" })
+    </div>
+    <div class="col-md-2 col-sm-2">
+        <button id="btn-add-exemption-request" class="btn btn-primary btn-sm" onclick="AddExemptionRequest(@Model.Student.Id, @Model.UserId); return false;">
+            <span class="glyphicon glyphicon-plus"></span>
+            Add 
+        </button> 
+    </div>
+</div>
+
+<b>Please select the courses you would like to exempt for</b> @Model.Student.Person.FullNameWithNoTitle
+
+<div class="form-horizontal tabs bodytext tabs-pilled noborder">
+
+    <ul class="">
+
+        @for (int yr = 1; yr <= Model.Student.Program.ProgramCore.MinimumDuration; yr++)
+        {
+            <li>
+                <a href="#Year@(yr)" role="tab" data-toggle="tab">
+                    Year @(yr)
+                </a>
+            </li>
+        }
+    </ul>
+
+    @for (int yr = 1; yr <= Model.Student.Program.ProgramCore.MinimumDuration; yr++)
+    {
+        <div id="Year@(yr)" class="bodytext tab-pane nopadding ">
+            
+            @for (int sem = 1; sem <= 2; sem++)
+            {
+                <h4 class="blueTxt"><b>Semester @(sem == 1 ? "I" : "II")</b></h4>
+                <div class="table-responsive">
+                    <table class="table @(User.ApplicationUserType() == (int)UserTypes.Staff ? "tbl-courses-to-exempt-from" : "")">
+                        <thead>
+
+                            <tr>
+                                <th>
+
+                                </th>
+                                <th>
+                                    Course Name
+                                </th>
+                                <th>
+                                    Specialisation
+                                </th>
+                                <th>
+                                    Credit Units
+                                </th>
+
+                            </tr>
+
+                        </thead>
+                        <tbody>
+                            @if (Model.CourseList.Any(c => c.SemesterLevel.Level == yr && c.SemesterLevel.SemesterSession == sem))
+                            {
+                                foreach (var m in Model.CourseList.Where(c => c.SemesterLevel.Level == yr && c.SemesterLevel.SemesterSession == sem))
+                                {
+                                    <tr>
+                                        <td>
+                                            <input name="SelectedCourses" type="checkbox" autocomplete="off" onchange="javascript: exemptCourseCheckBoxChange(this);" value="@m.Id" class="" />
+                                        </td>
+                                        <td>@m.Code - @m.Name</td>
+                                        <td>@(m.Specialisation != null? m.Specialisation.SpecialisationCore.Name : "N/A")</td>
+                                        <td>@m.CreditUnits</td>
+
+                                    </tr>
+                                }
+                            }
+                           
+                        </tbody>
+                    </table>
+                </div>
+            }
+
+        </div>
+    }
+</div>
+<br/>
+    <div class="pull-right">
+        <button type="submit" class="btn saveBtn btn-multiselect-exemptcourses" onclick="javascript: showLoadingDialog(' Adding Exemptions to Student...');">
+            Exempt
+            <span class=" glyphicon glyphicon-chevron-right">
+            </span>
+        </button>
+    </div>
+    
+    @Html.HiddenFor(m => m.StudentId)
+    @Html.HiddenFor(m => m.UserId)
+}
+

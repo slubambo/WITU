@@ -1,0 +1,80 @@
+﻿@model ARMSv2.Models.MesseageList
+@{
+    ViewBag.Title = "Trash";
+}
+<div>
+
+    <div class="pull-right">
+        <div class="btn"><span class="fa fa-inbox"></span>  @Html.ActionLink("Inbox", "Inbox", "Messenger")</div>
+        <div class="btn"><span class="fa fa-paper-plane"></span>  @Html.ActionLink("Sent", "SentMessages", "Messenger")</div>
+        <div class="btn"><span class="fa fa-floppy-o"></span>  @Html.ActionLink("Drafts", "Drafts", "Messenger")</div>
+        <div class="btn saveBtn"><span class="fa fa-trash-o"></span>  @Html.ActionLink("Trash", "Trash", "Messenger")</div>
+    </div>
+    <div class="pull-left">
+        <div class="btn"><span class="fa fa-pencil"></span>  @Html.ActionLink("Compose", "Compose", "Messenger")</div>
+    </div>
+    <br />
+
+    <br /><br />
+    <table class="table dataTable">
+        <thead>
+
+            <tr>
+                <th class="fa fa-inbox">
+
+                </th>
+                <th>
+                    Sender
+                </th>
+                <th>
+                    Message
+                </th>
+                <th>
+                    Date
+                </th>
+
+            </tr>
+
+        </thead>
+        <tbody>
+
+
+            @foreach (var m in Model.InboxMessages)
+            {
+                if (m.Message != null)
+                {
+
+                    var style = "";
+                    if (m.RecipientStatus == 2)
+                    {
+                        style = "messageRead";
+                    };
+
+                    <tr class="@style" onclick="location.href = '@Url.Action("ReadMessage", "Messenger", new { id = @m.Id })'" style="cursor: pointer;">
+                        <td style="width: 5%">
+                            <input type="checkbox" name="" id="" />
+                        </td>
+
+                        <td style="width: 20%">
+                            @m.Message.User.Username
+                        </td>
+
+                        <td>
+                            <b>@m.SubjectBrief</b> - <span class="messageSummary">@m.MessageBrief</span> @if (m.HasAttachments == true)
+                            { <span class="attachmentIndicator"></span>}
+                        </td>
+                        <td style="width: 10%">
+                            @if (m.RecipientStatus == 2)
+                            { @m.Message.CreatedOn.ToString("dd MMM")}
+                            @if (m.RecipientStatus == 1)
+                            { <b>@m.Message.CreatedOn.ToString("dd MMM")</b>}
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+
+
+</div>

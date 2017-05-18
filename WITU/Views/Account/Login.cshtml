@@ -1,0 +1,51 @@
+﻿@model WITU.Models.LoginViewModel
+
+@{
+    ViewBag.Title = "Log In";
+}
+<div class="homeWrap homePages">
+    <div class="col-md-12 col-xs-12 nopadding container-table">
+        <div class="col-md-5 col-xs-12 accountCreationForm vertical-center-row">
+            <h2 class="loginHeader center nomargin">@ViewBag.Title</h2>
+            <div class="loginWrap">
+                <div class="row">
+                    <section id="loginForm">
+                        @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            @*<h4>Use a local account to log in.</h4>
+                            <hr />*@
+                            @Html.ValidationSummary(true)
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.UserName, new { @class = " col-xs-12  control-label" })
+                                <div class="col-xs-12">
+                                    @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.UserName)
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.Password, new { @class = " col-xs-12  control-label" })
+                                <div class="col-xs-12">
+                                    @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.Password)
+                                </div>
+                            </div>
+                            <div class="form-group nomargin">
+                                <div class="fright ">
+                                    <input type="submit" value="Log in" class="btn right saveBtn" />
+                                </div>
+                                <div class="clearfix"></div>
+                                <br />
+                            </div>
+                           
+                        }
+                    </section>
+                </div>
+                
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="clearfix"></div>
+</div>

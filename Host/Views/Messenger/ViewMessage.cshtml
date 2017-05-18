@@ -1,0 +1,213 @@
+﻿@using System.Activities.Expressions
+@using ARMSv2.Core.Model
+@using ARMSv2.Utils
+@using ARMSv2.Core.Model
+@model ARMSv2.Models.MessageDetail
+@{
+    ViewBag.Title = "View Message";
+}
+<link href="~/Scripts/FileUpload/css/jquery.fileupload.css" rel="stylesheet" />
+<div class="pull-right">
+    <div class="btn"><span class="fa fa-inbox"></span>  @Html.ActionLink("Inbox", "Inbox", "Messenger")</div>
+    <div class="btn"><span class="fa fa-paper-plane"></span>  @Html.ActionLink("Sent", "SentMessages", "Messenger")</div>
+    <div class="btn"><span class="fa fa-floppy-o"></span>  @Html.ActionLink("Drafts", "Drafts", "Messenger")</div>
+    <div class="btn"><span class="fa fa-trash-o"></span>  @Html.ActionLink("Trash", "Trash", "Messenger")</div>
+</div>
+<div class="pull-left">
+    @if (User.ApplicationUserType() == (int)UserTypes.Staff)
+{
+    <div class="btn"><span class="fa fa-pencil"></span>  @Html.ActionLink("Compose", "Compose", "Messenger")</div>
+}
+@if (User.ApplicationUserType() == (int)UserTypes.Student)
+{
+    <div class="btn"><span class="fa fa-pencil"></span>  @Html.ActionLink("Compose", "ComposeStudent", "Messenger")</div>
+}
+</div>
+<br />
+<hr />
+<div class="pull-right">
+    @if (Model.HasAttachments == true)
+    { <span class="pull-left attachmentIndicator"></span>} &nbsp &nbsp @Model.Message.CreatedOn.ToString("U")
+</div>
+<div class="">
+    <p><b>Subject: @Model.Message.Subject</b></p>
+    <p><b>Sender: @Model.SenderPerson.FullName (@Model.Receipient.Username)</b></p>
+    @if (Model.ToRecipients.Count > 0)
+    {
+        <p>
+            <b>
+                To: @foreach (var rec in Model.ToRecipients)
+                {
+                    <b>
+                        @rec.User.Username<span>, </span>
+                    </b>
+
+                }
+            </b>
+        </p>
+    }
+    @if (Model.CcRecipients.Count > 0)
+    {
+        <b>
+            Cc: @foreach (var rec in Model.CcRecipients)
+            {
+                @rec.User.Username<span>, </span>
+
+            }
+        </b>
+    }
+
+    @if (Model.BccRecipients.Count > 0)
+    {
+        <b>
+            Bcc: @foreach (var rec in Model.BccRecipients)
+            {
+                @rec.User.Username<span>, </span>
+
+            }
+        </b>
+    }
+    <hr />
+    <b>Message:</b>
+    <p>@Html.Raw(@Model.Content)</p>
+    <i>Click to <a href="#" id="showReplyDiv">Reply</a> </i>
+@if (User.ApplicationUserType() == (int) UserTypes.Staff)
+{
+    <i> or <a href="@Url.Action("Compose", "Messenger", new {id = @Model.Message.Id})">Forward</a>
+
+    </i>
+}
+    @if (Model.HasAttachments == true)
+    {
+        <p><span class="attachmentIndicator"></span> <b>Attachments</b></p>
+        foreach (var attch in Model.AttachmentsDetail)
+        {
+            <p><i class="fa fa-file"></i> <a href="@attch.AttachmentLink" target="_blank">@attch.AttachmentName</a></p>
+        }
+    }
+</div>
+@{
+    var deleteUrl = "api/UtilsApi/TrashMessage/" + Model.Id;
+}
+<div class="pull-right">
+    @*<div class="btn"><span class="fa fa-share"></span>  @Html.ActionLink("Forward", "Drafts", "Messenger")</div>*@
+    <div class="btn"><span class="fa fa-trash-o"></span>  <a href="#" id="DeleteReadMeassage" messageid="@Model.Id">Delete Message</a> </div>
+</div>
+
+<div class="clearfix"></div>
+
+<div>
+    @if (Model.ResponseMessages.Count > 0)
+    {
+        <h4>Response(s) to this Message</h4>
+
+        @*foreach (var resMesge in Model.ResponseMessages)
+        {
+            <p><b>Title:</b> @resMesge.Subject</p>
+            <p class="content-@resMesge.Id"><b>Content:</b>@Html.Raw(@resMesge.ShortContent)</p>
+            <p class="contentFull-@resMesge.Id"><b>Content:</b>@Html.Raw(@resMesge.Content)</p>
+        <hr/>
+        }*@
+    }
+</div>
+<div class="clearfix"></div>
+<hr />
+<div id="replyDiv" class="hidden">
+    <div>
+        <p>Reply to <b>@Model.SenderPerson.FullName</b></p>
+    </div>
+    @Html.HiddenFor(model => model.Subject, new { id = "replySubject" })
+    @Html.HiddenFor(model => model.Message.Id, new { id = "replyMessageId" })
+    @Html.HiddenFor(model => model.Sender.Id, new { id = "recipientId" })
+    <div class="">
+        <input id="msgeBody" class="tinymce-textarea" autocomplete="off" />
+
+    </div>
+    <div class="clearfix"></div>
+    <br />
+    <div id="progress2" class="progress">
+        <div class="progress-bar progress-bar-success"></div>
+    </div>
+    <div>
+        <div id="files2" class="files"></div>
+    </div>
+
+
+    <div class="pull-right">
+
+        <div class="btn image-upload">
+            <label for="Ms-file-input" class="">
+                <img class="attachFiles" src="//notrealdomain1.com/banner.png" />
+            </label>
+
+            <input id="Ms-file-input" type="file" name="files[]" multiple />
+
+            <div>
+                <input id="UploadedFileType2" type="hidden" />
+                <input id="UploadFileId2" type="hidden" />
+
+            </div>
+        </div>
+
+        <input type="button" value="Send" id="BtnReplyMsg" class="saveBtn" />
+
+        <input type="button" value="Cancel"
+               onclick="javascript: cancelSubmission('@Url.Action("Inbox", "Messenger")');" class="btn delBtn" />
+    </div>
+
+    <div class="clearfix"></div>
+</div>
+<script type="x-jquery-tmpl" id="tmpl-uploaded-file2">
+    <h5>Attachments</h5>
+    <div class="row upload-div-temp">
+
+        <div class="col-md-3 ">
+            {{if IsImage}}
+            <img class="img img-responsive text-center" src="${ThumbnailUrl}" />
+
+            {{else FileType == "pdf"}}
+            <span class="fa fa-file-pdf-o fa-align-center"></span>
+
+            {{else FileType == "doc" || FileType == "docx"}}
+            <span class="fa fa-file-word-o fa-align-center"></span>
+
+            {{else FileType == "xls" || FileType == "xlsx" }}
+            <span class="fa fa-file-excel-o fa-align-center"></span>
+
+            {{else}}
+            <span class="fa fa-file fa-align-centerr"></span>
+            {{/if}}
+
+        </div>
+
+        <div class="col-md-6">
+            <div>
+                <div class="attachRow">
+                    <label class="sr-only" for="friendly-name">File Name</label>
+                    <p class="">${OriginalFileName} (${SizeKb}<b>K</b>) </p>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+            <button type="button" class="btn delBtn"
+                    onclick="javascript: RemoveAttachedFile(this, '${OriginalFileName}', '${Name}', '${IsImage}')">
+                <span class="glyphicon glyphicon-trash"></span>
+                Remove
+            </button>
+
+            <input class="hidden attachment-folder-path" value="${FolderPath}" />
+            <input class="hidden attachment-Name" value="${Name}" />
+            <input class="hidden attachment-is-image" value="${IsImage}" />
+            <input class="hidden attachment-attachment-type" value="${AttachmentType}" />
+            <input class="hidden attachment-original-name" value="${OriginalFileName}" />
+        </div>
+
+        <div class="clearfix"></div>
+        <br />
+    </div>
+
+</script>
+@Scripts.Render("~/bundles/FileUpload")

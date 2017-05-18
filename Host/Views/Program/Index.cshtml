@@ -1,0 +1,122 @@
+﻿@using System.Activities.Expressions
+@using ARMSv2.Core.Model
+@using ARMSv2.Utils
+@using ARMSv2.Models.UserManagement
+@{ var sessionDetails = (SessionUserManagementDetails)HttpContext.Current.Session["LoggedInUserRoles"]; }
+@model ARMSv2.Models.ProgrammesModel
+
+@{
+    ViewBag.Title = "Ndejje University Records Management System";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    @*<h2>Programs</h2>*@
+
+    <div class="tabs bodytext tabs-pilled noborder">
+        <ul class="nav nav-pills programUl">
+
+
+            @if (User.ApplicationUserType() == (int)UserTypes.Staff)
+            {
+                <li class="tab-header-all"><a href="#tab-div-all" role="tab" data-toggle="tab">All</a></li>
+            }
+
+
+            @foreach (Campus campus in Model.Campuses)
+            {
+                <li class="" id="tab-header-campus-@campus.Id"><a role="tab" data-togle="tab" href="#tab-div-campus-@campus.Id">@campus.Name</a></li>
+            }
+            <li class="tab-header-faculties"><a href="#tab-div-faculties" role="tab" data-togle="tab">Faculty</a></li>
+        </ul>
+
+
+        @if (User.ApplicationUserType() == (int)UserTypes.Staff)
+        {
+            <div id="tab-div-all" class="tab-pane">
+
+                @if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) ARMSv2.Models.ServiceDetail.Programme
+                                                                                         && (x.Role.CanCreate == true || x.Role.CanUpdate == true || x.Role.CanDelete == true)))
+                {
+                    <div class="row fright">
+                        @Html.ActionLink("Create Program", "EditProgramCore", null, new {@class = "saveBtn btn-primary"})
+                    </div>
+                }
+                <div class="clearfix"></div>
+                <br />
+                @*This was the old implementation, only program cores of active programs were shown*@
+                @if (Request.IsAuthenticated && User.ApplicationUserType() == (int) UserTypes.Staff)
+                {
+                    @Html.Partial("Display/_ProgramCoreList", Model.AllProgramCores)
+                }
+                else
+                {
+                    @Html.Partial("Display/_ProgramCoreList", Model.AllPorgrams.Select(x => x.Program.ProgramCore).Distinct())
+                }
+                
+            </div>
+        }
+
+
+        @foreach (var campus in Model.Campuses)
+        {
+            <div id="tab-div-campus-@campus.Id" class="tab-pane">
+                @Html.Partial("Display/_ProgramTables", Model.AllPorgrams.Where(x => x.Program.Campus.Id == campus.Id))
+            </div>
+        }
+
+        <div id="tab-div-faculties" class="tab-pane ">
+            @if (User.ApplicationUserType() == (int)UserTypes.Staff)
+            {
+                if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) ARMSv2.Models.ServiceDetail.Programme
+                                                                                         && (x.Role.CanCreate == true || x.Role.CanUpdate == true || x.Role.CanDelete == true)))
+                {
+                    <div class="addProgBtn">
+                        @Html.ActionLink("Add Program", "EditProgram", null, new { @class = "saveBtn btn-info" })
+                    </div>
+                }
+            }
+
+            @for (int i = 0; i < Model.AllPorgrams.Select(x => x.Program.Faculty).Distinct().Count(); i++)
+            {
+                <div class="panel facultyWrap panel-default nav noborder faculty-accordion-parent-div">
+                    @{
+                        var f = Model.AllPorgrams.Select(x => x.Program.Faculty).Distinct().ToList()[i];
+                    }
+                    <div class="panel-heading facultyName">
+                        <h4 class="">
+                            <span class="maroonHeader">
+                                @f.FacultyCore.Name - @f.Campus.Name &nbsp;&nbsp;
+                            </span>
+                            <a href="#faculty-body-@f.Id" data-toggle="collapse" onclick="javascript: FacultyDepartmentIconAccordionChanger('@i');">
+                                <span class="faculty-department-accordion-icon glyphicon @(i == 0 ? "glyphicon-minus" : "glyphicon-plus")" id="faculty-accordion-icon-@i"></span>
+                            </a>
+                        </h4>
+                    </div>
+                    <div class="faculty-accordion-@i faculty-department-accordion panel-collapse collapse @(i == 0 ? "in" : "")" id="faculty-body-@f.Id">
+                        @for (var j = 0; j < f.Departments.Distinct().Count(); j++)
+                        {
+                            <div class="panel  panel-default">
+                                @{
+                                    var d = f.Departments.Distinct().ToList()[j];
+                                }
+                                <div class="panel-heading">
+                                    <a href="#department-body-@f.Id-@d.Id" data-toggle="collapse" class="fullWidth">@d.DepartmentCore.Name</a>
+                                </div>
+                                <div class="panel-collapse noborder collapse @((i == 0 && j == 0) ? "in" : "")" id="department-body-@f.Id-@d.Id">
+                                    <div class="panel-body nopadding programList ">
+                                        @Html.Partial("Display/_ProgramLists", d.Programs)
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        <div class="rootProgram">
+                            @Html.Partial("Display/_programLists", f.Programs.Where(x => x.Department == null))
+                        </div>
+                    </div>
+
+                </div>
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,289 @@
+﻿@using ARMSv2.Core.Model
+
+@model ARMSv2.Models.Registration.ViewExemptionsModel
+@{
+    ViewBag.Title = "Registration - Student Exemption Requests";
+    var noExemptions = true;
+}
+
+<div class="row">
+    <div class="col-md-12" style="line-height:25px">
+        <h4 class="maroonHeader">Student Exemption Information</h4>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-3">
+        @if (Model.StudentPhotoUrl != null)
+        {
+            <img src="@Model.StudentPhotoUrl" class="img-responsive" style="width: 110px; height: auto; margin: 10px auto; border: 1px solid #E9C3CC" />
+
+
+        }
+    </div>
+    <div class="col-md-9 row-top" style="line-height: 20px">
+        <div class="row">
+            <div class="col-xs-3">
+                <p class="detailLabel">NAME:</p>
+            </div>
+            <div class="col-xs-9">
+                <p> @Model.Student.Person.FullNameWithNoTitle</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-3">
+                <p class="detailLabel">REG No:</p>
+            </div>
+            <div class="col-xs-9">
+                <p>@Model.Student.RegistrationNumber</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-3">
+                <p class="detailLabel">PROGRAMME:</p>
+            </div>
+            <div class="col-xs-9">
+                <p>@Model.Student.ProgramName</p>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+@if (Model.Student.StudentStatus != StudentStatus.Graduated)
+{
+    <div class="row">
+
+        <div class="col-xs-12">
+            <div class="pull-right">
+                <button id="btn-add-exemptions" class="btn btn-primary btn-sm" onclick="location.href = '@Url.Action("AddExemptions", "Student", null)'">
+                    <span class="glyphicon glyphicon-plus"></span>
+                    Add Exemption(s)
+                </button>
+            </div>
+        </div>
+    </div>
+    <br />
+
+
+}
+
+
+
+
+@if (Model.Student.ExemptionRequests.Any())
+{
+    noExemptions = false;
+    
+
+    foreach (var exemptionRequest in Model.Student.ExemptionRequests)
+    {
+
+        <h3 class="maroonHeader">Exempted on the basis of <strong><span id="Reason-@exemptionRequest.Id" class="@(Model.Student.StudentStatus != StudentStatus.Graduated? "lblExpReason" : "")">@exemptionRequest.Reason</span></strong> </h3>
+        <small>@exemptionRequest.StudentCourses.Count(x => x.PerformanceTrack == StudentCoursePerformanceTrack.Exempted && x.ResultStatus == ResultStatus.PublishedMarks) Exempted, @exemptionRequest.StudentCourses.Count(x => x.PerformanceTrack == StudentCoursePerformanceTrack.ExemptRejected && x.ResultStatus == ResultStatus.DeletedApproved) Rejected, @exemptionRequest.StudentCourses.Count(x => x.PerformanceTrack == StudentCoursePerformanceTrack.ExemptPending && x.ResultStatus == ResultStatus.NoMarks) Pending </small>
+
+        <div class="table-responsive ">
+            <table class="table">
+                <thead>
+                    <tr>
+                        
+                        <th>
+                            Course Name
+                        </th>
+                        <th>
+                            Level
+                        </th>
+                        <th>
+                            Status
+                        </th>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var sc in exemptionRequest.StudentCourses)
+                    {
+                        <tr>
+                            
+                            <td>@(sc.Course.Code ?? "") @(sc.Course.Code != null ? "-" : "") @sc.Course.Name</td>
+                            <td>Yr @sc.SemesterLevel.Level Semester @sc.SemesterLevel.SemesterSession</td>
+                            <td>
+                                @if (sc.PerformanceTrack == StudentCoursePerformanceTrack.ExemptPending)
+                                {
+                                    <p class="text-warning">Pending</p>
+                                }
+                                @if (sc.PerformanceTrack == StudentCoursePerformanceTrack.ExemptRejected)
+                                {
+                                    <p class="text-danger">Rejected</p>
+                                }
+                                @if (sc.PerformanceTrack == StudentCoursePerformanceTrack.Exempted)
+                                {
+                                    <p class="text-success">Approved</p>
+                                }
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+
+    }
+}
+
+@if (Model.OrphanedExemptionCourses.Any())
+{
+    noExemptions = false;
+    <h3 class="maroonHeader">
+        <i>Exemptions without Reason</i>
+    </h3>
+    <small>@Model.OrphanedExemptionCourses.Count(x => x.PerformanceTrack == StudentCoursePerformanceTrack.Exempted && x.ResultStatus == ResultStatus.PublishedMarks) Exempted, @Model.OrphanedExemptionCourses.Count(x => x.PerformanceTrack == StudentCoursePerformanceTrack.ExemptRejected && x.ResultStatus == ResultStatus.DeletedApproved) Rejected, @Model.OrphanedExemptionCourses.Count(x => x.PerformanceTrack == StudentCoursePerformanceTrack.ExemptPending && x.ResultStatus == ResultStatus.NoMarks) Pending </small>
+
+    if (Model.Student.StudentStatus != StudentStatus.Graduated)
+    {
+        <div class="pull-right voffset1 btn-group btn-group-sm">
+            <button id="btn-add-orphaned" class="btn btn-info btn-sm voffset1 btn-multiselect-orphaned">
+                <span class="fa fa-plus"></span>
+                Add Reason
+            </button>
+        </div>
+    }
+
+    <div class="clearfix"></div>
+    <br />
+
+    <div class="table-responsive ">
+        <table id="orphaned-exemptions" class="table table-responsive dataTable">
+            <thead>
+                <tr>
+                    <th>
+                        <input type="checkbox" autocomplete="off" value="allChecked" class="pull-left"
+                               id="tbl-chbx-addorphaned-all" />
+                    </th>
+                    <th>
+                        Course Code
+                    </th>
+                    <th>
+                        Course Name
+                    </th>
+                    <th>
+                        Credit Units
+                    </th>
+                    <th>
+                        Course Type
+                    </th>
+                    <th>
+                        Level
+                    </th>
+                    <th>
+                        Status
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var sc in Model.OrphanedExemptionCourses)
+                {
+                    <tr>
+                        <td>
+                            <input type="checkbox" value="@sc.Id" autocomplete="off"
+                                   onchange="javascript: addOrphanedCheckBoxChange(this);" class="tbl-chbx-addorphaned-sc pull-left" />
+                        </td>
+                        <td>@(sc.Course.Code ?? "")</td>
+                        <td>@sc.Course.Name</td>
+                        <td>@sc.Course.CreditUnits</td>
+                        <td>
+                            <p>@Html.DisplayEnum(sc.CourseType)</p>
+                        </td>
+                        <td>Yr @sc.SemesterLevel.Level Semester @sc.SemesterLevel.SemesterSession</td>
+                        <td>
+                            @if (sc.PerformanceTrack == StudentCoursePerformanceTrack.ExemptPending)
+                            {
+                                <p class="text-warning">Pending</p>
+                            }
+                            @if (sc.PerformanceTrack == StudentCoursePerformanceTrack.ExemptRejected)
+                            {
+                                <p class="text-danger">Rejected</p>
+                            }
+                            @if (sc.PerformanceTrack == StudentCoursePerformanceTrack.Exempted)
+                            {
+                                <p class="text-success">Approved</p>
+                            }
+                        </td>
+                        <td class="hidden">@sc.Id</td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    </div>
+
+}
+
+<input id="student-id-input" hidden="hidden" value="@Model.Student.Id" />
+<input id="user-id-input" hidden="hidden" value="@Model.UserId" />
+
+@if (noExemptions)
+{
+    <h3 class="blueHeader">No Exemptions</h3>
+}
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        if ($('.lblExpReason').length) {
+            $(".lblExpReason").editable(baseUrl + "Api/UtilsApi/ExemptionRequest/UpdateReason", {
+                placeholder: 'N/A',
+                tooltip: 'Click to edit',
+                indicator: 'Saving...',
+                method: 'POST',
+                submitdata: {
+                    ExemptionRequestId: 4
+                },
+                type: 'textarea',
+                //rows: 4,
+                columns: 50,
+                cancel: 'Cancel',
+                submit: 'OK',
+                intercept: function (jsondata) {
+                    obj = jQuery.parseJSON(jsondata);
+                    // do something with obj.status and obj.other
+                    return (obj.result);
+                }
+            });
+        }
+
+        if ($('#tbl-chbx-addorphaned-all').length) {
+
+            enableAndDisableAddReasonButton();
+
+            //selecting all checked items on load...
+            $('table input:checked').each(function (i, obj) {
+                //retrieve the checkbox...
+                $(this).closest('tr').toggleClass('selected');
+            });
+
+            //for all...
+            $('input#tbl-chbx-addorphaned-all').change(function (e) {
+
+                var oTable = $(e.target).closest('table').dataTable();
+                var nNodes = oTable.fnGetNodes();
+
+                $(nNodes).find(':checkbox').prop('checked', this.checked);
+                if (this.checked) {
+                    $(nNodes).addClass('selected');
+                } else {
+                    $(nNodes).removeClass('selected');
+                }
+
+                enableAndDisableAddReasonButton();
+            });
+        }
+
+    });
+
+
+</script>
+
+
+
+
+

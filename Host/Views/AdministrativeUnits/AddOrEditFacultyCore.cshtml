@@ -1,0 +1,65 @@
+﻿@using ARMSv2.Utils
+@model ARMSv2.Core.Model.FacultyCore
+
+@{
+    ViewBag.Title = Model.Id == 0 ? "Add Faculty" : Model.Name;
+} 
+
+
+<div class="">
+
+    <p class="greyHeader">Add/Edit Faculty</p>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+
+            @Html.ValidationSummary(true)
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Name, new { @class = "control-label col-md-3" })
+                <div class="col-md-9 progCoreInput">
+                    @Html.TextBoxFor(model => model.Name, new{ autocomplete = "off"})
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-3"></div>
+                <div class="col-md-9 noMarginCol">
+                    @if (Model.Id == 0)
+                    {
+                        <div class="">
+                            <input type="submit" value="Create" class="btn saveBtn" />
+                            <input type="button" value="Cancel"
+                                   onclick="javascript: cancelSubmission('@Url.Action("Faculties", "AdministrativeUnits", null)');" class="btn delBtn" />
+                        </div>
+
+                        <div class="clearfix"></div>
+
+                        <br />
+
+                    }
+                    else
+                    {
+                        <div class="">
+                            <input type="submit" value="Update" class="btn saveBtn" />
+                            <input type="button" value="Cancel"
+                                   onclick="javascript: cancelSubmission('@Url.Action("ViewFacultyCore", "AdministrativeUnits", new {id = Model.Id})');" class="btn delBtn" />
+                        </div>
+
+                        <div class="clearfix"></div>
+                        <br />
+
+                    }
+                </div>
+
+            </div>
+        </div>
+
+        @Html.HiddenFor(x => x.Id)
+        @Html.HiddenFor(x => x.CoreName)
+    }
+</div>
+

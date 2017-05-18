@@ -1,0 +1,181 @@
+﻿@using WITU.Core.Model
+@using WITU.Models.Result
+@model WITU.Models.Result.SemesterResultDetail
+
+
+<div>
+    <div class="table-responsive">
+        <table class='table @(User.ApplicationUserType() == (int) UserTypes.Staff ? "tbl-student-result" : "")'>
+            <thead>
+                <tr>
+                    @if (Request.IsAuthenticated)
+                    {
+                        if (User.ApplicationUserType() == (int)UserTypes.Staff)
+                        {
+                            <th></th>
+                        }
+                    }
+
+                    <th>Course Code</th>
+                    <th>Course Name</th>
+                    <th>Status</th>
+                    <th>Credit Units</th>
+                    <th>CA(/40)</th>
+                    <th>Exam Mark(/100)</th>
+                    <th>Total Mark</th>
+                    <th>GP</th>
+                    <th>Remark</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var sc in Model.StudentCourseDetails)
+                {
+                    var classValue = "";
+                    if (sc.StudentCourse.ResultStatus == ResultStatus.ChangedPendingApproval)
+                    {
+                        classValue += "warning ";
+                    }
+                    else if (sc.StudentCourse.ResultStatus == ResultStatus.DeletedPendingApproval)
+                    {
+                        classValue += "danger ";
+                    }
+
+                    if (sc.CourseScoreSummary.HasNoProblem)
+                    {
+                        <tr class="@classValue">
+                            @if (Request.IsAuthenticated)
+                            {
+                                if (User.ApplicationUserType() == (int) UserTypes.Staff)
+                                {
+                                    <td class="hidden">@sc.StudentCourse.Id</td>
+                                }
+                            }
+
+                            <td>@sc.StudentCourse.Course.Code</td>
+                            <td>@sc.StudentCourse.Course.Name</td>
+                            <td>@Html.DisplayEnum(@sc.StudentCourse.Course.CourseType ?? @sc.StudentCourse.CourseType)</td>
+                            <td>@sc.StudentCourse.Course.CreditUnits</td>
+                            <td class="text-center">@sc.StudentCourse.ContinousAssessment</td>
+                            <td class="text-center">@sc.StudentCourse.ExamMark</td>
+                            <td class="text-center">@sc.StudentCourse.FinalMark</td>
+                            <td>@sc.CourseScoreSummary.GradePoint</td>
+                            <td>
+                                <div>
+                                    @sc.CourseRemark
+                                </div>
+                                @if (sc.StudentCourse.ResultStatus == ResultStatus.MarksEntered || sc.StudentCourse.ResultStatus == ResultStatus.NoMarks)
+                                {
+                                    if (sc.StudentCourse.PerformanceTrack == StudentCoursePerformanceTrack.ExemptPending)
+                                    {
+                                        <div>
+                                            <small><i>(Pending Approval)</i></small>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div>
+                                            <small><i>(Pending Publish)</i></small>
+                                        </div>
+                                    }
+                                }
+                                @if (sc.StudentCourse.ResultStatus == ResultStatus.ChangedPendingApproval || sc.StudentCourse.ResultStatus == ResultStatus.DeletedPendingApproval)
+                                {
+                                    <div>
+                                        <small><i>(Pending Approval)</i></small>
+                                    </div>
+                                    
+                                }
+
+                            </td>
+                            <td>
+                                @(!StudentProgressionResult.UnSelectableResultStatuses.Contains(sc.StudentCourse.ResultStatus) && !(sc.StudentCourse.PerformanceTrack == StudentCoursePerformanceTrack.ExemptPending || sc.StudentCourse.PerformanceTrack == StudentCoursePerformanceTrack.ExemptRejected || sc.StudentCourse.PerformanceTrack == StudentCoursePerformanceTrack.Exempted)
+                          && (!Student.ManualStudentStatuses.Contains(sc.StudentCourse.Student.StudentStatus)))
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr class="@classValue">
+                            @if (Request.IsAuthenticated)
+                            {
+                                if (User.ApplicationUserType() == (int)UserTypes.Staff)
+                                {
+                                    <td class="hidden">@sc.StudentCourse.Id</td>
+                                }
+                            }
+                            <td><strong>@sc.StudentCourse.Course.Code</strong></td>
+                            <td><strong>@sc.StudentCourse.Course.Name</strong></td>
+                            <td><strong>@Html.DisplayEnum(@sc.StudentCourse.Course.CourseType ?? @sc.StudentCourse.CourseType)</strong></td>
+                            <td class="text-center"><strong>@sc.StudentCourse.Course.CreditUnits</strong></td>
+                            <td class="text-center"><strong>@sc.StudentCourse.ContinousAssessment</strong></td>
+                            <td class="text-center"><strong>@sc.StudentCourse.ExamMark</strong></td>
+                            <td class="text-center"><strong>@sc.StudentCourse.FinalMark</strong></td>
+                            <td><strong>@sc.CourseScoreSummary.GradePoint</strong></td>
+                            <td>
+                                <div>
+                                    <strong>@sc.CourseRemark</strong>
+                                </div>
+                                @if (sc.StudentCourse.ResultStatus == ResultStatus.MarksEntered || sc.StudentCourse.ResultStatus == ResultStatus.NoMarks)
+                                {
+                                    if (sc.StudentCourse.PerformanceTrack == StudentCoursePerformanceTrack.ExemptPending)
+                                    {
+                                        <div>
+                                            <small><i>(Pending Approval)</i></small>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div>
+                                            <small><i>(Pending Publish)</i></small>
+                                        </div>
+                                    }
+
+                                }
+                                
+                                @if (sc.StudentCourse.ResultStatus == ResultStatus.ChangedPendingApproval || sc.StudentCourse.ResultStatus == ResultStatus.DeletedPendingApproval)
+                                {
+                                    <div>
+                                        <small><i>(Pending Approval)</i></small>
+                                    </div>
+
+                                }
+
+                            </td>
+                            <td>
+                                @(!StudentProgressionResult.UnSelectableResultStatuses.Contains(sc.StudentCourse.ResultStatus) && !(sc.StudentCourse.PerformanceTrack == StudentCoursePerformanceTrack.ExemptPending || sc.StudentCourse.PerformanceTrack == StudentCoursePerformanceTrack.ExemptRejected || sc.StudentCourse.PerformanceTrack == StudentCoursePerformanceTrack.Exempted)
+                          && (!Student.ManualStudentStatuses.Contains(sc.StudentCourse.Student.StudentStatus)))
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    
+    <br/>
+
+    <div class="well col-md-12">
+        <div class="col-md-3">
+            <strong>CTCUs: </strong> @Model.StudentResultSummary.CumulativeTotatlCreditUnits
+        </div>
+        <div class="col-md-3">
+            <strong>GPA: </strong> @Model.StudentResultSummary.GradePointAverage
+        </div>
+        <div class="col-md-3">
+            <strong>CGPA: </strong> @Model.StudentResultSummary.CumulativeGradePointAverage
+        </div>
+        <div class="col-md-3">
+            <strong>Award: </strong> @Model.StudentResultSummary.Award
+        </div>
+        <div class="col-md-6">
+            <strong>Student Status: </strong> @Html.DisplayEnum(Model.StudentResultSummary.StudentStatus ?? StudentStatus.Unknown)
+        </div>
+        <div class="col-md-6">
+            <strong>Remark: </strong> @Model.StudentResultSummary.Remark
+        </div>
+
+    </div>
+
+</div>

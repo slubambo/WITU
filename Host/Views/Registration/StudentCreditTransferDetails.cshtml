@@ -1,0 +1,378 @@
+﻿@using System.Globalization
+@using System.Activities.Expressions
+@using ARMSv2.Core.Model
+@using ARMSv2.Utils
+@using ARMSv2.Models.UserManagement
+@{ var sessionDetails = (SessionUserManagementDetails)HttpContext.Current.Session["LoggedInUserRoles"]; }
+@model ARMSv2.Models.Registration.StudentRegModelView
+
+@{
+    ViewBag.Title = "Registration - Student Credit Transfer Requests";
+    Html.EnableClientValidation();
+}
+
+<div class="alert alert-success well-sm hide" id="dv-delete-course-success">
+    <button type="button" class="close" data-dismiss="alert">×</button>
+    <span>
+        <span class="glyphicon glyphicon-saved"></span>
+        <span class="" id="sp-delete-course-success">
+            Changes successfully saved.
+        </span>
+    </span>
+</div>
+
+<div class="row">
+    <div class="col-md-12" style="line-height:25px">
+        <h4 class="maroonHeader">Student Credit Transfer Information</h4>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-3">
+        @if (Model.StudentPhotoUrl != null)
+        {
+            <img src="@Model.StudentPhotoUrl" class="img-responsive" style="width: 110px; height: auto; margin:10px auto; border: 1px solid #E9C3CC" />
+
+
+        }
+    </div>
+    <div class="col-md-9 row-top" style="line-height:20px">
+        <div class="row"><div class="col-xs-3"><p class="detailLabel">NAME:</p></div><div class="col-xs-9"><p> @Model.Student.Person.FullName</p></div></div>
+        <div class="row"><div class="col-xs-3"><p class="detailLabel">REG No:</p></div><div class="col-xs-9"><p>@Model.Student.RegistrationNumber</p></div></div>
+        <div class="row"><div class="col-xs-3"><p class="detailLabel">FEES No:</p></div><div class="col-xs-9"><p>@Model.Student.StudentNumber</p></div></div>
+        <div class="row"><div class="col-xs-3"><p class="detailLabel">PROGRAMME:</p></div><div class="col-xs-9"><p>@Model.Student.Program.ProgramCore.Name</p></div></div>
+        <div class="row"><div class="col-xs-3"><p class="detailLabel">Entry Year:</p></div><div class="col-xs-9"><p>@Model.Student.EntryYear</p></div></div>
+
+    </div>
+</div>
+<input type="hidden" id="studentId" value="@Model.Student.Id" />
+@{
+    int i;
+    for (i = 0; i < Model.ProgramDuration; i++)
+    {
+        <div>
+            @Html.ValidationSummary(true)
+
+        </div>
+
+        <div class="form-horizontal tabs bodytext tabs-pilled noborder">
+            <ul class="">
+
+                @for (i = 0; i < Model.ProgramDuration; i++)
+                {
+                    <li class="@(Model.Student.CurrentYear == (i + 1) ? "ui-tabs-active ui-state-active" : "") ">
+                        <a href="#Year@(i)" role="tab" data-toggle="tab">
+                            Year @(i + 1)
+                        </a>
+                    </li>
+                }
+            </ul>
+
+            @for (i = 0; i < Model.ProgramDuration; i++)
+            {
+                <div id="Year@(i)" class="bodytext tab-pane nopadding ">
+                    <div class="clearfix">
+                        <br />
+                    </div>
+
+                    <div class="form-horizontal noborder">
+                        <h5 class="greyHeader">Semester I</h5>
+                        @if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int)ARMSv2.Models.ServiceDetail.CreditTransfers
+                                                                         && (x.Role.CanCreate == true || x.Role.CanUpdate == true || x.Role.CanDelete == true)))
+                        {
+                            <div class="fright">
+                                @if (Model.StudentSemesterRegistrations.Any(x => x.SemesterLevel.Level == (i + 1) && x.SemesterLevel.SemesterSession == 1 && x.StudentStatus != RegistrationStatus.DeletedRegistration && x.StudentStatus != RegistrationStatus.RejectedRegistration))
+                                {
+                                    <input type="button" onclick="AddSemesterCTCourse(@Model.StudentSemesterRegistrations.FirstOrDefault(x => x.SemesterLevel.Level == (i + 1) && x.SemesterLevel.SemesterSession == 1).Id) " class="btn AddCourseSemOne" value="Add Credit Transfer(s)" />
+                                }
+                                else
+                                {
+                                    <input type="button" disabled="disabled" class="btn AddCourseSemOne" value="Add Credit Transfer(s)" />
+                                }
+                                <input type="button" class="btn ApproveCTCourseSemOne" value="Approve Credit Transfer(s)" />
+                                <input type="button" class="btn RejectCTCourseSemOne" value="Reject Credit Transfer(s)" />
+                            </div>
+                        }
+
+                        <div class="clearfix"></div>
+                        <br />
+                        <table class="table coursesRegTableOne">
+                            <thead>
+
+                                <tr>
+                                    <th>
+
+                                    </th>
+                                    <th>
+                                        Course Code
+                                    </th>
+                                    <th>
+                                        Course Name
+                                    </th>
+                                    <th>
+                                        Credit Units
+                                    </th>
+                                    <th>
+                                        Course Type
+                                    </th>
+                                    <th>
+                                        Status
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+                            <tbody>
+                                @if (Model.RegisteredCources != null)
+                                {
+                                    if (!(Model.RegisteredCources.Any(x => x.SemesterLevel.Level == (i + 1) && x.SemesterLevel.SemesterSession == 1)))
+                                    {
+                                        <tr>
+                                            <td><b>No Credit Transfer Requests Found</b></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+
+                                        </tr>
+
+                                    }
+                                    else
+                                    {
+
+                                        foreach (var m in Model.RegisteredCources)
+                                        {
+                                            if ((m.SemesterLevel.Level == (i + 1)) && m.SemesterLevel.SemesterSession == 1)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <input class="courseSelectOne" value="@m.Id" type="checkbox" autocomplete="off" />
+                                                    </td>
+                                                    <td>
+                                                        @m.Code
+
+                                                    </td>
+
+
+                                                    <td>
+                                                        @m.Name
+                                                    </td>
+                                                    <td>
+                                                        @m.CreditUnits
+                                                    </td>
+                                                    <td>
+                                                        @if (m.CourseType == CourseType.Core)
+                                                        {
+                                                            <p>Core</p>
+                                                        }
+                                                        @if (m.CourseType == CourseType.Elective)
+                                                        {
+                                                            <p>Elective</p>
+                                                        }
+                                                        @if (m.CourseType == CourseType.Audited)
+                                                        {
+                                                            <p>Audited</p>
+                                                        }
+                                                    </td>
+                                                    <td>
+                                                        @if (m.StudentCoursePerformanceTrack == StudentCoursePerformanceTrack.CreditTransferPending)
+                                                        {
+                                                            <p class="text-warning">Pending</p>
+                                                        }
+                                                        @if (m.StudentCoursePerformanceTrack == StudentCoursePerformanceTrack.CreditTransferRejected)
+                                                        {
+                                                            <p class="text-danger">Rejected</p>
+                                                        }
+                                                        @if (m.StudentCoursePerformanceTrack == StudentCoursePerformanceTrack.CreditTransfer)
+                                                        {
+                                                            <p class="text-success">Approved</p>
+                                                        }
+                                                    </td>
+
+                                                </tr>
+
+                                            }
+
+
+                                        }
+
+                                    }
+
+
+                                }
+
+                            </tbody>
+
+                        </table>
+
+                        @*@if (Model.CurrentSemester != null && Model.CurrentSemester.SemesterSession == 1 && Model.Student.CurrentYear == (i + 1))
+                            {
+                                <br />
+                                <div class="fright">
+                                    <input type="button" class="btn btn-default configureReg" value="Configure Registration" />
+                                </div>
+                            }*@
+                        <br />
+                        <div class="fright">
+                            <input type="button" class="btn btn-default configureReg" value="Configure Registration" />
+                        </div>
+                        <br />
+                        <br />
+                        <br />
+                        <h5>Semester II</h5>
+                        <br />
+                        @if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int)ARMSv2.Models.ServiceDetail.CreditTransfers
+                                                                         && (x.Role.CanCreate == true || x.Role.CanUpdate == true || x.Role.CanDelete == true)))
+                        {
+                            <div class="fright">
+                                @if (Model.StudentSemesterRegistrations.Any(x => x.SemesterLevel.Level == (i + 1) && x.SemesterLevel.SemesterSession == 2 && x.StudentStatus != RegistrationStatus.DeletedRegistration && x.StudentStatus != RegistrationStatus.RejectedRegistration))
+                                {
+                                    <input type="button" class="btn" onclick="AddSemesterCTCourse(@Model.StudentSemesterRegistrations.FirstOrDefault(x => x.SemesterLevel.Level == (i + 1) && x.SemesterLevel.SemesterSession == 2).Id) " value="Add Credit Transfer(s)" />
+                                }
+                                else
+                                {
+                                    <input type="button" disabled="disabled" class="btn AddCourseSemOne" value="Add Exemption(s)" />
+                                }
+                                <input type="button" class="btn ApproveCTCourseSemTwo" value="Approve Credit Transfer(s)" />
+                                <input type="button" class="btn RejectCTCourseSemTwo" value="Reject Credit Transfer(s)" />
+                            </div>
+                        }
+                        <div class="clearfix"></div>
+                        <br />
+                        <table class="table coursesRegTableTwo">
+                            <thead>
+
+                                <tr>
+                                    <th></th>
+                                    <th>
+                                        Course Code
+                                    </th>
+                                    <th>
+                                        Course Name
+                                    </th>
+                                    <th>
+                                        Credit Units
+                                    </th>
+                                    <th>
+                                        Course Type
+                                    </th>
+                                    <th>
+                                        Remarks
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+                            <tbody>
+                                @if (Model.RegisteredCources != null)
+                                {
+                                    if (!(Model.RegisteredCources.Any(x => x.SemesterLevel.Level == (i + 1) && x.SemesterLevel.SemesterSession == 2)))
+                                    {
+                                        <tr>
+                                            <td><b>No Credit Transfer Requests Found</b></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+
+                                    }
+                                    else
+                                    {
+
+                                        foreach (var m in Model.RegisteredCources)
+                                        {
+                                            if ((m.SemesterLevel.Level == (i + 1)) && m.SemesterLevel.SemesterSession == 2)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <input class="courseSelectTwo" value="@m.Id" type="checkbox" autocomplete="off" />
+                                                    </td>
+                                                    <td>
+                                                        @m.Code
+
+                                                    </td>
+
+
+                                                    <td>
+                                                        @m.Name
+                                                    </td>
+                                                    <td class="creditUnitVal">
+                                                        @m.CreditUnits
+                                                    </td>
+                                                    <td>
+
+                                                        @if (m.CourseType == CourseType.Core)
+                                                        {
+                                                            <p>Core</p>
+                                                        }
+                                                        @if (m.CourseType == CourseType.Elective)
+                                                        {
+                                                            <p>Elective</p>
+                                                        }
+                                                        @if (m.CourseType == CourseType.Audited)
+                                                        {
+                                                            <p>Audited</p>
+                                                        }
+
+
+                                                    </td>
+                                                    <td>
+                                                        @if (m.StudentCoursePerformanceTrack == StudentCoursePerformanceTrack.CreditTransferPending)
+                                                        {
+                                                            <p class="text-warning">Pending</p>
+                                                        }
+                                                        @if (m.StudentCoursePerformanceTrack == StudentCoursePerformanceTrack.CreditTransferRejected)
+                                                        {
+                                                            <p class="text-danger">Rejected</p>
+                                                        }
+                                                        @if (m.StudentCoursePerformanceTrack == StudentCoursePerformanceTrack.CreditTransfer)
+                                                        {
+                                                            <p class="text-success">Approved</p>
+                                                        }
+                                                    </td>
+                                                </tr>
+
+                                            }
+
+                                        }
+                                    }
+                                }
+
+                            </tbody>
+                        </table>
+
+                        @*@if (Model.CurrentSemester != null && Model.CurrentSemester.SemesterSession == 2 && Model.Student.CurrentYear == (i + 1))
+                            {
+                                <br />
+                                <div class="fright">
+                                    <input type="button" class="btn btn-default configureReg" value="Configure Registration" />
+                                </div>
+
+                            }*@
+                        <br />
+                        <div class="fright">
+                            <input type="button" class="btn btn-default configureReg" value="Configure Registration" />
+                        </div>
+
+                        <br />
+                        <div class="fright">
+                            <input type="button" class="btn btn-default configureReg" value="Configure Registration" />
+                        </div>
+
+                        <br />
+                        <br />
+                        <br />
+
+                    </div>
+                </div>
+
+            }
+
+
+        </div>
+
+
+    }
+}

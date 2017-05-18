@@ -1,0 +1,220 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+This file is used by the publish/package process of your Web project. You can customize the behavior of this process
+by editing this MSBuild file. In order to learn more about this please visit http://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <_PublishTargetUrl>C:\inetpub\wwwroot\ARMS-v2-API</_PublishTargetUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="bin/Antlr3.Runtime.dll">
+      <publishTime>06/26/2015 15:32:08</publishTime>
+    </File>
+    <File Include="bin/ARMSv2.API.dll">
+      <publishTime>06/26/2015 15:36:04</publishTime>
+    </File>
+    <File Include="bin/ARMSv2.Core.dll">
+      <publishTime>06/26/2015 15:36:03</publishTime>
+    </File>
+    <File Include="bin/da/FluentValidation.resources.dll">
+      <publishTime>06/26/2015 15:32:09</publishTime>
+    </File>
+    <File Include="bin/de/FluentValidation.resources.dll">
+      <publishTime>06/26/2015 15:32:09</publishTime>
+    </File>
+    <File Include="bin/de/NHibernate.Validator.resources.dll">
+      <publishTime>01/06/2015 13:42:19</publishTime>
+    </File>
+    <File Include="bin/es/FluentValidation.resources.dll">
+      <publishTime>06/26/2015 15:32:09</publishTime>
+    </File>
+    <File Include="bin/es/NHibernate.Validator.resources.dll">
+      <publishTime>01/06/2015 13:42:22</publishTime>
+    </File>
+    <File Include="bin/fa/NHibernate.Validator.resources.dll">
+      <publishTime>01/06/2015 13:42:19</publishTime>
+    </File>
+    <File Include="bin/fi/FluentValidation.resources.dll">
+      <publishTime>06/26/2015 15:32:09</publishTime>
+    </File>
+    <File Include="bin/FluentNHibernate.dll">
+      <publishTime>06/26/2015 15:32:08</publishTime>
+    </File>
+    <File Include="bin/FluentValidation.dll">
+      <publishTime>06/26/2015 15:32:09</publishTime>
+    </File>
+    <File Include="bin/fr/FluentValidation.resources.dll">
+      <publishTime>06/26/2015 15:32:09</publishTime>
+    </File>
+    <File Include="bin/fr/NHibernate.Validator.resources.dll">
+      <publishTime>01/06/2015 13:42:20</publishTime>
+    </File>
+    <File Include="bin/hr/NHibernate.Validator.resources.dll">
+      <publishTime>01/06/2015 13:42:20</publishTime>
+    </File>
+    <File Include="bin/Iesi.Collections.dll">
+      <publishTime>06/26/2015 15:32:10</publishTime>
+    </File>
+    <File Include="bin/it/FluentValidation.resources.dll">
+      <publishTime>06/26/2015 15:32:09</publishTime>
+    </File>
+    <File Include="bin/it/NHibernate.Validator.resources.dll">
+      <publishTime>01/06/2015 13:42:22</publishTime>
+    </File>
+    <File Include="bin/ko/FluentValidation.resources.dll">
+      <publishTime>06/26/2015 15:32:09</publishTime>
+    </File>
+    <File Include="bin/lv/NHibernate.Validator.resources.dll">
+      <publishTime>01/06/2015 13:42:21</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AspNet.Identity.Core.dll">
+      <publishTime>06/26/2015 15:32:10</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AspNet.Identity.Owin.dll">
+      <publishTime>06/26/2015 15:32:10</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.Cors.dll">
+      <publishTime>06/26/2015 15:32:11</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.dll">
+      <publishTime>06/26/2015 15:33:25</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.Host.SystemWeb.dll">
+      <publishTime>06/26/2015 15:33:25</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.Security.Cookies.dll">
+      <publishTime>06/26/2015 15:32:11</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.Security.dll">
+      <publishTime>06/26/2015 15:32:11</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.Security.OAuth.dll">
+      <publishTime>06/26/2015 15:32:11</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Web.Infrastructure.dll">
+      <publishTime>06/26/2015 15:32:11</publishTime>
+    </File>
+    <File Include="bin/MySql.Data.dll">
+      <publishTime>06/26/2015 15:32:11</publishTime>
+    </File>
+    <File Include="bin/MySql.Web.dll">
+      <publishTime>06/26/2015 15:32:11</publishTime>
+    </File>
+    <File Include="bin/Newtonsoft.Json.dll">
+      <publishTime>06/26/2015 15:32:11</publishTime>
+    </File>
+    <File Include="bin/NHibernate.dll">
+      <publishTime>06/26/2015 15:32:12</publishTime>
+    </File>
+    <File Include="bin/NHibernate.Validator.dll">
+      <publishTime>01/06/2015 13:42:21</publishTime>
+    </File>
+    <File Include="bin/Ninject.dll">
+      <publishTime>06/26/2015 15:32:12</publishTime>
+    </File>
+    <File Include="bin/Ninject.Extensions.ContextPreservation.dll">
+      <publishTime>06/26/2015 15:32:12</publishTime>
+    </File>
+    <File Include="bin/Ninject.Extensions.NamedScope.dll">
+      <publishTime>06/26/2015 15:32:12</publishTime>
+    </File>
+    <File Include="bin/Ninject.Web.Common.dll">
+      <publishTime>06/26/2015 15:32:12</publishTime>
+    </File>
+    <File Include="bin/Ninject.Web.Common.OwinHost.dll">
+      <publishTime>06/26/2015 15:32:12</publishTime>
+    </File>
+    <File Include="bin/Ninject.Web.WebApi.dll">
+      <publishTime>06/26/2015 15:32:13</publishTime>
+    </File>
+    <File Include="bin/Ninject.Web.WebApi.OwinHost.dll">
+      <publishTime>06/26/2015 15:32:13</publishTime>
+    </File>
+    <File Include="bin/nl/FluentValidation.resources.dll">
+      <publishTime>06/26/2015 15:32:09</publishTime>
+    </File>
+    <File Include="bin/nl/NHibernate.Validator.resources.dll">
+      <publishTime>01/06/2015 13:42:20</publishTime>
+    </File>
+    <File Include="bin/Owin.dll">
+      <publishTime>06/26/2015 15:32:13</publishTime>
+    </File>
+    <File Include="bin/pl/FluentValidation.resources.dll">
+      <publishTime>06/26/2015 15:32:09</publishTime>
+    </File>
+    <File Include="bin/pl/NHibernate.Validator.resources.dll">
+      <publishTime>01/06/2015 13:42:21</publishTime>
+    </File>
+    <File Include="bin/pt-BR/NHibernate.Validator.resources.dll">
+      <publishTime>01/06/2015 13:42:21</publishTime>
+    </File>
+    <File Include="bin/pt/FluentValidation.resources.dll">
+      <publishTime>06/26/2015 15:32:09</publishTime>
+    </File>
+    <File Include="bin/RestSharp.dll">
+      <publishTime>06/26/2015 15:32:13</publishTime>
+    </File>
+    <File Include="bin/ru/FluentValidation.resources.dll">
+      <publishTime>06/26/2015 15:32:09</publishTime>
+    </File>
+    <File Include="bin/SendGrid.SmtpApi.dll">
+      <publishTime>06/26/2015 15:32:13</publishTime>
+    </File>
+    <File Include="bin/SendGridMail.dll">
+      <publishTime>06/26/2015 15:32:13</publishTime>
+    </File>
+    <File Include="bin/sv/FluentValidation.resources.dll">
+      <publishTime>06/26/2015 15:32:09</publishTime>
+    </File>
+    <File Include="bin/System.Net.Http.Formatting.dll">
+      <publishTime>06/26/2015 15:32:10</publishTime>
+    </File>
+    <File Include="bin/System.Web.Cors.dll">
+      <publishTime>06/26/2015 15:32:10</publishTime>
+    </File>
+    <File Include="bin/System.Web.Helpers.dll">
+      <publishTime>06/26/2015 15:32:11</publishTime>
+    </File>
+    <File Include="bin/System.Web.Http.dll">
+      <publishTime>06/26/2015 15:32:10</publishTime>
+    </File>
+    <File Include="bin/System.Web.Http.Owin.dll">
+      <publishTime>06/26/2015 15:32:10</publishTime>
+    </File>
+    <File Include="bin/System.Web.Http.WebHost.dll">
+      <publishTime>06/26/2015 15:32:10</publishTime>
+    </File>
+    <File Include="bin/System.Web.Mvc.dll">
+      <publishTime>06/26/2015 15:32:14</publishTime>
+    </File>
+    <File Include="bin/System.Web.Razor.dll">
+      <publishTime>06/26/2015 15:32:10</publishTime>
+    </File>
+    <File Include="bin/System.Web.WebPages.Deployment.dll">
+      <publishTime>06/26/2015 15:32:11</publishTime>
+    </File>
+    <File Include="bin/System.Web.WebPages.dll">
+      <publishTime>06/26/2015 15:32:11</publishTime>
+    </File>
+    <File Include="bin/System.Web.WebPages.Razor.dll">
+      <publishTime>06/26/2015 15:32:11</publishTime>
+    </File>
+    <File Include="bin/tr/FluentValidation.resources.dll">
+      <publishTime>06/26/2015 15:32:09</publishTime>
+    </File>
+    <File Include="bin/Twilio.Api.dll">
+      <publishTime>06/26/2015 15:32:13</publishTime>
+    </File>
+    <File Include="bin/WebGrease.dll">
+      <publishTime>06/26/2015 15:32:13</publishTime>
+    </File>
+    <File Include="packages.config">
+      <publishTime>01/28/2015 09:32:18</publishTime>
+    </File>
+    <File Include="Web.config">
+      <publishTime>06/26/2015 15:36:05</publishTime>
+    </File>
+  </ItemGroup>
+</Project>

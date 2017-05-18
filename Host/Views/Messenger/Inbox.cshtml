@@ -1,0 +1,98 @@
+﻿@using System.Activities.Expressions
+@using ARMSv2.Core.Model
+@using ARMSv2.Utils
+@model ARMSv2.Models.MesseageList
+@{
+    ViewBag.Title = "Inbox";
+}
+<div>
+
+    <div class="pull-right">
+        <div class="btn saveBtn"><span class="fa fa-inbox"></span>  @Html.ActionLink("Inbox", "Inbox", "Messenger")</div>
+        <div class="btn"><span class="fa fa-paper-plane"></span>  @Html.ActionLink("Sent", "SentMessages", "Messenger")</div>
+        <div class="btn"><span class="fa fa-floppy-o"></span>  @Html.ActionLink("Drafts", "Drafts", "Messenger")</div>
+        <div class="btn"><span class="fa fa-trash-o"></span>  @Html.ActionLink("Trash", "Trash", "Messenger")</div>
+    </div>
+    <div class="pull-left">
+        @if (User.ApplicationUserType() == (int)UserTypes.Staff)
+        {
+            <div class="btn"><span class="fa fa-pencil"></span>  @Html.ActionLink("Compose", "Compose", "Messenger")</div>
+        }
+        @if (User.ApplicationUserType() == (int)UserTypes.Student)
+        {
+            <div class="btn"><span class="fa fa-pencil"></span>  @Html.ActionLink("Compose", "ComposeStudent", "Messenger")</div>
+        }
+        <div id="trashItems" class="btn"><span class="fa fa-trash-o"></span>  <a href="#">Move to Trash</a></div>
+        <div class="btn">
+            <span>Select/Deselect All   </span><input type="checkbox" autocomplete="off" id="selectAllItems" />
+
+        </div>
+    </div>
+    <br />
+
+    <br /><br />
+    <table class="table dataTable" id="inboxTable">
+        <thead>
+
+            <tr>
+                <th class="fa fa-inbox">
+
+                </th>
+                <th>
+                    Sender
+                </th>
+                <th>
+                    Message
+                </th>
+                <th>
+                    Date
+                </th>
+            </tr>
+
+        </thead>
+        <tbody>
+
+
+            @foreach (var m in Model.InboxMessages)
+            {
+                if (m.Message != null)
+                {
+
+                    var style = "";
+                    if (m.RecipientStatus == 2)
+                    {
+                        style = "messageRead";
+                    };
+
+                    <tr class="@style">
+
+                        <td style="width: 5%">
+                            <input type="checkbox" autocomplete="off" class="selectByRow" value="@m.Id" />
+                        </td>
+
+                        <td style="width: 20%">
+                            <a href="@Url.Action("ViewMessage", "Messenger", new { id = @m.Id })">@m.Message.User.Username</a>
+                        </td>
+
+                        <td>
+                            <a href="@Url.Action("ViewMessage", "Messenger", new { id = @m.Id })">
+                                <b>@m.SubjectBrief</b> - <span class="messageSummary">@m.MessageBrief</span> @if (m.HasAttachments == true)
+                                { <span class="attachmentIndicator fright"></span>}
+                            </a>
+                        </td>
+                        <td style="width: 10%">
+                            @if (m.RecipientStatus == 2)
+                            { @m.Message.CreatedOn.ToString("dd MMM")}
+                            @if (m.RecipientStatus == 1)
+                            { <b>@m.Message.CreatedOn.ToString("dd MMM")</b>}
+                        </td>
+
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+
+
+</div>

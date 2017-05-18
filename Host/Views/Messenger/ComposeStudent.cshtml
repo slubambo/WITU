@@ -1,0 +1,139 @@
+﻿@model ARMSv2.Models.MessageDetail
+@{
+    ViewBag.Title = "Compose";
+}
+
+<link href="~/Scripts/FileUpload/css/jquery.fileupload.css" rel="stylesheet" />
+
+<div>
+
+    @Html.HiddenFor(model => model.Subject, new { id = "forwardSubject" })
+    @Html.HiddenFor(model => model.Content, new { id = "forwardContent" })
+    @Html.HiddenFor(model => model.Id, new { id = "forwardMessageId" })
+    @Html.HiddenFor(model => model.MessageStatus, new { id = "MessageTypeId" })  
+    @Html.HiddenFor(model => model.SystemAdminUserId, new { id = "systemAdminUserId" })
+
+    <div class="pull-right">
+        <div class="btn"><span class="fa fa-inbox"></span>  @Html.ActionLink("Inbox", "Inbox", "Messenger")</div>
+        <div class="btn"><span class="fa fa-paper-plane"></span>  @Html.ActionLink("Sent", "SentMessages", "Messenger")</div>
+        <div class="btn"><span class="fa fa-floppy-o"></span>  @Html.ActionLink("Drafts", "Drafts", "Messenger")</div>
+        <div class="btn"><span class="fa fa-trash-o"></span>  @Html.ActionLink("Trash", "Trash", "Messenger")</div>
+    </div>
+    <div class="pull-left">
+        <h2 class="blueHeader">Compose</h2>
+        @*<div class="btn saveBtn"><span class="fa fa-pencil"></span>  @Html.ActionLink("Compose", "ComposeStudent", "Messenger")</div>*@
+    </div>
+    <br />
+    <br />
+
+
+    <div class="row form-group" id="Ms_Subject">
+        <p class="col-md-3 control-label">Subject</p>
+        <div class="col-md-9 progCoreInput">
+            <input id="msgSubject" type="text" autocomplete="off" />
+
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <input id="msgeBody" class="tinymce-textarea" autocomplete="off" />
+    </div>
+
+    <div class="clearfix"></div>
+    <br />
+    <div id="progress2" class="progress">
+        <div class="progress-bar progress-bar-success"></div>
+    </div>
+    <div>
+        <div id="files2" class="files"></div>
+    </div>
+
+
+    <div class="pull-right">
+
+        <div class="btn image-upload">
+            <label for="Ms-file-input" class="">
+                <img class="attachFiles" src="//notrealdomain1.com/banner.png" />
+            </label>
+
+            <input id="Ms-file-input" type="file" name="files[]" multiple />
+
+            <div>
+                <input id="UploadedFileType2" type="hidden" />
+                <input id="UploadFileId2" type="hidden" />
+
+            </div>
+        </div>
+        <i id="saveDraft" title="Save as Draft" class="btn fa fa-floppy-o fa-lg"></i>
+
+        <input type="button" value="Send" id="BtnStudentSend" class="saveBtn" />
+
+        <input type="button" value="Cancel"
+               onclick="javascript: cancelSubmission('@Url.Action("Inbox", "Messenger")');" class="btn delBtn" />
+    </div>
+
+    <div class="clearfix"></div>
+
+
+</div>
+
+
+
+
+<script type="x-jquery-tmpl" id="tmpl-uploaded-file2">
+    <h5>Attachments</h5>
+    <div class="row upload-div-temp">
+
+        <div class="col-md-3 ">
+            {{if IsImage}}
+            <img class="img img-responsive text-center" src="${ThumbnailUrl}" />
+
+            {{else FileType == "pdf"}}
+            <span class="fa fa-file-pdf-o fa-align-center"></span>
+
+            {{else FileType == "doc" || FileType == "docx"}}
+            <span class="fa fa-file-word-o fa-align-center"></span>
+
+            {{else FileType == "xls" || FileType == "xlsx" }}
+            <span class="fa fa-file-excel-o fa-align-center"></span>
+
+            {{else}}
+            <span class="fa fa-file fa-align-centerr"></span>
+            {{/if}}
+
+        </div>
+
+        <div class="col-md-6">
+            <div>
+                <div class="attachRow">
+                    <label class="sr-only" for="friendly-name">File Name</label>
+                    <p class="">${OriginalFileName} (${SizeKb}<b>K</b>) </p>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+            <button type="button" class="btn delBtn"
+                    onclick="javascript: RemoveAttachedFile(this, '${OriginalFileName}', '${Name}', '${IsImage}')">
+                <span class="glyphicon glyphicon-trash"></span>
+                Remove
+            </button>
+
+            <input class="hidden attachment-folder-path" value="${FolderPath}" />
+            <input class="hidden attachment-Name" value="${Name}" />
+            <input class="hidden attachment-is-image" value="${IsImage}" />
+            <input class="hidden attachment-attachment-type" value="${AttachmentType}" />
+            <input class="hidden attachment-original-name" value="${OriginalFileName}" />
+        </div>
+
+        <div class="clearfix"></div>
+        <br />
+    </div>
+
+</script>
+@Scripts.Render("~/bundles/FileUpload")
+
+
+

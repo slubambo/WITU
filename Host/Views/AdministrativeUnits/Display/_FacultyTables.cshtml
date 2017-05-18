@@ -1,0 +1,50 @@
+﻿@using ARMSv2.Core.Model
+@using ARMSv2.Utils
+@model IEnumerable<ARMSv2.Models.AdminUnits.FacultyModel>
+
+<div>
+    @*@if (User.ApplicationUserType() == (int)UserTypes.Staff)
+    {
+        <div class="addFacultyBtn">
+            @Html.ActionLink("Add Faculty", "AddOrEditFaculty", new { campusId = Model.FirstOrDefault().Faculty.Campus.Id, controller = "AdministrativeUnits" }, new { @class = "saveBtn btn-primary addFaculty" })
+        </div>
+    }*@
+
+    <div class="table-responsive ">
+        <table class="table dataTable tbl-campus-faculties">
+            <thead>
+                <tr>
+                    <th>Faculty Name</th>
+                    <th>Departments</th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var fac in Model)
+                {
+                    <tr>
+                        <td>@Html.ActionLink(fac.Faculty.FacultyCore.Name, "ViewFaculty", new { id = @fac.Faculty.Id, controller = "AdministrativeUnits" })</td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(fac.Departments))
+                                
+                                {
+                                
+                                    <p> @fac.Departments </p>
+                                
+                                }
+
+                                else
+                                {
+                                    <p> NONE </p>
+                                } 
+                        </td>
+                       
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="clearfix"></div>
+    <br />
+    <br />
+</div>

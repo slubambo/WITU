@@ -1,0 +1,76 @@
+﻿@{
+    ViewBag.Title = "Staff Accounts Management";
+    //Layout = null;
+
+}
+@using WITU.Models
+
+@model WITU.Models.UserInfoViewModel
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/jquery-libs")
+@Scripts.Render("~/bundles/custom")
+ <table class="table responsiblityTable">
+    <thead>
+
+        <tr>
+            <th>
+                Category
+            </th>
+            <th>
+                Service
+            </th>
+            <th>
+                View
+            </th>
+            <th>
+                Add
+            </th>
+            <th>
+                Edit
+            </th>
+            <th>
+                Delete
+            </th>
+
+
+        </tr>
+
+    </thead>
+    <tbody>
+        @foreach (var item in Model.UserRoles)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayEnum(item.Role.Service.Category.Value, typeof(ServiceCategory))
+                </td>
+                <td>
+                    @item.Role.Service.Name
+                </td>
+                <td>
+                    @Html.DisplayFor(x => item.Role.CanRead)
+
+                </td>
+                <td>
+                    @Html.DisplayFor(x => item.Role.CanCreate)
+                </td>
+                <td>
+                    @Html.DisplayFor(x => item.Role.CanUpdate)
+                </td>
+                <td>
+                    @Html.DisplayFor(x => item.Role.CanDelete)
+                </td>
+
+            </tr>
+        }
+    </tbody>
+
+</table>
+
+<div class="">
+    <br />
+    @Html.HiddenFor(x => x.User.Id)
+    <input name="buttonClicked" class="btn saveBtn" type="submit" value="Edit" />
+    <div class="clearfix"> </div>
+</div>
+
+

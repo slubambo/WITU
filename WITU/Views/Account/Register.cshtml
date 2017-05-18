@@ -1,0 +1,231 @@
+﻿@model WITU.Models.RegisterViewModel
+@{
+    ViewBag.Title = "Register";
+}
+<div class="homeWrap homePages">
+   
+    <div class="col-md-8 col-xs-12">
+        <div class="topInst">
+            <h3 class="">Getting Started</h3>
+            <ul class="rootUl">
+                <li><i class="glyphicon glyphicon-ok"></i>Before you can submit an application for the first time, you will need to <b>Create an Account</b>. </li>
+                <li><i class="glyphicon glyphicon-ok"></i>Once you have an account, you will be able to <b>Log In</b> any time and see your </li>
+                <li class="insideUl">
+                    <ul class="subul">
+                        <li><i class="glyphicon glyphicon-pushpin"></i>Activity Log,</li>
+                        <li>
+                            <i class="glyphicon glyphicon-pushpin"></i>A personalized status page showing any applications you've started
+                            (so that you can continue your work on an in-progress application), as well as showing those applications you've already submitted.
+                        </li>
+
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <div class="panel-group instructionPanel" id="accordion">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#inst1">How do I create my account?</a>
+                    </h4>
+                </div>
+                <div id="inst1" class="panel-collapse collapse in">
+                    <ul class="panel-body">
+                        <li><i class="glyphicon glyphicon-ok"></i>Enter the details as required on the left panel.</li>
+                        <li><i class="glyphicon glyphicon-ok"></i>Click the <b>Register</b> button <i class="glyphicon glyphicon-hand-right"></i> <span>&nbsp;</span> to complete the account creation process.</li>
+                        <li class="note">
+                            <span>Note:</span> Be sure to keep a record of your
+                            <b><i>Username</i></b> and
+                            <b><i>Password</i></b>, as you will need them to access applications in progress, or to check your application status
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#inst2">How do I start a new application?</a>
+                    </h4>
+                </div>
+                <div id="inst2" class="panel-collapse collapse">
+                    <ul class="panel-body">
+                        <li>
+                            <i class="glyphicon glyphicon-ok"></i>
+                            Click the <b>Login</b> link at the top right of the page.
+                        </li>
+                        <li><i class="glyphicon glyphicon-ok"></i>
+                           Enter the Username and Password you provided when creating your account and click the <b>Login</b> button
+                        </li>
+                        <li><i class="glyphicon glyphicon-ok"></i>
+                        On the page displayed, click the <b>Start Application</b> button
+                        </li>
+</ul>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#inst3">How do I access an application I already started?</a>
+                    </h4>
+                </div>
+                <div id="inst3" class="panel-collapse collapse">
+                    <ul class="panel-body">
+                        <li><i class="glyphicon glyphicon-ok"></i>
+                            You can access any in-progress applications from your <b>Activity Log</b> after logging in
+
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#inst4">How do I fill out an application?</a>
+                    </h4>
+                </div>
+                <div id="inst4" class="panel-collapse collapse">
+                    <ul class="panel-body">
+                        <li><i class="glyphicon glyphicon-ok"></i>Once you have an account, you can begin filling out an application.</li>
+                        <li><i class="glyphicon glyphicon-ok"></i>
+                            You can either complete the application and submit it in one sitting, or save your work and continue it at a later time.
+                        <li><i class="glyphicon glyphicon-ok"></i>When filling out your application:</li>
+                        <li class="insideUl">
+                            <ul class="subul">
+                                <li><i class="glyphicon glyphicon-pushpin"></i>To save what you have done so far without exiting, click the <b>Save</b> button.</li>
+                                <li>
+                                    <i class="glyphicon glyphicon-pushpin"></i>To save and exit, click the
+                                    <b>Finish Session</b> or
+                                    <b>Save and Exit</b> button.
+                                </li>
+                                <li><i class="glyphicon glyphicon-pushpin"></i>To access an application in progress and continue your work on it, go to your <b>Activity Log</b> and select the application.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#inst4">How do I submit an application?</a>
+                    </h4>
+                </div>
+                <div id="inst4" class="panel-collapse collapse">
+                    <ul class="panel-body">
+                        <li><i class="glyphicon glyphicon-ok"></i>Check your work carefully. When you are satisfied with it and are ready to send it to us, click the <b>Send</b> button at the bottom of the last page. This saves your answers in their final form.</li>
+                        <li class="note"><span>Note:</span> Your application is not fully submitted until you pay your application fee and it has been authorized (see below).</li>
+
+                    </ul>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#inst5">How do I pay my application fee?</a>
+                    </h4>
+                </div>
+                <div id="inst5" class="panel-collapse collapse">
+                    <ul class="panel-body">
+                        <li><i class="glyphicon glyphicon-ok"></i>Cash payments to the Bursar are not accepted; money must be banked into one of the following University Fees Collection Bank Accounts </li>
+
+                        <li class="insideUl">
+                            <ul>
+                                <li class="bankName">Centenary Rural Development Bank Entebbe Road Branch, Kampala  </li>
+                                <li class="noBullet"><b>Account No:</b>3010005055 </li>
+                                <li class="noBullet"><b>Title of Account:</b> Ndejje University Fees Collection Account</li>
+                                <li class="bankName">Centenary Rural Development Bank Wobulenzi Branch, Wobulenzi  </li>
+                                <li class="noBullet"><b>Account No:</b>3510021366 </li>
+                                <li class="noBullet"><b>Title of Account:</b> Ndejje University Fees Collection Account</li>
+                                <li class="bankName">DFCU Bank, Uganda. </li>
+                                <li class="noBullet"><b>Account No:</b>01013500075284 </li>
+                                <li class="noBullet"><b>Title of Account:</b> Ndejje University Fees Collection Account</li>
+                                <li class="bankName">Equity Bank, Uganda. </li>
+                                <li class="noBullet"><b>Account No:</b>0200562412  </li>
+                                <li class="noBullet"><b>Title of Account:</b> Ndejje University Fees Collection Account</li>
+
+                            </ul>
+                        </li>
+
+                        <li><i class="glyphicon glyphicon-ok-sign"></i>Bank pay -in -slips to any of the above Accounts are obtainable from the Bursar's office or at any of the accounts offices on the three campuses. For DFCU and Equity Banks, banking slips are also obtainable at the banks. </li>
+
+                    </ul>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#inst6">How do I access a new application?</a>
+                    </h4>
+                </div>
+                <div id="inst6" class="panel-collapse collapse">
+                    <ul class="panel-body">
+                        <li><i class="glyphicon glyphicon-ok"></i>
+                            To start a new application, click the <b>Apply Now</b> button
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+</div>
+
+<div class="col-md-4 col-xs-12 accountCreationForm">
+    <h2 class="loginHeader center">Create Account</h2>
+    <div class="loginWrap">
+        @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+
+            @Html.ValidationSummary()
+            <div class="form-group">
+                @Html.LabelFor(m => m.FirstName, new { @class = " col-xs-12 control-label" })
+                <div class=" col-xs-12">
+                    @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.Surname, new { @class = " col-xs-12 control-label" })
+                <div class=" col-xs-12">
+                    @Html.TextBoxFor(m => m.Surname, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.UserName, new { @class = " col-xs-12 control-label" })
+                <div class=" col-xs-12">
+                    @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.ConfirmEmailAddress, new { @class = " col-xs-12 control-label" })
+                <div class=" col-xs-12">
+                    @Html.TextBoxFor(m => m.ConfirmEmailAddress, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.Password, new { @class = " col-xs-12 control-label" })
+                <div class=" col-xs-12">
+                    @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.ConfirmPassword, new { @class = " col-xs-12 control-label" })
+                <div class=" col-xs-12">
+                    @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group nomargin">
+                <div class="fright">
+                    <input type="submit" disabled="disabled" class="btn saveBtn" value="Register" />
+                </div>
+            </div>
+        }
+        
+    </div>
+</div>
+<div class="clearfix">
+
+</div>
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

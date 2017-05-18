@@ -1,0 +1,224 @@
+﻿@using System.Activities.Expressions
+@using WITU.Core.Model
+@using WITU.Utils
+@using WITU.Core.Model
+@model WITU.Models.RegistrationView
+@{
+    ViewBag.Title = "Registration Report";
+}
+
+@if (Model != null)
+{
+    <h2 class="maroonHeader">Registration Report</h2>
+    int i;
+    for (i = 0; i < Model.ProgramDuration; i++)
+    {
+        <div>
+            @Html.ValidationSummary(true)
+
+        </div>
+
+        <div class="form-horizontal tabs bodytext tabs-pilled noborder">
+            <ul class="">
+
+                @for (i = 0; i < Model.ProgramDuration; i++)
+                {
+                    <li class="@(Model.Student.CurrentYear == (i + 1) ? "ui-tabs-active ui-state-active" : "") ">
+                        <a href="#Year@(i)" role="tab" data-toggle="tab">
+                            Year @(i + 1)
+                        </a>
+                    </li>
+                }
+            </ul>
+
+            @for (i = 0; i < Model.ProgramDuration; i++)
+            {
+                <div id="Year@(i)" class="bodytext tab-pane nopadding ">
+                    <div class="clearfix">
+                        <br />
+                    </div>
+
+                    <div class="form-horizontal noborder">
+                        <h5>Semester I</h5>
+
+                        <br />
+                        <table class="table" id="">
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Course Code
+                                    </th>
+                                    <th>
+                                        Course Name
+                                    </th>
+                                    <th>
+                                        Credit Units
+                                    </th>
+                                    <th>
+                                        Course Type
+                                    </th>
+                                    <th>
+                                        Remarks
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+                            <tbody>
+                                @if (Model.SemesterRegistrations != null)
+                                {
+                                    if (!(Model.SemesterRegistrations.Any(x => x.SemesterLevel.Level == (i + 1) && x.SemesterLevel.SemesterSession == 1)))
+                                    {   <tr>
+                                            
+                                            <td></td>
+                                            <td><b>You have not yet registered for this semester</b></td>
+                                        </tr>
+                                        
+                                    }
+                                    else
+                                    {
+                                        var semReg = Model.SemesterRegistrations.FirstOrDefault(x => x.SemesterLevel.Level == (i + 1) && x.SemesterLevel.SemesterSession == 1);
+
+                                        foreach (var m in semReg.StudentCourses)
+                                        {
+                                            <tr>
+                                                    <td>
+                                                       @m.Course.Code
+
+                                                    </td>
+
+
+                                                    <td>
+                                                        @m.Course.Name
+                                                    </td>
+                                                    <td class="creditUnitVal">
+                                                        @m.Course.CreditUnits
+                                                    </td>
+                                                    <td>
+                                                        @if (m.Course.CourseType == CourseType.Core)
+                                                            {
+                                                                <p>Core</p>
+                                                            }
+                                                            @if (m.Course.CourseType == CourseType.Elective)
+                                                            {
+                                                                <p>Elective</p>
+                                                            }
+                                                            @if (m.Course.CourseType == CourseType.Audited)
+                                                            {
+                                                                <p>Audited</p>
+                                                            }
+                                                        </td>
+                                                    <td>
+                                                        @Model.CoursesList.FirstOrDefault(x=> x.StudentCourseId == m.Id).Remark
+                                                    </td>
+                                                </tr>
+                                          
+                                        }
+                                    }
+                                }
+
+                            </tbody>
+                        </table>
+                        <br />
+                        <br />
+                        <h5>Semester II</h5>
+                        <br />
+
+                        <table class="table" id="">
+                            <thead>
+
+                                <tr>
+                                    <th>
+                                        Course Code
+                                    </th>
+                                    <th>
+                                        Course Name
+                                    </th>
+                                    <th>
+                                        Credit Units
+                                    </th>
+                                    <th>
+                                        Course Type
+                                    </th>
+                                    <th>
+                                        Remarks
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+                            <tbody>
+                                @if (Model.SemesterRegistrations != null)
+                                {
+                                    if (!(Model.SemesterRegistrations.Any(x => x.SemesterLevel.Level == (i + 1) && x.SemesterLevel.SemesterSession == 2)))
+                                    {   <tr>
+                                            
+                                            <td></td>
+                                            <td><b>You have not yet registered for this semester</b></td>
+                                        </tr>
+                                        
+                                    }
+                                    else
+                                    {
+                                        var semReg = Model.SemesterRegistrations.FirstOrDefault(x => x.SemesterLevel.Level == (i + 1) && x.SemesterLevel.SemesterSession == 2);
+
+                                        foreach (var m in semReg.StudentCourses)
+                                        {
+                                            <tr>
+                                                    <td>
+                                                        @m.Course.Code
+
+                                                    </td>
+
+
+                                                    <td>
+                                                        @m.Course.Name
+                                                    </td>
+                                                    <td class="creditUnitVal">
+                                                       @m.Course.CreditUnits
+                                                    </td>
+                                                    <td>
+                                                        
+                                                            @if (m.Course.CourseType == CourseType.Core)
+                                                            {
+                                                                <p>Core</p>
+                                                            }
+                                                            @if (m.Course.CourseType == CourseType.Elective)
+                                                            {
+                                                                <p>Elective</p>
+                                                            }
+                                                            @if (m.Course.CourseType == CourseType.Audited)
+                                                            {
+                                                                <p>Audited</p>
+                                                            }
+                                                     
+
+                                                    </td>
+                                                    <td>
+                                                        @Model.CoursesList.FirstOrDefault(x => x.StudentCourseId == m.Id).Remark
+                                                    </td>
+                                                </tr>
+
+                                        }
+                                    }
+                                }
+
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+
+            }
+
+           
+        </div>
+
+
+    }
+
+
+}
+

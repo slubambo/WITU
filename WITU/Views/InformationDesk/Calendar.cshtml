@@ -1,0 +1,85 @@
+﻿@model WITU.Core.Model.Timeline
+@using WITU.Utils
+@using WITU.Models.UserManagement
+@{ var sessionDetails = (SessionUserManagementDetails)HttpContext.Current.Session["LoggedInUserRoles"]; }
+@{
+    ViewBag.Title = "Calendar";
+}
+
+@if (@Model != null)
+{
+    <div class="">
+    <h3 class="blueHeader">Calendar - @Model.Headline</h3>
+    
+    <div>
+        <span>
+            <span class="glyphicon glyphicon-calendar"></span>
+            <span>From @Model.StartDate.ToString("D") To @Model.EndDate.ToString("D")</span>
+        </span>
+        @if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) WITU.Models.ServiceDetail.Calender
+                                                                                 && (x.Role.CanCreate == true || x.Role.CanUpdate == true || x.Role.CanDelete == true)))
+        {
+            <span class="pull-right">
+                @Html.ActionLink("Edit", "EditCalendar", "InformationDesk", null, new {@class = "btn saveBtn"})
+            </span>
+        }
+    </div>
+
+    <div class="jumbotron timeline-view" id="timeline-view">
+        
+    </div>
+    <br/>
+     <div>
+        <div class="col-md-12">
+            <span class="maroonHeader"> Calendar Event(s)</span>
+            @if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) WITU.Models.ServiceDetail.Calender
+                                                                                     && (x.Role.CanCreate == true || x.Role.CanUpdate == true || x.Role.CanDelete == true)))
+            {
+                <label class="pull-right">
+                    @Html.ActionLink("Add Event", "EditTimelineDate", "InformationDesk", null, new {@class = "btn saveBtn"})
+                </label>
+            }
+            <div class="clearfix"></div>
+            <br/>
+        </div>
+        <table id="table-timeline-dates" class="table dataTable">
+            <thead>
+                <tr>
+                    <th>Event Headline</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <td>Edit</td>
+                    <td>Remove</td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var date in Model.TimelineDates.OrderByDescending(x => x.StartDate))
+                {
+                    <tr id="tr-timeline-date-@date.Id">
+                        <td>@date.Headline</td>
+                        <td>@date.StartDate.ToString("D")</td>
+                        <td>@date.EndDate.ToString("D")</td>
+                        <td>
+                            @Html.ActionLink("Edit", "EditTimelineDate", "InformationDesk", new { id = date.Id }, new { @class = "btn saveBtn" })
+                        </td>
+                        <td>
+                            <button type="button" class="btn delBtn" onclick="javascript: RemoveDate('@date.Id', '@date.Headline')">Remove</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+</div>
+}
+@if (@Model == null)
+{
+    <h3 class="blueHeader">Calendar</h3>
+    <p class="greyTxt">The Calender is not set, Contact Administrator.</p>
+}
+
+
+<div id="div-pop-up">
+
+</div>

@@ -1,0 +1,77 @@
+﻿@model ARMSv2.Models.Result.AddStudentCourse
+
+@{
+    ViewBag.Title = "Add Student Course";
+}
+
+<hgroup>
+    <h2 class="blueHeader">Add Student Course - @Model.Student.Person.FullName</h2>
+    <h3>@Model.Student.RegistrationNumber</h3>
+    <h4>@Model.Student.ProgramName - @Model.Student.Program.StartAcademicYear.Name</h4>
+</hgroup>
+
+<div>
+    @using (Html.BeginForm())
+    {
+        
+        @Html.AntiForgeryToken()
+
+        <div>
+            @Html.Raw(Html.UnEncodedValidationSummary())
+        </div>
+        
+        @Html.EditorFor(m => m.CourseProgramSelectItem)
+
+        <div class="form-group col-md-12">
+            @Html.LabelFor(x => x.AcademicYearId, new {@class = "control-label, col-md-4"})
+            <div class="col-md-8">
+                @Html.DropDownListFor(x => x.AcademicYearId, Model.AcademicYearOptions, "-- Select Academic Year --",
+                    new {@class = "form-control"})
+                <small><em>The academic year when the course was done.</em></small>
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+                @Html.LabelFor(m => m.SemesterSession, new { @class = "control-label, col-md-4" })
+                <div class="col-md-8">
+                    @Html.DropDownWithModelSelectable(m => m.SemesterSession, Model.SemesterToUseOptions,
+                     Model.CourseProgramSelectItem.YearSemesterPogramSelectItem.ProgramSelectItem.AdministrativeSelectItem.DefaultFirstItem,
+                        new { @class = "form-control", id = "drpdwn-semestercourse-done" })
+                    <small><em>The semester when the course was done.</em></small>
+                </div>
+            </div>
+        
+        <div class="form-group col-md-12" id="dv-student-course-course-type">
+                @Html.LabelFor(x => x.CourseType, new { @class = "col-md-4 control-label" })
+                <div class="col-sm-8">
+                    @Html.DisplayEnumFor(x => x.CourseType, "Not Applicable", Model.CourseTypeOptions.ToList(), 
+                    new { @class = "form-control", id = "drpdwn-add-student-course-type", disabled = "disabled"})
+                </div>
+            </div>
+        
+        <div class="form-group col-md-12">
+            @Html.LabelFor(x => x.ContinuousAssessment, new {@class = "control-label, col-md-4"})
+            <div class="col-md-8">
+                @Html.EditorFor(x => x.ContinuousAssessment, new { @class = "form-control" })
+            </div>
+        </div>
+        
+        <div class="form-group col-md-12">
+            @Html.LabelFor(x => x.ExaminationMark, new {@class = "control-label, col-md-4"})
+            <div class="col-md-8">
+                @Html.EditorFor(x => x.ExaminationMark, new {@class = "form-control"})
+            </div>
+        </div>
+        
+        @Html.HiddenFor(x => x.StudentId, new {id = "in-add-student-course-student-id"})
+        
+        <div class="col-md-offset-4 col-md-8">
+            <input type="submit" value="Save" class="btn saveBtn"/>
+
+            @*@Html.ActionLink("Cancel", "StudentProgression", new { studentId = Model.StudentId }, new { @class = "btn btn-default pull-right" })*@
+            <input type="button" class="btn btn-default pull-right" value="Cancel"
+                   onclick="javascript: cancelSubmission('@Url.Action("StudentProgression", "Result", new { studentId = Model.StudentId })');" />
+                
+            
+        </div>
+    }
+</div>

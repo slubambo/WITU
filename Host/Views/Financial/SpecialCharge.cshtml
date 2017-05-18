@@ -1,0 +1,66 @@
+﻿@using System.Globalization
+@using ARMSv2.Core.Model
+@model ARMSv2.Core.Model.SpecialCharge
+
+@{
+    ViewBag.Title = "Special Charge";
+}
+@*<h2>Special Charge</h2>*@
+
+<h4 class="blueHeader">@Model.Name</h4>
+
+@*<p>
+    @Model.Description
+</p>*@
+
+<div class="col-md-12 nopadding">
+    <div class="pull-left">@Model.Description</div>
+@if (Request.IsAuthenticated)
+{
+    if (User.ApplicationUserType() == (int) UserTypes.Staff)
+    {
+
+        @Html.ActionLink("Update", "AddOrEditSpecialCharge", "Financial", new {id = Model.Id}, new {@class = "btn saveBtn pull-right"})
+    }
+}
+    </div>
+<div class="clearfix"></div>
+<br />
+<div class="borderedTableWrap table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>From</th>
+                <th>To</th>
+                <th>Rate</th>
+                <th>USD Rate</th>
+                <th>Last Modified</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var spd in Model.SpecialChargeDetails.OrderByDescending(x => x.StartAcademicYear.StartYear))
+        {
+                <tr>
+                    <td>@spd.StartAcademicYear.Name</td>
+                    <td>
+                        @if (spd.EndAcademicYear != null)
+                    {
+                            @: @spd.EndAcademicYear.Name
+                    }
+                    </td>
+                    <td>
+                        @spd.Rate.ToString("n0", CultureInfo.InvariantCulture)
+                    </td>
+                    <td>
+                        @if (spd.UsdRate != null)
+                    {
+                            @spd.UsdRate.Value.ToString("n0", CultureInfo.InvariantCulture)
+                    }
+                    </td>
+                    <td>@spd.LastModified</td>
+                </tr>
+        }
+        </tbody>
+    </table>
+    <div class="clearfix"></div>
+</div>

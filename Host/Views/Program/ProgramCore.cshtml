@@ -1,0 +1,163 @@
+﻿@using ARMSv2.Core.Model
+@using ARMSv2.Utils
+@using ARMSv2.Models.UserManagement
+@{ var sessionDetails = (SessionUserManagementDetails)HttpContext.Current.Session["LoggedInUserRoles"]; }
+@model ARMSv2.Models.ProgramCoreView
+
+@{
+    ViewBag.Title = "Ndejje University Record's Management System";
+}
+
+<div class="row">
+
+    
+    <div class="col-md-12">
+        <h3 class="greyHeader nomargin">@Model.ProgramCore.Name</h3>
+    
+        <div class="">
+            <span class="glyphicon glyphicon-time"></span>
+            <label>Duration: @Model.ProgramCore.MinimumDuration years</label>
+        </div>
+
+        <div class="text-justify">
+            @if (Model.ProgramCore.GeneralInformation != null)
+            {
+                @Html.Raw(Model.ProgramCore.GeneralInformation)
+            }
+            else
+            {
+                <div class="greyTxt">
+                    No Description Available
+                    <div class="clearfix"></div>
+                   
+                </div>
+            }
+        </div>
+        
+        @if (Model.WeightingCriteria.WeightingCriteriaIncluded)
+        {
+            <div class="">
+                <p class="maroonTxt nomargin">Prerequisites </p>
+                <div>
+                    @Html.Partial("Display/_WeightingCriteriaSummary", Model.WeightingCriteria)
+                </div>
+            </div>   
+        }
+        
+        @*@foreach (var kv in Model.ProgramCore.OtherInformations)
+        {
+            <div>
+                <h4>@kv.Key</h4>
+                <p>
+                    @kv.Value
+                </p>
+            </div>
+        }*@
+        <div class="clearfix"></div> 
+        
+    </div>
+    </div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                Campuses With this Program
+            </div>
+            <ul class="list-group">
+                @if (Model.ProgramCore.Programs.Any())
+                {
+                    foreach (var prog in Model.ProgramCore.Programs)
+                    {
+                        <li class="list-group-item">
+                            <label class="text">@prog.Campus.Name</label><div class="clearfix"></div>
+                            @Html.ActionLink("Details", "View", "Program", new { id = prog.Id }, new { @class = "linkBtn noborder" })
+                        </li>
+                    }
+                }
+                else
+                {
+                    <li class="list-group-item"><em>No Campuses with this program.</em></li>
+                }
+                
+
+            </ul>
+
+        </div>
+        </div>
+    <div class="col-md-6">
+       
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    Specialisation Categories
+                </div>
+                <ul class="list-group">
+                    @if (Model.ProgramCore.SpecialisationCores.Any())
+                    {
+                        foreach (var sp in Model.ProgramCore.SpecialisationCores)
+                        {
+                            <li class="list-group-item">
+                                <a  class="text"  onclick="javascript:ViewSpecialisationCore('@sp.Id', '@sp.Name');">@sp.Name</a>
+                                
+                                @if (User.ApplicationUserType() == (int) UserTypes.Staff)
+                                {
+                                    <a href="#" onclick="javascript: AddSpecialisationCore('@Model.ProgramCore.Id', '@sp.Id');" class="text-info small">Edit</a>
+                                }
+                            </li>
+                        }
+
+                    }
+                    else
+                    {
+                        <li class="list-group-item"><em>No Specialisation Categories</em></li>
+                    }
+                    <li class="list-group-item"><a href="#" onclick="javascript: AddSpecialisationCore('@Model.ProgramCore.Id', '0');" class="text-center attachmentLink">Add New</a></li>
+                </ul>
+            </div>
+        
+    </div>
+</div>
+<div class="row">
+    <div class="progCoreBtns">
+        @if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) ARMSv2.Models.ServiceDetail.Programme
+                                                                                 && (x.Role.CanCreate == true || x.Role.CanUpdate == true || x.Role.CanDelete == true)))
+        {
+            //If there are any graduated students, show message that program can't be edited
+            if (Model.ProgramCore.Programs.SelectMany(p => p.Students).All(s => s.StudentStatus != StudentStatus.Graduated))
+            {
+                @Html.ActionLink("Edit Program", "EditProgramCore", "Program", new {id = Model.ProgramCore.Id}, new {@class = "btn saveBtn"})
+            }
+        }
+        @if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) ARMSv2.Models.ServiceDetail.Programme
+                                                                                 && (x.Role.CanCreate == true || x.Role.CanUpdate == true || x.Role.CanDelete == true)))
+        {
+            @Html.ActionLink("Edit Weighting Criteria", "EditWeightingCriteria", "Program", new {id = Model.ProgramCore.Id}, new {@class = "btn leftBtn delBtn"})
+        }
+        @if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) ARMSv2.Models.ServiceDetail.Campus
+                                                                                 && (x.Role.CanCreate == true || x.Role.CanUpdate == true || x.Role.CanDelete == true)))
+        {
+            @Html.ActionLink("Add Program to a Campus", "EditProgram", "Program", new {programCoreId = Model.ProgramCore.Id}, new {@class = "btn leftBtn delBtn"})
+        }
+    </div>
+    <div class="clearfix"></div>
+</div>
+@if (Request.IsAuthenticated)
+{
+    if (User.ApplicationUserType() == (int)UserTypes.Staff)
+    {
+        if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int)ARMSv2.Models.ServiceDetail.Programme
+                                                                                 && (x.Role.CanCreate == true || x.Role.CanUpdate == true || x.Role.CanDelete == true)))
+        {
+            //If there are any graduated students, show message that program can't be edited
+            if (Model.ProgramCore.Programs.SelectMany(p => p.Students).Any(s => s.StudentStatus == StudentStatus.Graduated))
+            {
+                <div class="row">
+                    <small> <span class="col-sm-12">This program can't be edited because it has graduates</span> </small>
+                </div>
+            }
+
+
+        }
+
+    }
+}
+

@@ -1,0 +1,145 @@
+﻿@model ARMSv2.Models.Result.PublishHistory
+@using ARMSv2.Core.Model           
+@using ARMSv2.Models.UserManagement
+@{ var sessionDetails = (SessionUserManagementDetails)HttpContext.Current.Session["LoggedInUserRoles"]; }
+
+@{
+    Layout = null;
+}
+<div><div id="dv-unpublish-response"></div></div>
+<div>
+    <dl class="dl-horizontal">
+        <dt><b>Campus: </b></dt>
+        <dd class="text-left">@Model.PublishedResult.Course.Program.Campus.Name</dd>
+    </dl>
+    
+    <dl class="dl-horizontal">
+        <dt><b>Faculty: </b></dt>
+        <dd class="text-left">@Model.PublishedResult.Course.Program.Faculty.FacultyCore.Name</dd>
+    </dl>
+    
+    <dl class="dl-horizontal">
+        <dt><b>Department: </b></dt>
+        <dd class="text-left">
+            @if (Model.PublishedResult.Course.Program.Department != null)
+            {
+                @Model.PublishedResult.Course.Program.Department.DepartmentCore.Name
+            }
+        </dd>
+    </dl>
+    
+    <dl class="dl-horizontal">
+        <dt><b>Program: </b></dt>
+        <dd class="text-left">@Model.PublishedResult.Course.Program.ProgramCore.Name</dd>
+    </dl>
+    
+    <dl class="dl-horizontal">
+        <dt><b>Course: </b></dt>
+        <dd class="text-left">@Model.PublishedResult.Course.Name</dd>
+    </dl>
+    
+    <dl class="dl-horizontal">
+        <dt>
+            <b>Academic Year: </b>
+        </dt>
+        <dd class="text-left">@Model.PublishedResult.Semester.AcademicYear.Name</dd>
+    </dl>
+    
+    <dl class="dl-horizontal">
+        <dt>
+            <b>Semester: </b>
+        </dt>
+        <dd class="text-left">@Model.PublishedResult.Semester.SemesterSession</dd>
+    </dl>
+    
+    <dl class="dl-horizontal">
+        <dt><b>Result Upload On: </b></dt>
+        <dd class="text-left">@Model.PublishedResult.CreatedOn.ToString("g")</dd>
+    </dl>
+    
+    <dl class="dl-horizontal">
+        <dt><b>Published On: </b></dt>
+        <dd class="text-left">
+            @if (Model.PublishedResult.PublishedOn != null)
+            {
+                @Model.PublishedResult.PublishedOn.Value.ToString("g")
+            }
+        </dd>
+    </dl>
+    
+    <dl class="dl-horizontal">
+        <dt><b>Published By: </b></dt>
+        <dd class="text-left">
+            @if (Model.ApprovedStuff != null)
+            {
+                @Model.ApprovedStuff.Person.FullName
+            }
+        </dd>
+    </dl>
+    
+    <dl class="dl-horizontal">
+        <dt><b>Number of Results: </b></dt>
+        <dd class="text-left">@Model.PublishedResult.StudentCourses.Count</dd>
+    </dl>
+    
+    <dl class="dl-horizontal">
+        <dt><b>Comment: </b></dt>
+        <dd class="text-left">@(Model.PublishedResult.Description??"NONE PROVIDED")</dd>
+    </dl>
+</div>
+
+@if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int)ARMSv2.Models.ServiceDetail.UnpublishResults
+                                                                                     && (x.Role.CanCreate == true || x.Role.CanUpdate == true || x.Role.CanDelete == true)))
+{
+    var studentCoursesPendingEdit = Model.PublishedResult.StudentCourses.Where(sc => sc.ResultStatus == ResultStatus.ChangedPendingApproval) as IList<StudentCourse> ?? Model.PublishedResult.StudentCourses.Where(sc => sc.ResultStatus == ResultStatus.ChangedPendingApproval).ToList();
+
+    var studentCoursesPendingDelete = Model.PublishedResult.StudentCourses.Where(sc => sc.ResultStatus == ResultStatus.DeletedPendingApproval) as IList<StudentCourse> ?? Model.PublishedResult.StudentCourses.Where(sc => sc.ResultStatus == ResultStatus.DeletedPendingApproval).ToList();
+    var graduatesStudentCourses = Model.PublishedResult.StudentCourses.Where(sc => sc.Student.StudentStatus == StudentStatus.Graduated) as IList<StudentCourse> ?? Model.PublishedResult.StudentCourses.Where(sc => sc.Student.StudentStatus == StudentStatus.Graduated).ToList();
+    if (studentCoursesPendingDelete.Any() || studentCoursesPendingEdit.Any() || graduatesStudentCourses.Any())
+    {
+        //Unpublish can't be done because either there are pending edits, pending deletes or graduated students
+        <div>
+            This course can't be unpublished because:
+
+            <ul>
+                @if (studentCoursesPendingDelete.Any())
+                {
+                    <li>
+                        @studentCoursesPendingDelete.Count() Deletes Pending
+                    </li>
+                }
+                @if (studentCoursesPendingEdit.Any())
+                {
+                    <li>
+                        @studentCoursesPendingEdit.Count() Edits Pending
+                    </li>
+                }
+
+                @if (graduatesStudentCourses.Any())
+                {
+                    <li>
+                        @graduatesStudentCourses.Select(sc => sc.Student).Distinct().Count() Graduate(s) have done this course
+                    </li>
+                }
+            </ul>
+        </div>
+
+
+    }
+    else
+    {
+        //Unpublish is a Go, button should be added
+
+        @*This is the div for the unpublishbutton*@
+        <div>
+            <button id="btn-publish-result" class="btn btn-info btn-sm" onclick="javascript: UnPublishResult(@Model.PublishedResult.Id);">
+                <span class="fa fa-pencil-square-o"></span>
+                UnPublish Results
+            </button>
+        </div>
+
+    }
+
+}
+
+

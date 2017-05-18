@@ -1,0 +1,131 @@
+﻿@using WITU.Utils
+@model WITU.Models.AdminUnits.EditFaculty
+
+@{
+    ViewBag.Title = "Ndejje University Records Management System";
+    var campusOptions = ViewBag.CampusOptions as List<SelectListItem>;
+}
+<div class="">
+
+    <h2 class="greyHeader">
+        Add/Edit
+
+        @if (!String.IsNullOrEmpty(Model.FacultyCoreName))
+        {
+            <span> @Model.FacultyCoreName</span>
+        }
+        else
+        {
+            <span> Faculty </span>
+        }
+    </h2>
+    <br />
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            @*<h4>Program Details</h4>*@
+
+
+            <div>
+                @Html.Raw(Html.UnEncodedValidationSummary())
+            </div>
+            <div class="form-group">
+                <span class="col-md-3 control-label">Faculty</span>
+                <div class="col-md-9 ">
+                    @Html.DropDownWithModelSelectable(m => m.FacultyCoreId, Model.FacultyCores,
+
+             new SelectListItem() { Text = "-- Select Faculty Component -- ", Value = "0" }, new { @class = "form-control addControl chosen-select", @id = "drpdwnfacultieslist" })
+
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.CampusId, new { @class = "control-label col-md-3" })
+                <div class="col-md-9 ">
+                    @Html.DropDownWithModelSelectable(m => m.CampusId, campusOptions, new SelectListItem() { Text = "-- Select Campus Component --", Value = "0" }, new { @class = "form-control addControl chosen-select", id = "drpdwn-facultycampus-options" })
+                </div>
+            </div>
+            
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Code, new { @class = "col-md-3 control-label" })
+
+                <div class="col-md-9 ">
+                    @Html.TextBoxFor(m => m.Code, new { @class = "form-control addControl", autocomplete = "off" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Description, new { @class = "col-md-3 control-label" })
+                <div class="col-md-9 ">
+                    @Html.TextAreaFor(m => m.Description, new { @class = "form-control addControl" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.ShortName, new { @class = "col-md-3 control-label" })
+
+                <div class="col-md-9 ">
+                    @Html.TextBoxFor(m => m.ShortName, new { @class = "form-control addControl", autocomplete = "off" })
+                </div>
+            </div>
+
+           
+        
+            <div class="col-md-3"></div>
+            <div class="col-md-9">
+                
+                @if (Model.Id == 0)
+                {
+                    <div class="noMarginCol2">
+                        <input type="submit" value="Create" class="btn saveBtn" />
+                        <input type="button" value="Cancel"
+                               onclick="javascript: cancelSubmission('@Url.Action("Faculties", "AdministrativeUnits", null)');" class="btn delBtn" />
+                    </div>
+
+                    <div class="clearfix"></div>
+
+                    <br />
+
+                }
+                else
+                {
+                    <div class="">
+                        <input type="submit" value="Update" class="btn saveBtn" />
+                        <input type="button" value="Cancel"
+                               onclick="javascript: cancelSubmission('@Url.Action("ViewFaculty", "AdministrativeUnits", new { id = Model.Id })');" class="btn delBtn" />
+                    </div>
+
+                    <div class="clearfix"></div>
+                    <br />
+
+                }
+            </div>
+
+            
+
+
+        </div>
+
+        @Html.HiddenFor(x => x.Id)
+        @Html.HiddenFor(m => m.CampusId)
+        @Html.HiddenFor(m => m.ContactOwnerId)
+        @Html.HiddenFor(m => m.FacultyCoreId)
+    }
+</div>
+
+
+
+
+
+
+
+       
+        
+
+        
+
+

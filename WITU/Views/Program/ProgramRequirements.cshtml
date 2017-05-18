@@ -1,0 +1,86 @@
+﻿@using ARMSv2.Core.Model
+@model ARMSv2.Models.program.ProgramRequirements
+@{
+    ViewBag.Title = "Program Requirements";
+}
+
+<h2>Program Requirements (Semester) - @Model.Program.ProgramCore.Name</h2>
+
+<p>
+    History of Semester Loads for this program.
+</p>
+<div class="bodytext noborder borderedTabs" id="dvProgramRequirementsTab">
+
+        <ul class="nav">
+            @for (var i = 1; i <= Model.Program.ProgramCore.MinimumDuration; i++)
+            {
+                <li><a role="tab" data-toggle="tab" href="#tab-courses-body-@i">Year @i</a></li>
+            }
+        </ul>
+
+        @for (var i = 1; i <= Model.Program.ProgramCore.MinimumDuration; i++)
+        {
+            <div id="tab-courses-body-@i" class="tab-pane semProgTabs">
+                @for (var semester = 1;  semester <= 2; semester++)
+                {
+                    <h4>
+                        Semester @(semester == 1? "I": "II")
+                        @if (Request.IsAuthenticated)
+                        {
+                            if (User.ApplicationUserType() == (int)UserTypes.Staff)
+                            {
+                            //TODO: Uncomment code below when ROBAC is added to this Page and also graduates and student results recalculation is considered
+                                @*<button class="pull-right btn btn-primary"
+                                        onclick="javascript: AddProgramRequirement('@Model.Program.Id', '@semester', '@i', 'Add Semester Load for @Model.Program.ProgramCore.Name, Year @i Semester @(semester == 1 ? "I": "II")');">
+                                    Update Load
+                                </button>*@
+                            }
+
+                        }
+
+                    </h4>
+                    <hr />
+                    <table class="table dataTable dataTableDisabledSort">
+                        <thead>
+                            <tr>
+                                <th>Start Academic Year</th>
+                                <th>Minimum Credit Units</th>
+                                <th>Maximum Credit Units</th>
+                                <th>End Academic Year</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var progReq in Model.ProgramRequirementList.Where(x => x.SemesterLevel.SemesterSession == semester && x.SemesterLevel.Level == i)
+                                .OrderByDescending(x => x.StartAcademicYear.Name))
+                            {
+                                <tr>
+                                    <td>@progReq.StartAcademicYear.Name</td>
+                                    <td>@progReq.MinimumCreditUnitLoad</td>
+                                    <td>@progReq.MaximumCreditUnitLoad</td>
+                                    <td>
+                                        @if (progReq.EndAcademicYear != null)
+                                        {
+                                            <span>@progReq.EndAcademicYear.Name</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <hr />
+                }
+            </div>
+        }
+    
+</div>
+
+<script>
+    $(document).ready(function () {
+        console.log("DefaultYear: " + '@Model.DefaultYear');
+        $("#dvProgramRequirementsTab").tabs({
+
+        });
+
+        $('#dvProgramRequirementsTab').tabs("option", "active", (parseInt('@Model.DefaultYear') - 1));
+    });
+</script>

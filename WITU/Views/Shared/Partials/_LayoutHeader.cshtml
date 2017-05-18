@@ -1,0 +1,39 @@
+﻿<header class="navbar navbar-inverse navbar-fixed-top bs-docs-nav" role="banner">
+    <div class="topRow"></div>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <div class="logo_area ">
+                    <div class="logoBkg">
+                        @*<div class="logoArrow">
+                        </div>*@
+                        <div class="leftBkg">
+                            <div class="logoBox">
+                            </div>
+                            @*<div class="logoDownArrow">
+                            </div>*@
+                        </div>
+                    </div>
+                    <div id="WITUlogo" class="logo">
+                    </div>
+                </div>
+                <span class="navbar-brand"><a href="http://www.witu.org/" class="uniName">WITU </a><br />E-Learning Platform</span>
+                <div class="clear"></div>
+
+            </div>
+            <nav class="navbar-collapse collapse topTwoRows bs-navbar-collapse" role="navigation">
+                <ul class="nav navbar-nav homeTopLinks navbar-right ">
+                    @Html.Partial("Partials/_LoginPartial")
+                    <div class="clearfix"></div>
+                    @Html.Action("GeneralInformationMenu", "Home", new { showing = @ViewBag.Showing })                   
+                </ul>
+            </nav>
+        </div>
+    </div>
+    
+</header>

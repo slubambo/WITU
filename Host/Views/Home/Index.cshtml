@@ -1,0 +1,99 @@
+﻿@model ARMSv2.Models.HomeView
+
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="homeWrap">
+    <div class="jumbotron timeline-view" id="timeline-view">
+
+    </div>
+    <div class="homeLowerContent">
+        <div class="homeCenter">
+            <div class="col-md-8">
+                <div class="homeItems ">
+                    @foreach (var gi in Model.GeneralInformations)
+                    {
+                        <h3 class="hidden-lg hidden-md">@gi.Title</h3>
+
+                        <div class="row">
+                            <img src="@ViewBag.InformationDeskResourcesUrl@gi.DefaultImageFilelName" class=" img img-responsive col-md-4" />
+                            <div class="col-md-8">
+                                <h3 class="hidden-xs hidden-sm">@gi.Title</h3>
+                                <p class="right text-justify">
+                                    @gi.ShortDescription
+
+
+                                    @Html.ActionLink("Read More", "GeneralInformation", "InformationDesk", new { id = gi.Id }, new { @class = "moreLink" })
+                                </p>
+                            </div>
+                        </div>
+
+                    }
+
+
+                </div>
+
+            </div>
+
+            <div class="col-md-4  ">
+                <fieldset class="borderFieldset contactFieldset">
+                    <legend class="text-center noborder" align="center"> <a href="@Model.ContactSummary.Url" class="blueHeader">Contact Information</a></legend>
+
+                    <div class="text-center row">@Model.University.Name</div>
+
+                    <div class="text-center row">Office of the Academic Registrar</div>
+
+                    <div class="text-center row">@Model.ContactSummary.City</div>
+
+                    <div class="text-center row"> @Model.ContactSummary.Country</div>
+
+                    <div class="text-center row"> @Model.ContactSummary.TelephoneContact</div>
+
+                    <div class="text-center row"> @Model.ContactSummary.EmailContact</div>
+                </fieldset>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="col-md-12 homeNewsSection" >
+            <h3 class="text-center blueHeader">News And Events</h3>
+
+            @Html.Partial("~/Views/Shared/Display/_InformationDeskItems.cshtml", Model.InformationDesks)
+
+            @*@foreach (var id in @Model.InformationDesks)
+            {
+                <div class="row">
+                    <h4>@id.Title</h4>
+                    <p class="text-justify">
+                        @id.ShortDescription
+                    </p>
+                    @Html.ActionLink("Read More", "Information", "InformationDesk", new {id = @id.Id}, new {@class = "btn btn-primary pull-right"})
+                </div>
+            }*@
+
+
+            @Html.ActionLink("View All News and Events", "All", "InformationDesk", null, new { @class = "delBtn " })
+            <div class="clearfix"></div>
+            <br/>
+        </div>
+
+        @*<div class="col-md-4  contactDiv">
+        <fieldset class="borderFieldset contactFieldset">
+            <legend class="text-center noborder"> <a href="@Model.ContactSummary.Url" class="blueHeader">Contact Information</a></legend>
+
+            <div class="text-center row">@Model.University.Name</div>
+
+            <div class="text-center row">Office of the Academic Registra</div>
+
+            <div class="text-center row">@Model.ContactSummary.City</div>
+
+            <div class="text-center row"> @Model.ContactSummary.Country</div>
+
+            <div class="text-center row"> @Model.ContactSummary.TelephoneContact</div>
+
+            <div class="text-center row"> @Model.ContactSummary.EmailContact</div>
+        </fieldset>
+    </div>*@
+        <div class="clearfix"></div>
+    </div>
+</div>

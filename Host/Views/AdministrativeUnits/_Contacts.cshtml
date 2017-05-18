@@ -1,0 +1,74 @@
+﻿@using ARMSv2.Core.Model
+@model ARMSv2.Models.AdminUnits.ContactViewExtended
+@using ARMSv2.Utils
+@using ARMSv2.Models.UserManagement
+@{ var sessionDetails = (SessionUserManagementDetails)HttpContext.Current.Session["LoggedInUserRoles"]; }
+
+            <div class="row">
+                
+                    <div class="col-md-2"> <strong>Contact Type</strong></div>
+                    <div class="col-md-10"><strong>Contact(s)</strong> </div>
+                    
+                
+            </div>
+            
+                @foreach (var contactView in Model.contactItems)
+                {
+                    <div class="row" >
+                        <div class="col-md-2">@contactView.contactType.Name</div>
+                        <div class="col-md-10">
+                            
+                               @foreach (var contact  in contactView.contacts)
+                               {
+                                   <div class="row" style="margin-bottom: 5px">
+                                       <div class="col-md-6">
+                                           @contact.Value
+                                       </div>
+                                       @if (Request.IsAuthenticated)
+                                       {
+                                           if (User.ApplicationUserType() == (int) UserTypes.Staff)
+                                           {
+                                               if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) ARMSv2.Models.ServiceDetail.Contacts
+                                                                                                                       && (x.Role.CanCreate == true || x.Role.CanUpdate == true || x.Role.CanDelete == true)))
+                                               {
+                                                   <div class="col-md-2">
+                                                       @Html.ActionLink("Edit", "AddOrEditContact", "AdministrativeUnits", new {id = contact.Id, accessLevel = contact.ContactOwnerAccessLevel, ownerAccessLevelId = contact.ContactOwnerAccessLeveId}, new {@class = "btn saveBtn"})
+                                                   </div>
+                                               }
+                                           }
+
+                                           
+                                           
+                                       }
+                                       
+                                       
+                                   </div>
+                                   
+                               }
+                        </div>
+                        
+                    </div>
+                }
+            
+        
+    
+    <div class="clearfix"></div>
+    
+@if (Request.IsAuthenticated)
+{
+    if (User.ApplicationUserType() == (int) UserTypes.Staff)
+    {
+        if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) ARMSv2.Models.ServiceDetail.Contacts
+                                                                                && (x.Role.CanCreate == true || x.Role.CanUpdate == true || x.Role.CanDelete == true)))
+        {
+            <div class="pull-right">
+            
+                @Html.ActionLink("Add Contact", "AddOrEditContact", "AdministrativeUnits", new {accessLevel = Model.ContactOwnerAccessLevel, ownerAccessLevelId = Model.ContactOwnerAccessLevelId}, new {@class = "btn saveBtn"})
+           
+
+            </div>
+        }
+    }
+}
+
+

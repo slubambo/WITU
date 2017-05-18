@@ -1,0 +1,333 @@
+﻿@model ARMSv2.Models.graduation.GradDetailView
+@using ARMSv2.Core.Model
+@using ARMSv2.Utils
+@using ARMSv2.Models.UserManagement
+@{
+    ViewBag.Title = "View Graduation Detail";
+}
+@{ var sessionDetails = (SessionUserManagementDetails)HttpContext.Current.Session["LoggedInUserRoles"]; }
+
+<h3 class="blueTxt"><a href="@Url.Action("View", "Graduation", new {id = Model.GradDetail.GraduationCeremony.Id})">@(string.Format("{0} ({1})", Model.GradDetail.GraduationCeremony.Name, Model.GradDetail.GraduationCeremony.CompletionDate.ToString("MMMM yyyy")))</a></h3>
+
+<div class="row">
+    <h1 class="blueHeader col-md-6">@Model.GradDetail.Name</h1>
+    <div class="col-md-6">
+        @if (Request.IsAuthenticated)
+{
+    if (User.ApplicationUserType() == (int)UserTypes.Staff)
+    {
+        if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int)ARMSv2.Models.ServiceDetail.GraduationCeremonies
+                                                                                 && (x.Role.CanUpdate == true)))
+        {
+            //If there are students already added to the day, hide Edit Detail button
+            if (!Model.GradDetail.Students.Any())
+            {
+                <span class="col-md-6">
+                    <button id="btn-edit-detail" class=" btn btn-default btn-sm" onclick="location.href = '@Url.Action("AddOrEditGradDetail", "Graduation", new {id = Model.GradDetail.Id, gradCeremonyId = Model.GradDetail.GraduationCeremony.Id})'">
+                        <span class="glyphicon glyphicon-edit"></span>
+                        Edit Detail
+                    </button>
+                </span>
+            }
+        }
+        if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int)ARMSv2.Models.ServiceDetail.GraduationCeremonies
+                                                                                && (x.Role.CanDelete == true)))
+        {
+            //If there are students already added to the day, hide Delete Detail button
+            if (!Model.GradDetail.Students.Any())
+            {
+                <span class="col-md-6">
+                    <button id="btn-delete-detail" class=" btn btn-default btn-sm">
+                        <span class="glyphicon glyphicon-remove"></span>
+                        Delete Detail
+                    </button>
+                </span>
+            }
+        }
+
+    }
+}
+    </div>
+</div>
+
+<div class ="row">
+    <div class="col-sm-6">
+        <div class="row">
+            <span class="col-xs-12 col-sm-4">Graduation Date: </span>
+            <span class="col-xs-12 col-sm-8">@Model.GradDetail.GraduationDate.ToString("D")</span>
+        </div>
+        <div class="row">
+            <span class="col-xs-12 col-sm-4">Completion Date: </span>
+            <span class="col-xs-12 col-sm-8">@Model.GradDetail.GraduationCeremony.CompletionDate.ToString("MMMM yyyy")</span>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        @if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) ARMSv2.Models.ServiceDetail.GraduationCeremonies
+                                                                                 && (x.Role.CanCreate == true || x.Role.CanUpdate == true)))
+        {
+            <span class="col-md-6">
+                <button id="btn-add-students" class=" btn btn-default btn-sm" onclick="location.href = '@Url.Action("AddStudents", "Graduation", new {gradDetailId = Model.GradDetail.Id})'">
+                    <span class="glyphicon glyphicon-plus"></span>
+                    Add Student(s)
+                </button>
+            </span>
+            //if (DateTime.Today < Model.GradDetail.GraduationDate.Date)
+            // {
+                 <span class="col-md-6">
+                     <button id="btn-remove-students" class=" btn btn-default btn-sm btn-multiselect">
+                         <span class="glyphicon glyphicon-minus"></span>
+                         Remove Student(s)
+                     </button>
+                 </span>
+                 
+             //}
+            
+        }
+    </div>
+</div>
+
+
+
+@if (Model.GradDetail.Students.Any())
+{
+
+    <table class="dataTable" id="tbl-remove-students">
+        <thead>
+            <tr>
+                @*@if (DateTime.Today < Model.GradDetail.GraduationDate.Date)
+                {*@
+                <th>
+                    <input type="checkbox" autocomplete="off" value="allChecked" class="pull-left" id="tbl-chbx-removestudents-all" />
+                </th>
+                @*}*@
+
+                <th>Reg No.</th>
+                <th>Name</th>
+                <th>
+                    Gender
+                </th>
+                <th>
+                    Program Name
+                </th>
+                <th>Faculty</th>
+                <th>
+                    CGPA
+                </th>
+                <th>
+                    CTCUs
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var student in Model.GradDetail.Students)
+            {
+                <tr>
+                    @*@if (DateTime.Today < Model.GradDetail.GraduationDate.Date)
+                    {*@
+                        <td>
+                            <input type="checkbox" value="@student.Id" autocomplete="off"
+                                onchange="javascript: removeStudentCheckBoxChange(this);" class="tbl-chbx-removestudent-sc pull-left" />
+                        </td>
+                    @*}*@      
+
+                    <td>@student.RegistrationNumber</td>
+                    <td>@student.Person.FullNameWithNoTitle</td>
+                    <td>
+                        @Html.DisplayEnum(@student.Person.Gender)
+
+                    </td>
+                    <td>
+                        @student.ProgramName
+                    </td>
+                    <td>
+                        @student.Program.Faculty.FacultyCore.Name) - @student.Program.Campus.Name
+                    </td>
+                    <td>
+                        @Math.Round(student.CurrentCGPA, 3)
+                    </td>
+                    <td>
+                        @student.CurrentCTCU
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+
+}
+else
+{
+    <span class="blueTxt">No students added yet</span>
+}
+
+
+
+<script type="text/javascript">
+    $(document).ready(function() {
+
+        var gradDetailId = '@Model.GradDetail.Id';
+
+        if ($("#btn-delete-detail").length) {
+
+            $("#btn-delete-detail").click(function() {
+
+                BootstrapDialog.confirm("You are about to delete detail @Model.GradDetail.Name Graduation Date: @Model.GradDetail.GraduationDate.ToString("dd MMMM yyyy") with @Model.GradDetail.Students.Count Students. This shall affect @Model.GradDetail.Students.Count() students, Are you sure?", function(result) {
+                    if (result) {
+                        DeleteDetail(gradDetailId);
+
+                    } else {
+                        //Do nothing
+                    }
+                });
+
+            });
+        }
+
+        if ($('#tbl-chbx-removestudents-all').length) {
+
+            enableAndDisableRemoveButton();
+
+            //selecting all checked items on load...
+            $('table input:checked').each(function (i, obj) {
+                //retrieve the checkbox...
+                $(this).closest('tr').toggleClass('selected');
+            });
+
+            //for all...
+            $('input#tbl-chbx-removestudents-all').change(function (e) {
+
+                var oTable = $(e.target).closest('table').dataTable();
+                var nNodes = oTable.fnGetNodes();
+
+                $(nNodes).find(':checkbox').prop('checked', this.checked);
+                if (this.checked) {
+                    $(nNodes).addClass('selected');
+                } else {
+                    $(nNodes).removeClass('selected');
+                }
+
+                enableAndDisableRemoveButton();
+            });
+        }
+
+        //on removing students..
+        $('#btn-remove-students').click(function () {
+
+            //first we collect the necessar items..
+            var rows = [];
+
+            var oTable = $('#tbl-remove-students').DataTable();
+            var nNodes = oTable.rows().nodes();
+
+            $(nNodes).find(':checkbox:checked').each(function (i, obj) {
+                //console.log('Selected Value: ' + $(obj).val());
+                rows.push($(obj).val());
+            });
+
+            console.log('Students selected: ' + rows.length);
+
+            var content = $('<div><div id="dv-removestudent-response"></div></div>');
+            content.append('<p class="voffset-2">You are about to Remove <b>' + rows.length + '</b> Students from a Graduation.');
+
+
+            ConfirmBeforeSubmission('Remove Students', content, function ($dialog) {
+                //getting the loading dialog...
+                $('#dv-removestudent-response').html(
+                    '<div class"alert alert-info well-sm col-md-12">' +
+                        '<span class="col-md-4"><span class="fa fa-2x fa-spin fa-spinner"></span></span>' +
+                        '<span class="col-md-offset-2 col-md-6 text-left">Removing, Please Wait... </span>' +
+                    '<div>'
+                );
+
+                var response = {
+                    StudentIds: rows,
+                    GradDetailId: '@Model.GradDetail.Id'
+                };
+
+                $.ajax({
+                    url: baseUrl + 'Api/UtilsApi/RemoveStudentsFromGrad',
+                    type: 'POST',
+                    data: response,
+                    success: function (data) {
+                        if (data.SaveStatus) {
+                            $('#dv-removestudent-response').html(
+                                '<div class"alert alert-success well-sm col-md-12">' +
+                                    '<span class="col-md-4"><span class="glyphicon glyphicon-saved"></span></span>' +
+                                    '<span class="col-md-offset-2 col-md-6 text-left">The selected Students have been successfully removed from the graduation. </span>' +
+                                '<div>'
+                            );
+
+                            //reload after some mill seconds..
+                            setTimeout(function () {
+                                //close the dialog...
+                                $dialog.close();
+
+                                window.location.reload(true);
+                            }, 1000);
+
+                        } else {
+                            $('#dv-removestudent-response').html(
+                                '<div class"alert alert-danger well-sm col-md-12">' +
+                                    '<span class="col-md-4"><span class="glyphicon glyphicon-warning-sign"></span></span>' +
+                                    '<span class="col-md-offset-2 col-md-6 text-left">Students could not be removed from the graduation. </span>' +
+                                '<div>'
+                            );
+                        }
+                    },
+                    error: function () {
+                        $('#dv-removestudent-response').html(
+                            '<div class"alert alert-danger well-sm col-md-12">' +
+                                '<span class="col-md-4"><span class="glyphicon glyphicon-warning-sign"></span></span>' +
+                                '<span class="col-md-offset-2 col-md-6 text-left">Server Access Error. </span>' +
+                            '<div>'
+                        );
+                    }
+                });
+
+            });
+        });
+
+    });
+
+    function DeleteDetail(detailId) {
+        $.post(baseUrl + "Api/UtilsApi/DeleteGradDetail/" + detailId, function (data) {
+            if (data == true) {
+
+                window.location.href = '@Url.Action("View", "Graduation", new{ id = Model.GradDetail.GraduationCeremony.Id})';
+
+            } else {
+                showToast("Something went wrong while deleting @Model.GradDetail.Name (@Model.GradDetail.GraduationDate.ToString("dd MMMM yyyy")).", "error");
+            }
+        });
+    }
+
+    function removeStudentCheckBoxChange(obj) {
+
+        var oTable = $(obj).closest('table').DataTable();
+        var row = oTable.row($(obj).closest('tr')).node();
+        $(row).toggleClass('selected');
+
+        enableAndDisableRemoveButton();
+
+        //uncheck the checkbox for all if not all checkboxes are checked..
+        var nNodes = oTable.rows().nodes();
+
+        if ($(nNodes).find('.tbl-chbx-removestudent-sc:checked').length == $(nNodes).find('.tbl-chbx-removestudent-sc').length) {
+            //if true then we are checking the master dude..
+            $('#tbl-chbx-removestudents-all').prop('checked', true);
+        } else {
+            $('#tbl-chbx-removestudents-all').prop('checked', false);
+        }
+    }
+
+    function enableAndDisableRemoveButton() {
+        var selectableLength = $('.selected').length;
+
+        if (selectableLength > 0) {
+            $('.btn-multiselect').removeAttr('disabled');
+
+        } else {
+            $('.btn-multiselect').attr('disabled', 'disabled');
+        }
+    }
+</script>

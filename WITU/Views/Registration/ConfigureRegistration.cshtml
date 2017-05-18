@@ -1,0 +1,195 @@
+﻿@model WITU.Models.Registration.StudentRegModelView
+@{
+    Layout = null;
+
+}
+
+<p class="maroonHeader">Current Semester Courses</p>
+<p class="greyHeader">Please select the courses you would like to register for the student</p>
+<div id="CreditStatus" class="fright alert-warning"></div>
+@*@using (Html.BeginForm("ConfigureRegistration", "Registration", FormMethod.Post))
+    {*@
+<input type="hidden" value="@Model.MaximumSemLoad" id="MaximumSelectedSemLoad" />
+@*@Html.HiddenFor(model => model.MaximumSemLoad, new { id = "MaximumSemLoad" })*@
+@Html.HiddenFor(model => model.Student.Id)
+<div id="dv-register-response"></div>
+<table class="table configureCoursesTable">
+    <thead>
+
+        <tr>
+            <th class="">
+
+            </th>
+            <th>
+                Course Code
+            </th>
+            <th>
+                Course Name
+            </th>
+            <th>
+                Credit Units
+            </th>
+
+        </tr>
+
+    </thead>
+    <tbody>
+        @if (Model.CoursesList.Any())
+        {
+            foreach (var m in Model.CoursesList)
+            {
+                <tr>
+                    <td>
+                        @if (m.IsRetaken3X == false)
+{
+    <input name="selectedCourses" type="checkbox" onchange="warmonOverloadCreditUnits(@m.CreditUnits, @m.Id)" autocomplete="off" value="@m.Id" class="course_selected_@m.Id" />
+}
+                    </td>
+                    <td>@m.Code</td>
+                    <td>@m.Name</td>
+                    <td>@m.CreditUnits</td>
+
+                </tr>
+            }
+        }
+        @if (!Model.CoursesList.Any())
+        {
+            <tr>
+                <td>
+                    <p><b>No Courses found for the current semester</b></p>
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+<br />
+
+<div class="col-lg-offset-8">
+    <input type="button" id="btn-register-courses" value="Configure Registration" class="btn saveBtn" />
+    <div class="clearfix"> </div>
+</div>
+@*}*@
+<input type="hidden" value="@Model.Student.Id" id="studentIdValue"/>
+<script>
+    $('.configureCoursesTable').dataTable({
+        "pageLength": 5,
+        "lengthChange": false,
+        "bFilter": false,
+        "bInfo": false
+    });
+
+    //Register Courses Staff Portal
+    $('#btn-register-courses').click(function () {
+        //first we collect the necessar items..
+        var rows = [];
+        
+        var studentId = $('#studentIdValue').val();
+
+        var oTable = $('.configureCoursesTable').DataTable();
+        var nNodes = oTable.rows().nodes();
+
+        $(nNodes).find(':checkbox:checked').each(function (i, obj) {
+            //console.log('Selected Value: ' + $(obj).val());
+            rows.push($(obj).val());
+        });
+
+        console.log('Items selected: ' + rows.length);
+
+        //ConfirmBeforeSubmission('Register Results', content, function ($dialog) {
+            //getting the loading dialog...
+            
+            $( "div#dv-register-response" ).html(function() {
+                var loadingDiv = '<div class"alert alert-info well-sm">' +
+                    '<span class=""><span class="fa fa-2x fa-spin fa-spinner"></span></span>' +
+                    '<span class="text-warning">Registering, Please Wait... </span>' +
+                    '<div>';
+                return "<div> " + loadingDiv + "</div>";
+            });
+            
+            
+        var response = {
+            CourseIds: rows,
+            StudentId: studentId
+        };
+       
+        $.ajax({
+            url: baseUrl + 'Api/UtilsApi/RegisterCourses',
+            type: 'POST',
+            data: response,
+            success: function (data) {
+                if (data.SaveStatus) {
+                    
+                    $( "div#dv-register-response" ).html(function() {
+                        var emphasis = '<div class"alert alert-success well-sm">' +
+                            '<button type="button" class="close" data-dismiss="alert">×</button>' +
+                            '<span class="glyphicon glyphicon-saved"></span>' +
+                            '<span class="text-success text-left">Courses have been successfully registered. </span>' +
+                            '<div>';
+                        return "<div> " + emphasis + "</div>";
+                    });
+                    
+                    //reload after some mill seconds..
+                    setTimeout(function () {
+                        window.location.reload(true);
+                    }, 1000);
+                    
+                    
+
+                } else {
+                    
+                    $( "div#dv-register-response" ).html(function() {
+                        var emphasis = '<div class"alert alert-danger well-sm">' +
+                            '<button type="button" class="close" data-dismiss="alert">×</button>' +
+                            '<span class=""><span class="glyphicon glyphicon-warning-sign"></span></span>' +
+                            '<span class="text-danger text-left">Registration not successful. </span>' +
+                        '<div>';
+                        return "<div> " + emphasis + "</div>";
+                    });
+                    
+                }
+            },
+            error: function () {
+                
+                $( "div#dv-register-response" ).html(function() {
+                    var emphasis = '<div class"alert alert-danger well-sm">' +
+                        '<button type="button" class="close" data-dismiss="alert">×</button>' +
+                        '<span class=""><span class="glyphicon glyphicon-warning-sign"></span></span>' +
+                        '<span class="text-danger text-left">Server Access Error. </span>' +
+                    '<div>';
+                    return "<div> " + emphasis + "</div>";
+                });
+                
+               
+            }
+        });
+        //});
+    });
+    
+    var creditSumm = 0;
+    var maximumSelectedSemLoad = parseInt($('#MaximumSelectedSemLoad').val(), 10);
+    
+    function warmonOverloadCreditUnits(credit, id) {
+        
+        if ($(".course_selected_" + id).is(":checked")) {
+            
+            if (creditSumm >= maximumSelectedSemLoad || (creditSumm + credit) > maximumSelectedSemLoad) {
+                var message = "You have reached the maximum load";
+                var title = "Maximum Semester Load";
+                AlertMessageDialog(message, title);
+                $(".course_selected_" + id).prop('checked', false);
+            } else {
+                creditSumm += credit;
+                }
+               } else {
+                creditSumm -= credit;
+            }
+            //creditSum += credit;
+            $("#CreditStatus").html("Total Credit Summation: " + creditSumm);
+        }
+   
+</script>
+

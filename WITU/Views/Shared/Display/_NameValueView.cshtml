@@ -1,0 +1,20 @@
+﻿@model KeyValuePair<string, string>
+           
+<div class="rowEle">
+    <span class="appLbl">@Model.Key :</span>
+    <span class="fleft importantDetail">
+        @if (Model.Value != null)
+        {
+            @Model.Value
+        }
+    </span>
+</div>
+
+@*<div class="row">
+    <span>
+        @Model.Key
+    </span>
+    <span class="pull-right">
+        @Model.Value
+    </span>
+</div>*@

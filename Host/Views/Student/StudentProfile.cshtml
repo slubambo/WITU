@@ -1,0 +1,60 @@
+﻿@using ARMSv2.Core.Model
+@model ARMSv2.Core.Model.Student
+@{
+    ViewBag.Title = "Student Profile";
+}
+
+
+
+<div class="profInfo tabs bodytext tabs-pilled noborder">
+    <div class="row">
+        <div class="col-md-4">
+            @if (@User.ApplicationUserProfilePhoto() != null)
+            {
+
+                <img src="@User.ApplicationUserProfilePhoto()" class="img-responsive profilePhoto" />
+
+            }
+        </div>
+        <div class="col-md-8"></div>
+    </div>
+  
+    <div class="row">
+        <div class="col-md-6">
+            <div class="row"><span class="col-xs-12 maroonHeader" style="line-height:2.5em">Profile Information</span> </div>
+                <div class="row"><div class="col-xs-5"><p class="detailLabel">Name:</p></div><div class="col-xs-7"><p>@Model.Person.FullName</p></div></div>
+            <div class="row"><div class="col-xs-5"><p class="detailLabel">Registration Number:</p></div><div class="col-xs-7"><p>@Model.RegistrationNumber</p></div></div>
+            <div class="row"><div class="col-xs-5"><p class="detailLabel">Student Number:</p></div><div class="col-xs-7"><p>@Model.StudentNumber</p></div></div>
+            <div class="row"><div class="col-xs-5"><p class="detailLabel">Course:</p></div><div class="col-xs-7"><p>@Model.Program.ProgramCore.Name</p></div></div>
+            <div class="row"><div class="col-xs-5"><p class="detailLabel">Gender:</p></div><div class="col-xs-7"><p>@Html.DisplayEnum(@Model.Person.Gender ?? Gender.Unknown)</p></div></div>
+            @if (@Model.Person.DateOfBirth != null){
+            <div class="row"><div class="col-xs-5"><p class="detailLabel">Birthday:</p></div><div class="col-xs-7"><p>@Model.Person.DateOfBirth.Value.ToLongDateString()</p></div></div>
+            }
+            <div class="row"><div class="col-xs-5"><p class="detailLabel">Marital Status:</p></div><div class="col-xs-7"><p>@Model.Person.MaritalStatus</p></div></div>
+            <div class="row"><div class="col-xs-5"><p class="detailLabel">Religion:</p></div><div class="col-xs-7"><p>@Model.Person.Religion</p></div></div>
+            <div class="row"><div class="col-xs-5"><p class="detailLabel">Citizenship:</p></div><div class="col-xs-7"><p>@Model.Person.PlaceOfBirth</p></div></div>
+
+        </div>
+        <div class="col-md-6">
+            <div class="row"><span class="col-xs-12 maroonHeader" style="line-height:2.5em">Contact Information</span> </div>
+            <div class="row"><div class="col-xs-5"><p class="detailLabel">Email Address:</p></div><div class="col-xs-7"><p>@Model.Person.EmailAddress</p></div></div>
+            <div class="row"><div class="col-xs-5"><p class="detailLabel">Postal Address:</p></div><div class="col-xs-7"><p>@Model.Person.PostalAddress</p></div></div>
+            @if (Model.ResidentHall != null){
+                <div class="row"><div class="col-xs-5"><p class="detailLabel">Hall of Residence:</p></div><div class="col-xs-7"><p>@Model.ResidentHall.Name</p></div></div>
+            }
+                <div class="row"><div class="col-xs-5"><p class="detailLabel">Phone Contact:</p></div><div class="col-xs-7"><p>@Model.Person.TelephoneContact</p></div></div>
+            <div class="row"><div class="col-xs-7"><p class="detailLabel">Alternative Phone Contact:</p></div><div class="col-xs-5"><p>@Model.Person.AltTelephoneContact</p></div></div>
+            <div class="row"><div class="col-xs-5"><p class="detailLabel">Next of Kin:</p></div><div class="col-xs-7"><p>@Model.Person.NextOfKinName</p></div></div>
+            <div class="row"><div class="col-xs-5"><p class="detailLabel">Next of Kin Contact:</p></div><div class="col-xs-7"><p>@Model.Person.NextOfKinContact</p></div></div>
+            <div class="row"><div class="col-xs-5"><p class="detailLabel">Next of Kin Relationship:</p></div><div class="col-xs-7"><p>@Model.Person.NextOfKinRelationship</p></div></div>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            @Html.ActionLink("Edit", "EditStudentProfile", "Student", null, new { @class = "btn saveBtn" })
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+</div>

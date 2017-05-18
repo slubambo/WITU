@@ -1,0 +1,30 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+#tile-wrapper {
+    width: 100%;
+}
+
+    #tile-wrapper ul {
+        display: table;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        -moz-transition: all 0.3s ease-in-out;
+        -o-transition: all 0.3s ease-in-out;
+        -Webkit-transition: all 0.3s ease-in-out;
+        -ms-transition: all 0.3s ease-in-out;
+    }
+
+        #tile-wrapper ul li {
+            display: table-cell;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            /*outline: 1px solid #653200;*/
+            vertical-align: middle;
+        }
+
+

@@ -1,0 +1,51 @@
+﻿@model WITU.Models.widgets.StudyPeriodEntryYearProgramSelectItem
+
+@Html.EditorFor(m => m.YearSemesterPogramSelectItem)
+
+<div class="form-group col-md-12">
+    @Html.LabelFor(m => m.StudyPeriod, new { @class = "col-md-4 control-label" })
+    <div class="col-md-8">
+        @Html.DropDownWithModelSelectable(m => m.StudyPeriod, Model.StudyPeriodOptions, Model.YearSemesterPogramSelectItem.ProgramSelectItem.AdministrativeSelectItem.DefaultFirstItem,
+            new { @class = "form-control drpdwn-campus-change drpdwn-faculty-change drpdwn-department-change drpdwn-program-change drpdwn-call-course-change", id = "drpdwn-study-period" })
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        var programId = '@Model.YearSemesterPogramSelectItem.ProgramSelectItem.ProgramId';
+        if (programId > 0) {
+            var selectedStudyPeriod = '@Model.StudyPeriod';
+            onProgramStudyPeriodSelected(programId, selectedStudyPeriod);
+        }
+
+        if ($('#drpdwn-program')) {
+            $('#drpdwn-program').change(function () {
+                //whenever the program changes, we need to pick the year and present it...
+                programId = $("#drpdwn-program :selected").val();
+
+                onProgramStudyPeriodSelected(programId);
+
+            });
+        }
+
+    });
+
+    function onProgramStudyPeriodSelected(programId, selectedStudyPeriod) {
+        $("#drpdwn-study-period").empty();
+
+        $('#drpdwn-study-period').append($('<option></option>').val('@Model.YearSemesterPogramSelectItem.ProgramSelectItem.AdministrativeSelectItem.DefaultFirstItem.Value')
+            .html('@Model.YearSemesterPogramSelectItem.ProgramSelectItem.AdministrativeSelectItem.DefaultFirstItem.Text'));
+
+        $.get(baseUrl + "Api/UtilsApi/StudyPeriodPrograms/" + programId, function (data) {
+            $.each(data, function (i, special) {
+                $('#drpdwn-study-period').append($('<option></option>').val(special.Value).html(special.Text));
+            });
+
+            if (selectedStudyPeriod != undefined) {
+                $("#drpdwn-study-period").val(selectedStudyPeriod);
+            }
+        });
+    }
+
+</script>

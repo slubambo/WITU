@@ -1,0 +1,44 @@
+﻿@using System.Activities.Expressions
+@using System.Activities.Statements
+@using System.Collections
+@using System.ComponentModel.DataAnnotations
+@using System.Security.AccessControl
+@using System.Web.Configuration
+@using System.Web.Mvc.Html
+@using System.Web.UI.WebControls
+@using ARMSv2.Core.Model
+@using ARMSv2.Helper.Impls
+@using ARMSv2.Models
+@using ARMSv2.Models.UserManagement
+@using ARMSv2.Utils
+@using FluentNHibernate.Conventions
+@using FluentNHibernate.Utils
+@using Gma.QrCodeNet.Encoding.DataEncodation
+@using Itenso.TimePeriod
+@using iTextSharp.tool.xml.html
+@using Microsoft.Ajax.Utilities
+@using Microsoft.AspNet.Identity
+@using NHibernate.Properties
+@using NHibernate.Util
+
+@{
+    if (Request.IsAuthenticated)
+    {
+        switch (User.ApplicationUserType())
+        {
+            case (int)UserTypes.Staff:
+                Layout = "~/Views/Shared/_LayoutStaff.cshtml";
+                break;
+            case (int)UserTypes.Student:
+                Layout = "~/Views/Shared/_LayoutStudent.cshtml";
+                break;
+            default:
+                Layout = "~/Views/Shared/_Layout.cshtml";
+                break;
+        }
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+}

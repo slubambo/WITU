@@ -1,0 +1,71 @@
+﻿@using WITU.Core.Model
+@using WITU.Utils
+@using WITU.Models.UserManagement
+@{ var sessionDetails = (SessionUserManagementDetails)HttpContext.Current.Session["LoggedInUserRoles"]; }
+@using System.Activities.Expressions
+@model WITU.Models.AdminUnits.FacultyListView
+
+@{
+    ViewBag.Title = "Faculties";
+}
+
+
+<div>
+    @*<h2>Programs</h2>*@
+
+    <div class="tabs bodytext tabs-pilled noborder">
+        <ul class="nav nav-pills programUl">
+
+
+            @if (User.ApplicationUserType() == (int)UserTypes.Staff)
+            {
+                <li class="tab-header-all"><a href="#tab-div-all" role="tab" data-toggle="tab">All</a></li>
+            }
+
+
+            @foreach (var campus in Model.Campuses)
+            {
+                <li class="" id="tab-header-campus-@campus.Id"><a role="tab" data-togle="tab" href="#tab-div-campus-@campus.Id">@campus.Name</a></li>
+            }
+            
+        </ul>
+
+
+        @if (User.ApplicationUserType() == (int)UserTypes.Staff)
+        {
+            <div id="tab-div-all" class="tab-pane">
+
+                @if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) WITU.Models.ServiceDetail.Faculty
+                                                                                         && (x.Role.CanCreate == true || x.Role.CanUpdate == true || x.Role.CanDelete == true)))
+                {
+                    <div class="addProgBtn">
+                        @Html.ActionLink("Create Faculty", "AddOrEditFacultyCore", null, new {@class = "saveBtn btn-primary createBtn"})
+                    </div>
+                }
+                <br />
+                @Html.Partial("Display/_FacultyCoreList", Model.AllFacultyCores)
+            </div>
+        }
+
+
+        @foreach (var campus in Model.Campuses)
+        {
+            <div id="tab-div-campus-@campus.Id" class="tab-pane">
+                @if (User.ApplicationUserType() == (int)UserTypes.Staff)
+                    {
+                        if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) WITU.Models.ServiceDetail.Faculty
+                                                                                                && (x.Role.CanCreate == true || x.Role.CanUpdate == true || x.Role.CanDelete == true)))
+                        {
+                            <div class="addProgBtn">
+                                @Html.ActionLink("Add Faculty", "AddOrEditFaculty", new {campusId = campus.Id, controller = "AdministrativeUnits"}, new {@class = "saveBtn btn-primary createBtn"})
+                            </div>
+                        }
+                    }
+
+                @Html.Partial("Display/_FacultyTables", Model.AllFaculties.Where(x => x.Faculty.Campus.Id == campus.Id))
+            </div>
+        }
+
+    
+    </div>
+</div>

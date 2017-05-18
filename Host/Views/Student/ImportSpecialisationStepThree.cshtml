@@ -1,0 +1,99 @@
+﻿@model ARMSv2.Models.student.ImportSpecialisationStepThree
+
+@{
+    ViewBag.Title = "Step Three Assign Students to Specialisation";
+
+}
+
+<div>
+    <h3>@ViewBag.Showing</h3>
+
+    <h4>Step Three: Confirm the  Records</h4>
+
+    <p class="text text-success">
+        The following Students shall be updated.
+    </p>
+    <table id="tbl-studentsuploaded-success" class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Registration Number</th>
+                <th>Gender</th>
+                <th>Fees Number</th>
+                <th>Academic Programme</th>
+                <th>Current Specialisation</th>
+                
+                
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var successfulRecord in Model.SuccessImportSpecialisation)
+            {
+                <tr>
+                    <td>@successfulRecord.FullName</td>
+                    <td>@successfulRecord.RegistrationNumber</td>
+                    <td>@Html.DisplayEnum(successfulRecord.Gender)</td>
+                    @if (string.IsNullOrEmpty(successfulRecord.FeesNumber))
+                    {
+                        <td>None</td>
+                    }
+                    else
+                    {
+                        <td>@successfulRecord.FeesNumber</td>
+                    }
+
+                    <td>@successfulRecord.ProgramDetails</td>
+                    <td>@successfulRecord.SpecialisationName</td>
+                   
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <p class="text text-warning">
+        The following Rows in the uploaded spreadsheet have Errors
+    </p>
+    <table class="table dataTable">
+        <thead>
+            <tr>
+                <th>Row Number</th>
+                <th>Error(s)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var failedRecords in Model.ErrorImportSpecialisation)
+            {
+                <tr>
+                    <td>@failedRecords.RowNumber</td>
+                    <td>
+                        <ul>
+                            @foreach (var error in failedRecords.Errors)
+                            {
+                                <li>@error</li>
+                            }
+                        </ul>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <br />
+    <div>
+        @using (Html.BeginForm())
+        {
+            <button class="btn delBtn" value="cancel" type="button" name="saveStatus"
+                    onclick="javascript: cancelSubmission('@Url.Action("BatchedManageSpecialisation", "Student" )', 'Are you sure you want to cancel Students Upload? Changes will not be saved.');">
+                <span class="glyphicon glyphicon-remove"></span>
+                Cancel
+            </button>
+
+            <button class="btn saveBtn pull-right" value="save" name="saveStatus" type="submit">
+                Save
+                <span class="glyphicon glyphicon-chevron-right"></span>
+            </button>
+        }
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/jqueryval")

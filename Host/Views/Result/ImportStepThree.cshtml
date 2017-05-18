@@ -1,0 +1,92 @@
+﻿@model ARMSv2.Models.Result.ImportStepThree
+
+@{
+    ViewBag.Title = "Step Three Import Results";
+        
+}
+
+<div>
+    <h2 class="blueHeader">Import Results</h2>
+    
+    <h3>Step Three: Confirm the  Records</h3>
+    
+    <p class="text text-success">
+        The following records shall be saved. 
+    </p>
+    <table class="table dataTable">
+        <thead>
+            <tr>
+                <th>Registration Number</th>
+                <th>Student Number</th>
+                <th>Name</th>
+                <th>Academic Programme</th>
+                <th>Progressive Assessment</th>
+                <th>Examination Mark</th>
+                <th>Full Mark</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var successfulRecord in Model.SuccessImportResults)
+            {
+                <tr>
+                    <td>@successfulRecord.RegistrationNumber</td>
+                    <td>@successfulRecord.StudentNumber</td>
+                    <td>@successfulRecord.StudentName</td>
+                    <td>@successfulRecord.ProgramDetails</td>
+                    <td>@successfulRecord.ProgressiveAssessment</td>
+                    <td>@successfulRecord.ExaminationMark</td>
+                    <td>@successfulRecord.FullMark</td>
+                    <td>@successfulRecord.CourseTypeDescription</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    
+    <p class="text text-warning">
+        The following Rows have Errors
+    </p>
+    <table class="table dataTable">
+        <thead>
+            <tr>
+                <th>Row Number</th>
+                <th>Error(s)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var failedRecords in Model.ErrorImportResults)
+            {
+                <tr>
+                    <td>@failedRecords.RowNumber</td>
+                    <td>
+                        <ul>
+                            @foreach (var error in failedRecords.Errors)
+                            {
+                                <li>@error</li>
+                            }
+                        </ul>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    
+    <br/>
+    <div>
+        @using (Html.BeginForm())
+        {
+            <button class="btn delBtn" value="cancel" type="button" name="saveStatus"
+                    onclick="javascript: cancelSubmission('@Url.Action("Import", "Result" )', 'Are you sure you want to cancel Results Upload? Changes will not be saved.');">
+                <span class="glyphicon glyphicon-remove"></span>
+                Cancel
+            </button>
+
+            <button class="btn saveBtn pull-right" value="save" name="saveStatus"type="submit" >
+                Save
+                <span class="glyphicon glyphicon-chevron-right"></span>
+            </button>
+        }
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/jqueryval")

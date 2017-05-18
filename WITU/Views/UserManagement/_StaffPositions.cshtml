@@ -1,0 +1,135 @@
+﻿@{
+    ViewBag.Title = "Staff Accounts Management";
+    Layout = null;
+
+}
+@using WITU.Core.Model
+@model WITU.Models.UserInfoViewModel
+<div id="positions">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Position
+                </th>
+                <th>
+                    Level
+                </th>
+                <th>
+                    ID Number
+                </th>
+                @*<th>
+                        Academic Qualification
+                    </th>*@
+                <th>
+                    Work Status
+                </th>
+                <th>
+                    Position Status
+                </th>
+
+
+            </tr>
+
+        </thead>
+        <tbody>
+        
+        @if (Model.User != null && Model.StaffPositions.Count != 0)
+        {
+            foreach (var item in Model.StaffPositions)
+            {
+
+                <tr>
+                    <td>
+                        @item.Position.Name
+                    </td>
+                    <td>
+                        @*@Html.DisplayEnum(@item.LevelId) <br/>*@
+                        @{
+                            if (item.LevelId == AccessLevel.University)
+                            {
+                                <div class="badge"> University Level</div>
+                            }
+                            else
+                            {
+                                if (item.Campus != null)
+                                {
+                                    <div class="badge"> @item.Campus.Name</div>
+                                }
+                                if (item.Faculty != null)
+                                {
+                                    <div class="badge">@item.Faculty.FacultyCore.Name</div>
+                                }
+                                if (item.Department != null)
+                                {
+                                    <div class="badge">
+                                        @item.Department.DepartmentCore.Name
+                                    </div>
+                                }
+                                if (item.Program != null)
+                                {
+                                    <div class="badge">
+                                        @item.Program.ProgramCore.Name
+                                    </div>
+                                }
+                            }
+
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(x => item.IdNumber)
+                    </td>
+                    @*<td>
+                                @Html.DisplayFor(x => item.AcademicQaulification)
+                            </td>*@
+                    <td>
+                        @if (item.WorkStatus == 0)
+                        {
+                            <span>Active</span>
+                        }
+                        @if (item.WorkStatus == 1)
+                        {
+                            <span>On Leave</span>
+                        }
+
+                    </td>
+
+                    <td>
+                        @if (item.IsActive == true)
+                        {
+                            <span>Active</span>
+                        }
+                        @if (item.IsActive == false)
+                        {
+                            <span>Deactivated</span>
+                        }
+
+                    </td>
+                    <td>
+                        @*<input name="buttonClicked" class="btn btn-sm btn-default" type="submit" value="Edit" />*@
+                        @Ajax.ActionLink("Edit", "EditPostition", new {@id = item.Id}, new AjaxOptions {UpdateTargetId = "positions"}, new {@class = "btn btn-sm btn-default"})
+                    </td>
+
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="7">
+                    No Positions Assigned !
+                </td>
+            </tr>
+        }
+        </tbody>
+
+    </table>
+    <div class="">
+
+        @Html.HiddenFor(x => x.User.Id)
+
+        <input name="buttonClicked" class="btn saveBtn" type="submit" value="Add Position" />
+
+    </div>
+
+</div>

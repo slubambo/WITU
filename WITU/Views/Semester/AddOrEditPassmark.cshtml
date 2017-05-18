@@ -1,0 +1,60 @@
+﻿@model ARMSv2.Models.semester.PassmarksModelView
+@{
+    ViewBag.Title = "Add or Edit Passmark";
+}           
+
+<h2 class="blueHeader">@ViewBag.heading Award Type Classification</h2>
+<br />
+<div class="form-horizontal">
+    @using (Html.BeginForm("AddOrEditPassmark", "Semester", FormMethod.Post))
+    {
+        @Html.ValidationSummary()
+        @Html.AntiForgeryToken()
+
+        <hr />
+        @Html.HiddenFor(m=> m.Id)
+        <div class="row form-group">
+            @Html.LabelFor(model => model.AwardType, new { @class = "control-label col-md-3" })
+            <div class="col-md-9 progCoreInput">
+                @Html.DropDownWithModelSelectable(m => m.SelectedAwardTypeId,
+                    Model.AwardTypeItems.ToList(), new SelectListItem() { Value = "0", Text = "-- Select Award Type --" }, new { @class = "readonly" })
+                
+            </div>
+            @Html.ValidationMessageFor(m => m.AwardType)
+        </div>
+
+        <div class="row form-group">
+            @Html.LabelFor(model => model.StartAcademicYear, new { @class = "control-label col-md-3" })
+            <div class="col-md-9 progCoreInput">
+                @Html.DropDownWithModelSelectable(m => m.SelectedStartAcademicYearId,
+                Model.AcademicYearItems.ToList(), new SelectListItem() { Value = "0", Text = "-- Select Start Academic Year --" }, new { @readonly = "readonly" })
+                @Html.ValidationMessageFor(m => m.StartAcademicYear)
+            </div>
+        </div>
+
+        <div class="row form-group">
+            @Html.LabelFor(model => model.EndAcademicYear, new { @class = "control-label col-md-3" })
+            <div class="col-md-9 progCoreInput">
+                @Html.DropDownWithModelSelectable(m => m.SelectedEndAcademicYearId,
+                    Model.AcademicYearItems.ToList(), new SelectListItem() { Value = "0", Text = "-- Select End Academic Year --" }, new { @readonly = "readonly" })
+                @Html.ValidationMessageFor(m => m.EndAcademicYear)
+            </div>
+        </div>
+
+        <div class="row form-group">
+            @Html.LabelFor(model => model.PassMark, new { @class = "control-label col-md-3" })
+            <div class="col-md-9 progCoreInput">
+                @Html.TextBoxFor(m => m.PassMark)
+                @Html.ValidationMessageFor(m => m.PassMark)
+            </div>
+        </div>
+
+        <div class="col-lg-push-7">
+            <input type="submit" value="Save" class="btn saveBtn " />
+            <input type="button" value="Cancel"
+                   onclick="javascript: cancelSubmission('@Url.Action("PassMarks", "Semester", new { })');" class="btn delBtn " />
+
+        </div>
+
+    }
+</div>

@@ -1,0 +1,31 @@
+﻿@using ARMSv2.Core.Model
+@model ARMSv2.Models.widgets.ProgramSelectItem
+
+<div id="courses">
+    @Html.Partial("EditorTemplates/ProgramSelectItem", Model)
+</div>
+
+@Html.Hidden("levelId", 6)
+
+<script>
+    $(document).ready(function () {
+        /* This is change event for the program dropdown */
+        $('#drpdwn-program').change(function () {
+
+            /* Get the selected value of dropdownlist */
+            var programID = $(this).val();
+            if (programID > 0) {
+
+                /* Request the partial view with .get request. */
+                $.get('/UserManagement/GetCourses/' + programID, function (data) {
+
+                    /* data is the pure html returned from action method, load it to your page */
+                    $('#courses').html(data);
+                    /* little fade in effect */
+                    $('#courses').fadeIn('fast');
+                });
+            }
+
+        });
+    }); 
+</script>

@@ -1,0 +1,190 @@
+﻿@model WITU.Models.Result.AddResultCalculation
+
+@{
+    ViewBag.Title = "Edit Result Calculation";
+}
+
+<hgroup>
+    <h2 class="blueHeader">Edit <strong>@(Model.EndAcademicYearId == 0 ? "Active" : "")</strong> CGPA Calculation for  </h2>
+    <h3>@Model.MinimumDuration Year @Model.AwardTypeName Programs</h3>
+
+</hgroup>
+<h3 class="blueHeader">Instructions </h3>
+<p class="text-justify">Please consider the following before and when editing CGPA Calculations:</p>
+
+<ul>
+    <li>Each Year shall contribute a percentage in calculating the Final CGPA</li>
+    <li>The CGPA Calculation applies to students admitted starting the Start Academic Year and ending the End Academic Year of the CGPA Calculation</li>
+    <li>If the End Academic Year is left blank then, the added CGPA Calculation becomes the active in the current academic year replacing any existing ones</li>
+    <li>CGPA Calculations can't overlap with existing ones</li>
+    <li>Yearly Percentage contributions should be between 1 and 99</li>
+
+</ul>
+<br />
+<div>
+    @using (Html.BeginForm("EditResultCalculation", "Result", FormMethod.Post))
+    {
+
+        @Html.AntiForgeryToken()
+
+        <div>
+            @Html.Raw(Html.UnEncodedValidationSummary())
+        </div>
+
+
+        <div class="form-group col-md-12">
+            @Html.LabelFor(x => x.StartAcademicYearId, new { @class = "control-label, col-md-4" })
+            <div class="col-md-8">
+                @Html.DropDownWithModelSelectable(x => x.StartAcademicYearId, Model.AcademicYearOptions, new SelectListItem { Value = "0", Text = "-- Select Academic Year --" },
+                    new { @class = "form-control" })
+            </div>
+        </div>
+
+
+        <div class="form-group col-md-12">
+            @Html.LabelFor(x => x.EndAcademicYearId, new { @class = "control-label, col-md-4" })
+            <div class="col-md-8">
+                @Html.DropDownWithModelSelectable(x => x.EndAcademicYearId, Model.AcademicYearOptions, new SelectListItem { Value = "0", Text = "-- Select Academic Year --" },
+                    new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group col-md-12">
+            @Html.LabelFor(x => x.MinimumDuration, new { @class = "control-label, col-md-4" })
+            <div class="col-md-8">
+                <div class="col-md-8">
+                    @Html.DropDownWithModelSelectable(x => x.MinimumDuration, Model.DurationOptions, new SelectListItem { Value = "0", Text = "-- Select Program Duration --" },
+                        new { @class = "form-control", disabled = "disabled" })
+                </div>
+            </div>
+        </div>
+
+
+        <div class="form-group col-md-12">
+            @Html.LabelFor(x => x.AwardTypeId, new { @class = "control-label, col-md-4" })
+            <div class="col-md-8">
+                @Html.DropDownWithModelSelectable(x => x.AwardTypeId, Model.AwardTypeOptions, new SelectListItem { Value = "0", Text = "-- Select Award Type --" },
+                    new { @class = "form-control", disabled = "disabled" })
+            </div>
+        </div>
+
+
+        <div class="form-group col-md-12">
+            @Html.LabelFor(x => x.YearOnePercentage, new { @class = "control-label, col-md-4" })
+            <div class="col-md-8">
+                @Html.EditorFor(x => x.YearOnePercentage, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group col-md-12">
+            @Html.LabelFor(x => x.YearTwoPercentage, new { @class = "control-label, col-md-4" })
+            <div class="col-md-8">
+                @Html.EditorFor(x => x.YearTwoPercentage, new { @class = "form-control" })
+            </div>
+        </div>
+        if (Model.MinimumDuration >= 3)
+        {
+            <div class="form-group col-md-12">
+                @Html.LabelFor(x => x.YearThreePercentage, new { @class = "control-label, col-md-4" })
+                <div class="col-md-8">
+                    @Html.EditorFor(x => x.YearThreePercentage, new { @class = "form-control" })
+                </div>
+            </div>
+        }
+
+        if (Model.MinimumDuration >= 4)
+        {
+            <div class="form-group col-md-12">
+                @Html.LabelFor(x => x.YearFourPercentage, new { @class = "control-label, col-md-4" })
+                <div class="col-md-8">
+                    @Html.EditorFor(x => x.YearFourPercentage, new { @class = "form-control" })
+                </div>
+            </div>
+        }
+        if (Model.MinimumDuration >= 5)
+        {
+            <div class="form-group col-md-12">
+                @Html.LabelFor(x => x.YearFivePercentage, new { @class = "control-label, col-md-4" })
+                <div class="col-md-8">
+                    @Html.EditorFor(x => x.YearFivePercentage, new { @class = "form-control" })
+                </div>
+            </div>
+
+        }
+
+        <div class="col-md-offset-4 col-md-8">
+            <input type="submit" value="Save" class="btn saveBtn" id="btn-save-calculation" />
+
+            @*@Html.ActionLink("Cancel", "StudentProgression", new { studentId = Model.StudentId }, new { @class = "btn btn-default pull-right" })*@
+            <input type="button" class="btn btn-default pull-right" value="Cancel"
+                   onclick="javascript: cancelSubmission('@Url.Action("Formula", "Result", new {})');" />
+
+
+        </div>
+
+        @Html.HiddenFor(x => x.Id)
+        @Html.HiddenFor(x => x.AwardTypeId)
+        @Html.HiddenFor(x => x.AwardTypeName)
+        @Html.HiddenFor(x => x.MinimumDuration)
+        @*@Html.HiddenFor(x => x.YearThreePercentage)
+            @Html.HiddenFor(x => x.YearFourPercentage)
+            @Html.HiddenFor(x => x.YearFivePercentage)*@
+
+
+
+    }
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        
+
+        if ($('#btn-save-calculation')) {
+
+            $('#btn-save-calculation').attr("disabled", "disabled");
+
+        }
+
+        if ($('.text-box').length) {
+            
+            Sum();
+        }
+            
+
+       // var minimumDuration = '@Model.MinimumDuration';
+
+
+        
+
+        if ($('.text-box').length) {
+            $('.text-box').keyup(function () {
+                Sum();
+            });
+
+        }
+
+    });
+
+    function Sum() {
+        var sum = 0;
+        var internallyValid = true;
+        $('.text-box').each(function (i, obj) {
+            var value = parseInt($(obj).val());
+            if (value == 0 || value >= 100) {
+                internallyValid = false;
+            }
+            sum = sum + parseInt($(obj).val());
+
+        });
+        if (sum == 100 && internallyValid) {
+            //Enable Save button
+
+            $('#btn-save-calculation').removeAttr('disabled');
+        } else {
+            //Disable the Save button
+
+            $('#btn-save-calculation').attr("disabled", "disabled");
+        }
+
+    }
+</script>

@@ -1,0 +1,119 @@
+﻿@using ARMSv2.Utils
+@using OfficeOpenXml.FormulaParsing.Excel.Functions.Math
+@model ARMSv2.Models.EditCourse
+
+@{
+    ViewBag.Title = string.Format("{0} Course", Model.Id > 0 ? "Edit" : "Add");
+}
+
+<div class="blueHeader">@(Model.Id > 0 ? "Edit" : "Add") Course to @Model.ProgramName (@Model.CampusName)</div>
+<br/>
+@using (Html.BeginForm("EditCourse", "Program", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(m => m.ProgramId)
+        @Html.HiddenFor(m => m.SpecialisationId)
+        
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, new { @class = "control-label col-md-2" })
+            <div class="col-md-10 progCoreInput">
+                @Html.TextBoxFor(model => model.Name)
+                @Html.ValidationMessageFor(model => model.Name)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Code, new { @class = "control-label col-md-2" })
+            <div class="col-md-10 progCoreInput">
+                @Html.TextBoxFor(model => model.Code)
+                @Html.ValidationMessageFor(model => model.Code)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="control-label col-md-2">Semester Offered</div>
+            <div class="col-md-10 progCoreInput">
+                @Html.DropDownListFor(model => model.SemesterLevelId, Model.SemesterLevelOptions, "-- Select Year and Semester --")
+                @Html.ValidationMessageFor(model => model.SemesterLevelId)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Status, new { @class = "control-label col-md-2" })
+            <div class="col-md-10 ">
+                <div class="input-group">
+                    @foreach (var item in Model.StatusOptions)
+                    {
+                        <span>
+                            @Html.RadioButtonFor(m => m.Status, item.Value)
+                            <label>@item.Text</label>
+                        </span>
+                    }
+                </div>
+
+                @Html.ValidationMessageFor(model => model.Status)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CourseType, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="input-group">
+                    @foreach (var item in Model.CourseTypes)
+                    {
+                        <span>
+                           @if (item.Value == Model.CourseType.ToString())
+                           {
+                               @Html.RadioButtonFor(m => m.CourseType, item.Value, new {selected = "selected"})
+                           }
+                           else
+                           {
+                               @Html.RadioButtonFor(m => m.CourseType, item.Value)  
+                           }
+                            <label>@item.Text</label>
+                        </span>
+                    }
+                </div>
+
+                @Html.ValidationMessageFor(model => model.CourseType)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CreditUnits, new { @class = "control-label col-md-2" })
+            <div class="col-md-10 progCoreInput">
+                @Html.TextBoxFor(model => model.CreditUnits)
+                @Html.ValidationMessageFor(model => model.CreditUnits)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.SubjectId, new { @class = "control-label col-md-2" })
+            <div class="col-md-10 progCoreInput">
+                @Html.DropDownListFor(model => model.SubjectId, Model.Subjects, "-- Select Course Subject--")
+                @Html.ValidationMessageFor(model => model.SubjectId)
+            </div>
+        </div>
+        
+        <div class="form-group">
+            @Html.LabelFor(model => model.CourseContent, new { @class = "control-label col-md-2" })
+            <div class="col-md-10 progCoreInput">
+                @Html.TextAreaFor(model => model.CourseContent, new { @class = "tinymce-textarea" })
+                @Html.ValidationMessageFor(model => model.CourseContent)
+            </div>
+        </div>
+
+        <div class="form-group nomargin">
+            <div class="">
+                <input type="submit" value="Save" class="btn saveBtn fright" onclick="javascript: showLoadingDialog(' @(Model.Id > 0 ? "Updating Course Components. This may take a while" : "Adding Course. This may take a while")');" />
+                <input type="button" value="Cancel"
+                       onclick="javascript: cancelSubmission('@Url.Action("View", "Program", new {id = Model.ProgramId})');" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}

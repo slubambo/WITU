@@ -1,0 +1,25 @@
+﻿@model ARMSv2.Models.AddOrEditFee
+
+@{
+    ViewBag.Title = "Ndejje University Records Management System";
+}
+
+<h2 class="blueHeader col-xs-12">Add/Edit Fee</h2>
+
+@using (Html.BeginForm("AddOrEditFee", "Financial", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+
+        @Html.ValidationSummary(true)
+
+        @Html.EditorFor(m => m)
+
+        <div class="form-group">
+            <div class="col-sm-offset-3">
+                <input type="submit" value="Save" class="btn saveBtn" />
+            </div>
+        </div>
+    </div>
+}

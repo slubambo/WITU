@@ -1,0 +1,64 @@
+﻿@model WITU.Models.student.StudentSearchModel
+@{
+    ViewBag.Title = "Search Students";
+    Html.EnableClientValidation();
+}
+
+<h3 class="blueHeader">Search For Students based on Name or Registration Number or Fees Number</h3>
+
+@using (Html.BeginForm("Search", "Student", FormMethod.Post, new { @class = "form-horizontal" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+        <div>
+            @Html.Raw(Html.UnEncodedValidationSummary())
+        </div>
+        <div class="form-group col-md-12">
+            
+            <div class="col-md-8">
+                @Html.TextBoxFor(m => m.SearchTerm, new { @class = "form-control"})
+                <small><em>Enter your desired search.</em></small>
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn saveBtn" id="btn-search-students">
+                    Search
+                    <span class="glyphicon glyphicon-search"></span>
+                </button>
+
+            </div>
+        </div>
+    </div>
+
+
+
+        }
+
+        @if (Model.Students != null)
+{
+            <table class='table dataTable'>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Registration Number</th>
+                        <th>Fees Number</th>
+                        <th>Program</th>
+                        <th>Gender</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var sc in Model.Students)
+            {
+                        
+                        <tr class="">
+                            <td title="View @sc.Person.GivenName's details">@Html.ActionLink(@sc.Person.FullName, "StudentDetails", "Student", new { id = sc.Id }, null)</td>
+                            <td title="View @sc.Person.GivenName's details">@Html.ActionLink(@sc.RegistrationNumber, "StudentDetails", "Student", new { id = sc.Id }, null)</td>
+                            <td title="View @sc.Person.GivenName's details">@Html.ActionLink(sc.StudentNumber??"N/A", "StudentDetails", "Student", new { id = sc.Id }, null)</td>
+                            <td title="View @sc.Person.GivenName's details">@Html.ActionLink(@sc.ProgramName, "StudentDetails", "Student", new { id = sc.Id }, null)</td>
+                            <td>@Html.DisplayEnum(@sc.Person.Gender)</td>
+                        </tr>
+
+            }
+                </tbody>
+            </table>
+}
+

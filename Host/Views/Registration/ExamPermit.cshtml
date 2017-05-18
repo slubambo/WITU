@@ -1,0 +1,230 @@
+﻿@using ARMSv2.Core.Model
+@model ARMSv2.Models.ExamPermitViewModel
+@{
+    ViewBag.Title = "Exam Permit(s)";
+}
+<h2 class="maroonHeader">@ViewBag.Title</h2>
+<style>
+    ul {
+        list-style-type: none;
+    }
+</style>
+<div class="form-horizontal tabs bodytext tabs-pilled noborder">
+
+    <ul class="">
+
+        @for (int year = 1; year <= Model.ProgramDuration; year++)
+        {
+            for (int sem = 1; sem <= 2; sem++)
+            {
+                <li>
+                    <a href="#Year@(year)-sem@(sem)" role="tab" data-toggle="tab">
+                        Yr @(year) Sem @(sem)
+                    </a>
+                </li>
+            }
+
+        }
+    </ul>
+
+    @for (int year = 1; year <= Model.ProgramDuration; year++)
+    {
+        for (int sem = 1; sem <= 2; sem++)
+        {
+            
+            <div id="Year@(year)-sem@(sem)" class="bodytext tab-pane nopadding ">
+                <div class="clearfix">
+                    <br />
+                </div>
+                
+                @{ var SemesterRegistration = Model.SemesterRegistrations.FirstOrDefault(x => x.SemesterLevel.Level == year && x.SemesterLevel.SemesterSession == sem); }
+                @if (SemesterRegistration != null)
+                {
+                    if (SemesterRegistration.StudentStatus == RegistrationStatus.ApprovedRegistration)
+                    {
+                        <div>
+                            <h4 style="text-align:center">EXAMINATION PERMIT FOR @Model.Student.Person.FullName</h4>
+                        </div>
+                        <div style="padding:25px">
+                            <div class="row">
+                                <div class="col-md-6"><div class="row"><div class="col-sm-5"><p class="detailLabel">Fees Number: </p></div><div class="col-sm-7">@Model.Student.StudentNumber</div></div></div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-sm-5"><p class="detailLabel">Registration Number: </p></div><div class="col-sm-7">@Model.Student.RegistrationNumber</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-sm-5"><p class="detailLabel">Student Name: </p></div><div class="col-sm-7">@Model.Student.Person.FullName</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-sm-5"><p class="detailLabel">Academic Year: </p></div><div class="col-sm-7">@Model.Student.StartAcademicYear.Name</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-sm-5"><p class="detailLabel">Campus: </p></div><div class="col-sm-7">@Model.Student.Program.Campus.Name</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-sm-2"><p class="detailLabel">Faculty: </p></div><div class="col-sm-10">@Model.Student.Program.Faculty.FacultyCore.Name</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-sm-5"><p class="detailLabel">Program: </p></div><div class="col-sm-7">@Model.Student.Program.ProgramCore.Name</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-sm-5"><p class="detailLabel">Semester: </p></div><div class="col-sm-7">@SemesterRegistration.SemesterLevel.SemesterSession</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-sm-5"><p class="detailLabel">Year of study: </p></div><div class="col-sm-7">@SemesterRegistration.SemesterLevel.Level</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>
+                        </div>
+
+                        @*<table class="table table-no-border">
+                                <tr>
+                                    <td>
+                                        <ul>
+                                            <li><b>Fees Number: </b>@Model.Student.StudentNumber</li>
+                                            <li><b>Student Name: </b>@Model.Student.Person.FullName</li>
+                                            <li><b>Campus: </b>@Model.Student.Program.Campus.Name</li>
+                                            <li><b>Program: </b>@Model.Student.Program.ProgramCore.Name</li>
+                                            <li><b>Year of study: </b>@Model.Student.CurrentYear</li>
+                                        </ul>
+                                    </td>
+                                    <td>
+                                        <ul>
+                                            <li><b>Registration Number: </b>@Model.Student.RegistrationNumber</li>
+                                            <li><b>Academic Year: </b>@SemesterRegistration.Semester.AcademicYear.Name</li>
+                                            <li><b>Faculty: </b>@SemesterRegistration.Student.Program.Faculty.FacultyCore.Name</li>
+                                            <li><b>Semester: </b>@SemesterRegistration.Semester.SemesterSession</li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                            </table>*@
+                        <div>
+                            <h4 style="text-align:center">PERMITED TO SIT EXAMINATIONS FOR THE FOLLOWING COURSES</h4>
+                        </div>
+                        <br />
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th> Course Code</th>
+                                    <th> Course Name</th>
+                                    <th>Course Type</th>
+                                    <th>CUs</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+
+                                @foreach (var studentCourse in SemesterRegistration.StudentCourses)
+                            {
+                                    <tr>
+                                        <td>@studentCourse.Course.Code</td>
+                                        <td>@studentCourse.Course.Name</td>
+                                        <td>
+                                            @Html.DisplayEnum(studentCourse.Course.CourseType)
+                                        </td>
+                                        <td>@studentCourse.Course.CreditUnits</td>
+                                    </tr>
+                            }
+
+
+                            </tbody>
+                        </table>
+
+                    using (Html.BeginForm("PrintExamPermit", "Registration", FormMethod.Post))
+                    {
+                        <input hidden name="RequiredSemesterRegistrationId" value="@SemesterRegistration.Id" />
+                        <div class="row">
+                            <div class="col-xs-12 fright">
+                                <span class="pdfIcon" onclick="$(this).closest('form').submit(); return false;"></span>
+                                @*<button type="submit">Printable PDF <span class="fa-file-pdf-o"></span></button>*@
+                            </div>
+                        </div>
+
+                        @Html.HiddenFor(m => m.StudentId)
+                    }
+
+                    }
+                    else if (SemesterRegistration.StudentStatus == RegistrationStatus.PendingRegistration)
+                    {
+                        if (Request.IsAuthenticated)
+                        {
+                            if (User.ApplicationUserType() == (int)UserTypes.Student)
+                            {
+                                <h1 class="blueHeader"> You registration for this semester is pending approval</h1>
+                            }
+                            else if (User.ApplicationUserType() == (int)UserTypes.Staff)
+                            {
+                                <h1 class="blueHeader"> @Model.Student.Person.FullName registration for this semester is pending approval</h1>
+                            }
+                        }
+
+                    }
+                    else if (SemesterRegistration.StudentStatus == RegistrationStatus.RejectedRegistration)
+                    {
+                        if (Request.IsAuthenticated)
+                        {
+                            if (User.ApplicationUserType() == (int)UserTypes.Student)
+                            {
+                                <h1 class="blueHeader"> Your registration for this semester has been rejected</h1>
+                            }
+                            else if (User.ApplicationUserType() == (int)UserTypes.Staff)
+                            {
+                                <h1 class="blueHeader"> @Model.Student.Person.FullName registration for this semester has been rejected</h1>
+                            }
+                        }
+
+                    }
+
+
+
+                }
+                else
+                {
+                    if (Request.IsAuthenticated)
+                    {
+                        if (User.ApplicationUserType() == (int)UserTypes.Student)
+                        {
+                            <h1 class="blueHeader"> You haven't registered for this semester</h1>
+                        }
+                        else if (User.ApplicationUserType() == (int)UserTypes.Staff)
+                        {
+                            <h1 class="blueHeader"> @Model.Student.Person.FullName hasn't registered for this semester</h1>
+                        }
+                    }
+
+                }
+                
+
+            </div>
+
+        }
+
+    }
+
+ 
+
+
+</div>

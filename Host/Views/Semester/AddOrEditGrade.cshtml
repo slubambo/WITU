@@ -1,0 +1,73 @@
+﻿@model ARMSv2.Models.semester.EditGrade
+
+@{
+    ViewBag.Title = (Model.Id == 0 ? "Add " : "Edit ") + "Grade";
+}
+
+<div>
+    @(Model.Id == 0? "Add Grade to ": "Edit Grade for ") @Model.GradingScheme
+</div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Grade</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        
+        
+        <div class="form-group">
+            @Html.LabelFor(m => m.GradeLetter, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownEnumFor(x => x.GradeLetter, htmlAttributes: new { @class = "form-control chosen-select", id = "drpdwn-grade-letter" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.GradePoint, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.GradePoint, new { htmlAttributes = new { @class = "form-control" } })
+                <small><em>The grade point should be with at most one decimal place e.g. 2.56 will become 2.6</em></small>
+                @Html.ValidationMessageFor(model => model.GradePoint, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.StartMark, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.StartMark, new { htmlAttributes = new { @class = "form-control" } })
+                <small><em>The start mark should be with at most one decimal place e.g. 32.56 will become 32.6</em></small>
+                @Html.ValidationMessageFor(model => model.StartMark, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        
+        <div class="form-group">
+            @Html.LabelFor(model => model.EndMark, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.EndMark, new { htmlAttributes = new { @class = "form-control" } })
+                <small><em>The end mark should be with at most one decimal place e.g. 67.56 will become 67.6</em></small>
+                @Html.ValidationMessageFor(model => model.EndMark, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" onclick="javascript: showLoadingDialog(' @(Model.Id > 0 ? "Updating Grade and updating Students Results. This may take a while" : "Adding Grade and updating student results. This may take a while")');" />
+            </div>
+        </div>
+    </div>
+
+    @Html.HiddenFor(x => x.Id)
+    @Html.HiddenFor(x => x.GradingSchemeId)
+    @Html.HiddenFor(x => x.GradingScheme)
+}
+
+<div>
+    <button id="btn-gobackto-gradescheme" class=" btn btn-default btn-sm" onclick="location.href = '@Url.Action("ViewGradingScheme", new { id = Model.GradingSchemeId })'">
+        <span class="glyphicon glyphicon-arrow-left"></span>
+        Back to Grading Scheme
+    </button>
+</div>

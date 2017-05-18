@@ -1,0 +1,58 @@
+﻿@model IEnumerable<ARMSv2.Models.semester.RegulationProcedureModel>
+@using ARMSv2.Utils
+@using ARMSv2.Models.UserManagement
+@using ARMSv2.Core.Model
+@{ var sessionDetails = (SessionUserManagementDetails)HttpContext.Current.Session["LoggedInUserRoles"]; }
+@{
+    ViewBag.Title = "Regulations And Procedures";
+}
+@if (Request.IsAuthenticated)
+{
+    if (User.ApplicationUserType() == (int) UserTypes.Staff)
+    {
+        if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) ARMSv2.Models.ServiceDetail.RulesAndRegulations
+                                                                                && (x.Role.CanCreate == true || x.Role.CanUpdate == true)))
+        {
+            <div class="pull-right">
+                @Html.ActionLink("Add", "AddorEditRegulation", "Semester", new {@class = "btn saveBtn"})
+
+            </div>
+        }
+    }
+}
+
+<div class="">
+    <p class="blueHeader">University Procedures and Regulations</p>
+    
+    <div class="row">
+        @foreach (var info in Model)
+        {
+            <div class="col-md-4">
+                <div class="infoSection height">
+                    <span class="maroonTxt">@info.Title</span>
+                    <div class="caption text-justify">
+                        @Html.Raw(@info.Content)
+                        @Html.ActionLink("Read More", "RegulationOrProcedure", "Semester", new { id = info.Id }, new { @class = "moreLink" })
+                    </div>
+                    @if (Request.IsAuthenticated)
+                    {
+                        if (User.ApplicationUserType() == (int)UserTypes.Staff)
+                         {
+                             if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) ARMSv2.Models.ServiceDetail.RulesAndRegulations
+                                                                                                     && (x.Role.CanCreate == true || x.Role.CanUpdate == true)))
+                             {
+                                 <div class="bottom text-center hideDiv">
+                                     @Html.ActionLink("Edit", "AddorEditRegulation", "Semester", new {id = info.Id}, new {@class = "btn saveBtn"})
+
+                                 </div>
+                             }
+                         }
+                    }
+                    
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+         
+        }
+    </div>
+</div>

@@ -1,0 +1,279 @@
+﻿@{
+    ViewBag.Title = "Grading Scheme";
+    // Layout = "~/Views/Shared/_LayoutStaff.cshtml";
+}
+@model ARMSv2.Models.semester.GradingSchemesModel
+@using ARMSv2.Utils
+@using ARMSv2.Core.Model
+@using ARMSv2.Models.UserManagement
+@{ var sessionDetails = (SessionUserManagementDetails)HttpContext.Current.Session["LoggedInUserRoles"]; }
+
+
+<div class="clearfix"> </div>
+<br />
+<p class="blueHeader grading ">Grading Scheme</p>
+<div class="form-horizontal tabs bodytext tabs-pilled noborder">
+
+    <ul class="grading-ul">
+
+
+
+        @foreach (var m in Model.AwardTypes)
+        {
+
+            <li>
+                <a href="#div-tab-@m.Id" role="tab" data-toggle="tab">
+                    @m.Name
+                </a>
+            </li>
+
+        }
+    </ul>
+
+    @foreach (var m in Model.AwardTypes)
+    {
+        <div id="div-tab-@m.Id" class="bodytext tab-pane nopadding">
+
+
+            @if (Request.IsAuthenticated)
+            {
+                if (User.ApplicationUserType() == (int)UserTypes.Staff)
+                {
+                    if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int)ARMSv2.Models.ServiceDetail.GradingScheme
+                                                                         && (x.Role.CanCreate == true || x.Role.CanUpdate == true)))
+                    {
+                        <br/>
+                        <div class="pull-right">
+                            @Html.ActionLink("Add New Grading Scheme", "AddOrEditGradingScheme", "Semester", new { id = 0, awardTypeId = m.Id }, new { @class = "btn saveBtn" })
+                        </div>
+                        <div class="clearfix">
+                        </div>
+
+                        <br />
+
+                    }
+                }
+            }
+
+            @{
+            var awardTypeGradingSchemes = Model.GradingSchemes.Where(x => x.AwardType.Id == m.Id).OrderByDescending(gs => gs.StartAcademicYear.StartYear);
+
+            if (awardTypeGradingSchemes.Any())
+            {
+                var mostRecentGradingScheme = awardTypeGradingSchemes.ElementAt(0);
+
+                if (awardTypeGradingSchemes.Count() > 1)
+                {
+                    <div class="row">
+                        <ul>
+                            @for (int i = 1; i <= (awardTypeGradingSchemes.Count() - 1); i++)
+                            {
+                                var gradingSchemeToShowLinkFor = awardTypeGradingSchemes.ElementAt(i);
+
+                                <li>@Html.ActionLink(gradingSchemeToShowLinkFor.StartAcademicYear.Name + " - " + (gradingSchemeToShowLinkFor.EndAcademicYear == null ? "To Date" : gradingSchemeToShowLinkFor.EndAcademicYear.Name), "ViewGradingScheme", "Semester", new { id = gradingSchemeToShowLinkFor.Id }, null)</li>
+                            }
+                            
+                        </ul>
+                    </div>
+                    
+                }
+                <hr/>
+                <div class="row">
+                    <span class="col-xs-12">
+                        <span class="blueHeader">
+                            @Html.ActionLink(mostRecentGradingScheme.StartAcademicYear.Name + " - " + (mostRecentGradingScheme.EndAcademicYear == null ? "To Date" : mostRecentGradingScheme.EndAcademicYear.Name), "ViewGradingScheme", "Semester", new { id = mostRecentGradingScheme.Id }, null)
+                        </span>
+                    </span>
+                </div>
+                //Show most recent grading scheme
+                <div class="table-responsive table-condensed">
+                    <table class="table grades-table">
+                        <thead>
+
+                            <tr>
+                                <th>
+                                    Academic Years
+                                </th>
+                                
+                                <th>
+                                    Grade Letter
+                                </th>
+
+                                <th>
+                                    Start Mark
+                                </th>
+                                <th>
+                                    End Mark
+                                </th>
+                                <th>
+                                    Grade Point
+                                </th>
+
+                            </tr>
+
+                        </thead>
+                        <tbody>
+                            @foreach (var x in mostRecentGradingScheme.Grades.OrderByDescending(grade => grade.GradePoint))
+                            {
+                                <tr>
+                                    
+                                    @if (Request.IsAuthenticated)
+                                    {
+                                        if (User.ApplicationUserType() == (int)UserTypes.Staff)
+                                        {
+                                            //for STAFF
+                                            if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(urole => urole.Role.Service.Id == (int) ARMSv2.Models.ServiceDetail.GradingScheme
+                                                                                                                        && (urole.Role.CanCreate == true || urole.Role.CanUpdate == true)))
+                                            {
+                                                <td>
+                                                    @Html.ActionLink((x.GradingScheme.StartAcademicYear.Name + " - " + (x.GradingScheme.EndAcademicYear == null ? "To Date" : x.GradingScheme.EndAcademicYear.Name)), "ViewGradingScheme", new {id = x.GradingScheme.Id})
+                                                </td>
+                                                <td>
+                                                    @Html.ActionLink(x.GradeLetter, "ViewGradingScheme", new {id = x.GradingScheme.Id})
+                                                </td>
+                                                <td>
+                                                    @Html.ActionLink(x.StartMark.ToString(), "ViewGradingScheme", new {id = x.GradingScheme.Id})
+                                                </td>
+                                                <td>
+                                                    @Html.ActionLink(x.EndMark.ToString(), "ViewGradingScheme", new {id = x.GradingScheme.Id})
+                                                </td>
+                                                <td>
+                                                    @Html.ActionLink(x.GradePoint.ToString(), "ViewGradingScheme", new {id = x.GradingScheme.Id})
+                                                </td>
+
+                                            }
+                                            else
+                                            {
+                                                <td>
+                                                    @(x.GradingScheme.StartAcademicYear.Name + " - " + (x.GradingScheme.EndAcademicYear == null ? "To Date" : x.GradingScheme.EndAcademicYear.Name))
+                                                </td>
+                                                <td>
+                                                    @x.GradeLetter
+                                                </td>
+                                                <td>
+                                                    @x.StartMark
+                                                </td>
+                                                <td>
+                                                    @x.EndMark
+                                                </td>
+                                                <td>
+                                                    @x.GradePoint
+                                                </td>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            //for Students
+                                            <td>
+                                                @(x.GradingScheme.StartAcademicYear.Name + " - " + (x.GradingScheme.EndAcademicYear == null ? "To Date" : x.GradingScheme.EndAcademicYear.Name))
+                                            </td>
+                                            <td>
+                                                @x.GradeLetter
+                                            </td>
+                                            <td>
+                                                @x.StartMark
+                                            </td>
+                                            <td>
+                                                @x.EndMark
+                                            </td>
+                                            <td>
+                                                @x.GradePoint
+                                            </td>
+                                        }
+                                    }
+                                    
+
+                                    
+                                    
+
+
+
+                                </tr>
+
+
+                            }
+                        </tbody>
+                        @*TODO: if table is empty, provide link to edit*@
+                        @if (!mostRecentGradingScheme.Grades.Any())
+                        {
+                            if (Request.IsAuthenticated)
+                            {
+                                if (User.ApplicationUserType() == (int)UserTypes.Staff)
+                                {
+                                    //for STAFF
+                                    if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(urole => urole.Role.Service.Id == (int)ARMSv2.Models.ServiceDetail.GradingScheme
+                                                                                                                && (urole.Role.CanCreate == true || urole.Role.CanUpdate == true)))
+                                    {
+                                        <tfoot>
+                                            <tr>
+                                                <td>
+                                                    
+                                                </td>
+                                                <td>
+                                                    
+                                                </td>
+                                                <td>
+                                                    
+                                                </td>
+                                                <td>
+                                                    
+                                                </td>
+                                                <td>
+                                                    <div class="pull-right btn-group btn-group-xs">
+                                                        <button id="btn-view-scheme" class=" btn btn-default" onclick="location.href ='@Url.Action("ViewGradingScheme", new { id = mostRecentGradingScheme.Id})'">
+                                                            View More ...
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tfoot>
+                                    }
+                                }
+                            }
+
+                        }
+                    </table>
+
+                </div>
+
+            }
+            else
+            {
+                //There are no grading schemes for this award type
+                <span class="greyHeader">This Award Type has no grading schemes added yet.</span>
+            }
+
+            }
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+    }
+
+
+
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.grades-table').dataTable({
+            "bPaginate": false,
+            "bLengthChange": false,
+            "bFilter": false,
+            "bInfo": false,
+            "bAutoWidth": false,
+            "bSortable": false,
+            "order": [[2, 'desc']]
+        });
+    });
+</script>

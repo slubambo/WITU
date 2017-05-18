@@ -1,0 +1,140 @@
+﻿@using System.Globalization
+@using ARMSv2.Core.Model
+@model ARMSv2.Models.Finance.FinanceOverview
+@{
+    ViewBag.Title = "Faculty Financial Overview";
+    Html.EnableClientValidation();
+}
+
+<h2 class="blueHeader">
+    @Model.Program.ProgramCore.Name Financial Overview
+    <span class="greyHeader">
+
+        @Model.Program.Faculty.Campus.Name @Model.Semester.AcademicYear.Name Semester @{
+            if (Model.Semester.SemesterSession == 1)
+            {
+                <span>I</span>
+            }
+            else
+            {
+                <span>II</span>
+            }
+                                                                                      }
+        
+    </span>
+
+</h2>
+<p></p>
+<div class="row">
+    @using (Html.BeginForm("ProgramFinancialOverviewByYear", "Financial", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-group">
+            @Html.LabelFor(m => m.AcademicYearSelectedId, new { @class = "col-md-2" })
+            <div class="col-md-3">
+                @Html.DropDownWithModelSelectable(m => m.AcademicYearSelectedId, Model.AcademicYears,
+                    new SelectListItem() { Text = "-- Academic Year -- ", Value = "0" }, new { @class = "form-control addControl" })
+            </div>
+            @Html.LabelFor(m => m.SemesterSession, new { @class = "col-md-2" })
+            <div class="col-md-3">
+                @Html.DropDownWithModelSelectable(m => m.SemesterSession, Model.SemesterSessions,
+                    new SelectListItem() { Text = "-- Semester Session -- ", Value = "0" }, new { @class = "form-control addControl" })
+            </div>
+            <div class="">
+                <input type="submit" class="btn saveBtn" value="Load">
+            </div>
+        </div>
+    }
+
+</div>
+<div class="clearfix"></div>
+<p></p>
+<table class="table dataTable" id="inboxTable">
+    <thead>
+        <tr>
+            <th>
+                Year
+            </th>
+            <th>
+                Total Returns (UGX)
+            </th>
+            <th>
+                Pending Payments (UGX)
+            </th>
+            <th>
+                Enrolement
+            </th>
+            <th>
+                Defaulters
+            </th>
+        </tr>
+
+    </thead>
+    <tbody>
+        @foreach (var m in Model.ProgramYearOfStudyFinancialSummaries)
+        {
+            if (m.ProgramId > 0)
+            {
+                <tr onclick="location.href = '@Url.Action("ProgramFinancialOverview", "Financial", new { id = @m.ProgramId, academicYear = @m.AcademicYear})' " style="cursor: pointer;">
+
+                    <td>
+                        @if (m.AcademicYear == 1)
+                        {
+                            <p>Year I</p>
+                        }
+                        @if (m.AcademicYear == 2)
+                        {
+                            <p>Year II</p>
+                        }
+                        @if (m.AcademicYear == 3)
+                        {
+                            <p>Year III</p>
+                        }
+                        @if (m.AcademicYear == 4)
+                        {
+                            <p>Year IV</p>
+                        }
+                        @if (m.AcademicYear == 5)
+                        {
+                            <p>Year V</p>
+                        }
+                        @if (m.AcademicYear == 6)
+                        {
+                            <p>Year VI</p>
+                        }
+                        @if (m.AcademicYear > 6)
+                        {
+                            <p>Year @m.AcademicYear</p>
+                        }
+
+
+                    </td>
+
+                    <td>
+                        @m.TotalReturns.ToString("N0")
+                    </td>
+
+                    <td>
+                        @m.PendingPayments.ToString("N0")
+                    </td>
+                    <td>
+                        @m.Enrollement
+                    </td>
+                    <td>
+                        @m.DefaultersCount
+                    </td>
+
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<br />
+<br />
+<div class="clearfix row col-lg-3 col-lg-offset-10">
+    <a class="" href="@Url.Action("PrintProgYearSummary", new { programId = Model.Program.Id })" target="_blank">
+        <span class="pdfIcon"></span>
+    </a>
+</div>
+

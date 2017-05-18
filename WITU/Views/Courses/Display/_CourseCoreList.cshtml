@@ -1,0 +1,29 @@
+﻿@model IEnumerable<WITU.Core.Model.CourseCore>
+           
+<div>
+    <table class="table dataTable">
+        <thead>
+            <tr>
+                <th>Course</th>
+                <th>Overview</th>
+                @*<th>Aims</th>
+                <th>Skills</th>*@
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var course in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.ActionLink(course.Name, "Index", "Courses")
+                    </td>
+                    <td>
+                        @course.ShortDescription
+                    </td>
+                    @*<td class="center">@course.Aims</td>
+                    <td class="center">@course.Skills</td>*@
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

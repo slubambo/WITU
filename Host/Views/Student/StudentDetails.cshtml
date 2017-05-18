@@ -1,0 +1,530 @@
+﻿@using ARMSv2.Core.Model
+@model ARMSv2.Core.Model.Student
+@using ARMSv2.Utils
+@using ARMSv2.Models.UserManagement
+@{ var sessionDetails = (SessionUserManagementDetails)HttpContext.Current.Session["LoggedInUserRoles"]; }
+@{
+    ViewBag.Title = "StudentDetails";
+    string basePhotoUrl = ApplicationConstants.StudentResourcesFolderUrl;
+}
+
+@if (Model.User == null)
+{
+    <h2 class="maroonHeader">Invalid Student, No existing user account!</h2>
+
+    if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) ARMSv2.Models.ServiceDetail.StudentAccounts
+                                                                            && (x.Role.CanCreate == true || x.Role.CanUpdate == true || x.Role.CanDelete == true)))
+    {
+        <div class="col-xs-12 col-sm-2">
+            <button type="button" class="btn saveBtn" id="btn-create-account">
+                Create Account and proceed
+            </button>
+        </div>
+    }
+    
+     <script type="text/javascript">
+         $(document).ready(function () {
+
+            //Account Creation Code
+            if ($('#btn-create-account').length) {
+                $('#btn-create-account').click(function () {
+                    var studentId = '@Model.Id';
+
+                    BootstrapDialog.confirm("You are about to create a user account for @Model.Person.FullName, Are you sure?", function (result) {
+                        if (result) {
+                            CreateStudentAccount(studentId);
+
+                        } else {
+                            //Do nothing
+                        }
+                    });
+
+                });
+            }
+            //End Account Creation Code
+        }
+        );
+
+        function CreateStudentAccount(studentId) {
+            $.post(baseUrl + "Api/UtilsApi/CreateStudentAccount/" + studentId, function (data) {
+                if (data == true) {
+                    showToast(" @Model.Person.FullName's account has successfully been created.", "success");
+                    setTimeout(function () {
+
+                        window.location.reload(true);
+                    }, 3000);
+
+                } else {
+                    showToast("Something went wrong while creating @Model.Person.FullName's account.", "error");
+                }
+            });
+        }
+
+    </script>
+}
+else
+{
+
+    <h3 class="maroonHeader">@Model.Person.FullName's details</h3>
+    if (Request.IsAuthenticated)
+    {
+        if (User.ApplicationUserType() == (int)UserTypes.Staff)
+        {
+            <div class="row">
+                <span class="col-xs-12 col-sm-2">Activation Status:</span>
+                @if (Model.User.IsLockedOut)
+                {
+                    <span class="col-xs-12 col-sm-2"><strong> Deactivated </strong></span>
+                    if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int)ARMSv2.Models.ServiceDetail.StudentAccounts
+                                                                                            && (x.Role.CanCreate == true || x.Role.CanUpdate == true || x.Role.CanDelete == true)))
+                    {
+                        <div class="col-xs-12 col-sm-2">
+                            <button type="button" class="btn saveBtn" id="btn-activate-student">
+                                Activate
+                            </button>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <span class="col-xs-12 col-sm-2"><strong> Activated </strong></span>
+                    if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int)ARMSv2.Models.ServiceDetail.StudentAccounts
+                                                                                            && (x.Role.CanCreate == true || x.Role.CanUpdate == true || x.Role.CanDelete == true)))
+                    {
+                        <div class="col-xs-12 col-sm-2">
+                            <button type="button" class="btn saveBtn" id="btn-deactivate-student">
+                                Deactivate
+                            </button>
+                        </div>
+                    }
+                }
+
+            </div>
+            <br />
+            if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int)ARMSv2.Models.ServiceDetail.StudentAccounts
+                                                                       && (x.Role.CanCreate == true || x.Role.CanUpdate == true || x.Role.CanDelete == true)))
+            {
+                <div class="row">
+                    <span class="col-xs-12 col-sm-2">Profile:</span>
+                    <div class="col-sm-2">
+                        @if (Model.StudentStatus != StudentStatus.Graduated)
+                        {
+                            @Html.ActionLink("Edit Profile", "EditStudent", "Student", new { id = Model.Id }, new { @class = " btn delBtn" })
+                        }
+                    </div>
+                    <div class="col-sm-2">
+                        <button type="button" class="btn delBtn" id="btn-reset-password">
+                            Reset Password
+                        </button>
+                    </div>
+
+                </div>
+            }
+            <br />
+
+            @*<div class="row">
+                    @Html.ActionLink("View Exam Permits", "ExamPermit", "Registration", new { id = Model.Id }, new { @class = " btn delBtn" })
+                </div>*@
+        }
+
+    }
+
+
+    <div class="tabs bodytext tabs-pilled noborder">
+        <ul class="nav nav-pills programUl">
+            <li class="tab-header-personalinfo"><a href="#tab-div-personalinfo" role="tab" data-toggle="tab">Personal Information</a></li>
+            <li class="tab-header-academicinfo"><a href="#tab-div-academicinfo" role="tab" data-toggle="tab">Academic Information</a></li>
+            <li class="tab-header-contactinfo"><a href="#tab-div-contactinfo" role="tab" data-toggle="tab">Contact Information</a></li>
+        </ul>
+        <div id="tab-div-personalinfo" class="tab-pane">
+            <div class="col-md-10">
+                <div class="row">
+                    <span class="col-xs-12 col-sm-3">Surname:</span>
+                    <span class="col-xs-12 col-sm-9"> @Model.Person.Surname</span>
+                </div>
+                <br />
+                <div class="row">
+                    <span class="col-xs-12 col-sm-3">Given Names:</span>
+                    <span class="col-xs-12 col-sm-9"> @Model.Person.GivenName</span>
+                </div>
+                <br />
+                <div class="row">
+                    <span class="col-xs-12 col-sm-3">Other Names:</span>
+                    <span class="col-xs-12 col-sm-9"> @Model.Person.OtherName</span>
+                </div>
+                <br />
+                <div class="row">
+                    <span class="col-xs-12 col-sm-3">
+                        Gender:
+                    </span>
+                    <span class="col-xs-12 col-sm-9">
+                        @Html.DisplayEnum(@Model.Person.Gender ?? Gender.Unknown)
+                    </span>
+                </div>
+                <br />
+                <div class="row">
+                    <span class="col-xs-12 col-sm-3">Birthday:</span>
+                    @if (@Model.Person.DateOfBirth != null)
+                    {
+                        <span class="col-xs-12 col-sm-9"> @Model.Person.DateOfBirth.Value.ToLongDateString()</span>
+                    }
+                </div>
+                <br />
+                <div class="row">
+                    <span class="col-xs-12 col-sm-3">Marital Status:</span>
+                    <span class="col-xs-12 col-sm-9"> @Model.Person.MaritalStatus</span>
+                </div>
+                <br />
+                <div class="row">
+                    <span class="col-xs-12 col-sm-3">Religion:</span>
+                    <span class="col-xs-12 col-sm-9"> @Model.Person.Religion</span>
+                </div>
+                <br />
+                <div class="row">
+                    <span class="col-xs-12 col-sm-3">Nationality:</span>
+                    @if (@Model.Person.Country2 != null)
+                    {
+                        <span class="col-xs-12 col-sm-9"> @Model.Person.Country2.Name</span>
+                    }
+
+                </div>
+            </div>
+            <div class="col-md-2">
+                @if (ViewBag.StudentPhoto != null)
+                {
+
+                    <img src="@ViewBag.StudentPhoto" class="img-responsive" />
+
+                }
+            </div>
+
+        </div>
+        <div id="tab-div-academicinfo" class="tab-pane">
+            <div class="row">
+                <span class="col-xs-12 col-sm-3">Registration Number:</span>
+                <span class="col-xs-12 col-sm-9"> @Model.RegistrationNumber</span>
+            </div>
+            <br />
+            <div class="row">
+                <span class="col-xs-12 col-sm-3">Fees Number:</span>
+                <span class="col-xs-12 col-sm-9"> @Model.StudentNumber</span>
+            </div>
+            <br />
+            <div class="row">
+                <span class="col-xs-12 col-sm-3">Residence Status:</span>
+                @if (Model.ResidenceStatus == 0 || Model.RegistrationStatus == 2)
+                {
+                    <span class="col-xs-12 col-sm-9"> Resident </span>
+                }
+                else
+                {
+                    <span class="col-xs-12 col-sm-9"> Non-Resident </span>
+                }
+            </div>
+            <br />
+            <div class="row">
+                <span class="col-xs-12 col-sm-3">Hall of Residence / Attachment:</span>
+                @if (@Model.ResidentHall != null)
+                {
+                    <span class="col-xs-12 col-sm-9"> @Model.ResidentHall.Name </span>
+                }
+
+            </div>
+            <br />
+            <div class="row">
+                <span class="col-xs-12 col-sm-3">Campus:</span>
+                <span class="col-xs-12 col-sm-9"> @Model.Program.Campus.Name</span>
+            </div>
+            <br />
+            <div class="row">
+                <span class="col-xs-12 col-sm-3">Programme: </span>
+                <span class="col-xs-12 col-sm-9">@Model.Program.ProgramCore.Name</span>
+            </div>
+            <br />
+            @if (Model.Specialisation != null)
+            {
+                <div class="row">
+                    <span class="col-xs-12 col-sm-3">Specialisation: </span>
+                    <span class="col-xs-12 col-sm-9">@Model.Specialisation.SpecialisationCore.Name</span>
+                </div>
+                <br />
+            }
+            <div class="row">
+                <span class="col-xs-12 col-sm-3">Study Period: </span>
+                @if (@Model.StudyPeriodProgram != null)
+                {
+                    <span class="col-xs-12 col-sm-9">@Model.StudyPeriodProgram.StudyPeriod.Name</span>
+                }
+
+            </div>
+            <br />
+            <div class="row">
+                <span class="col-xs-12 col-sm-3">Start Academic Year: </span>
+                <span class="col-xs-12 col-sm-9">@Model.StartAcademicYear.Name</span>
+            </div>
+            @if (Request.IsAuthenticated)
+            {
+                if (User.ApplicationUserType() == (int)UserTypes.Staff)
+                {
+                    <br />
+                    <div class="row">
+                        <span class="col-xs-12 col-sm-3">Key Links:</span>
+                        <div class="col-xs-12 col-sm-9">
+                            <ul>
+                                @if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int)ARMSv2.Models.ServiceDetail.ExamAttendance
+                                                                               && (x.Role.CanCreate == true || x.Role.CanDelete == true || x.Role.CanRead == true || x.Role.CanUpdate == true)))
+                                {
+                                    <li>@Html.ActionLink("Exam Permit(s)", "ExamPermit", "Registration", new {id = Model.Id}, new {@class = "moreLink"})</li>
+                                }
+                                @if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) ARMSv2.Models.ServiceDetail.StudentResults
+                                                                                                         && (x.Role.CanCreate == true || x.Role.CanDelete == true || x.Role.CanRead == true || x.Role.CanUpdate == true)))
+                                {
+                                    <li>@Html.ActionLink("Results", "StudentProgressionResult", "Result", new {studentId = Model.Id}, new {@class = "moreLink"})</li>
+                                }
+                                
+                                @*<li>@Html.ActionLink("Academic Transcript / Testimonial", "StudentProgressionResult", "Result", new { studentId = Model.Id }, new { @class = "moreLink" })</li>*@
+                                @if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) ARMSv2.Models.ServiceDetail.StudentFinance
+                                                                                                         && (x.Role.CanCreate == true || x.Role.CanDelete == true || x.Role.CanRead == true || x.Role.CanUpdate == true)))
+                                {
+                                    <li>@Html.ActionLink("Financial Records", "StudentFinancialOverview", "Financial", new {id = Model.Id}, new {@class = "moreLink"})</li>
+                                }
+                                @*@if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) ARMSv2.Models.ServiceDetail.Approval
+                                                                                                         && (x.Role.CanCreate == true || x.Role.CanDelete == true || x.Role.CanRead == true || x.Role.CanUpdate == true)))
+                                {
+                                    <li>@Html.ActionLink("Registration Records", "StudentRegistrationDetails", "Registration", new {id = Model.Id}, new {@class = "moreLink"})</li>
+                                }*@
+                                @if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) ARMSv2.Models.ServiceDetail.Exemptions
+                                                                                                         && (x.Role.CanCreate == true || x.Role.CanDelete == true || x.Role.CanRead == true || x.Role.CanUpdate == true)))
+                                {
+                                    <li>@Html.ActionLink("Exemptions", "StudentExemptions", "Registration", new {id = Model.Id}, new {@class = "moreLink"})</li>
+                                }
+
+                                    </ul>
+                        </div>
+                    </div>
+                }
+                if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int)ARMSv2.Models.ServiceDetail.Testimonial
+                                    || x.Role.Service.Id == (int)ARMSv2.Models.ServiceDetail.Transcript || x.Role.Service.Id == (int)ARMSv2.Models.ServiceDetail.StudentResults))
+                {
+                    <br />
+                    <div class="row">
+                        <span class="col-xs-12 col-sm-3">Downloads:</span>
+                        <div class="col-xs-12 col-sm-9">
+                            <ul class="list-unstyled">
+                                @if (sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) ARMSv2.Models.ServiceDetail.Transcript
+                                                                               && (x.Role.CanCreate == true || x.Role.CanDelete == true || x.Role.CanRead == true || x.Role.CanUpdate == true)) && Model.StudentStatus == StudentStatus.Graduated)
+                                {
+                                    <li><span class="fa fa-download"></span>   @Html.ActionLink("Transcript", "PrintStudentTranscript", "Result", new { studentId = Model.Id }, new { @class = "moreLink" })</li>
+                                }
+                                @if (sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) ARMSv2.Models.ServiceDetail.Testimonial
+                                                                               && (x.Role.CanCreate == true || x.Role.CanDelete == true || x.Role.CanRead == true || x.Role.CanUpdate == true)))
+                                {
+                                    <li><span class="fa fa-download"></span>   @Html.ActionLink("Testimonial", "PrintStudentTestimonial", "Result", new { studentId = Model.Id }, new { @class = "moreLink" })</li>
+                                }
+                                @if (sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) ARMSv2.Models.ServiceDetail.StudentResults
+                                                                               && (x.Role.CanCreate == true || x.Role.CanDelete == true || x.Role.CanRead == true || x.Role.CanUpdate == true)))
+                                {
+                                    <li> <span class="fa fa-download"></span>  @Html.ActionLink("Student Result Slip", "PrintStudentResult", "Result", new { id = Model.Id }, new { @class = "moreLink" }) </li>
+                                }
+                                    </ul>
+                        </div>
+                    </div>
+                }
+            }
+
+
+        </div>
+        <div id="tab-div-contactinfo" class="tab-pane">
+            <div class="row">
+                <span class="col-xs-12 col-sm-3">Email Address:</span>
+                <span class="col-xs-12 col-sm-9"> @Model.Person.EmailAddress</span>
+            </div>
+            <br />
+            <div class="row">
+                <span class="col-xs-12 col-sm-3">Alternative Email Address:</span>
+                <span class="col-xs-12 col-sm-9"> @Model.Person.AltEmailAddress</span>
+            </div>
+            <br />
+            <div class="row">
+                <span class="col-xs-12 col-sm-3">Postal Address:</span>
+                <span class="col-xs-12 col-sm-9"> @Model.Person.PostalAddress </span>
+            </div>
+            <br />
+            <div class="row">
+                <span class="col-xs-12 col-sm-3">Physical Address:</span>
+                <span class="col-xs-12 col-sm-9"> @Model.Person.PermentAddress </span>
+            </div>
+            <br />
+            <div class="row">
+                <span class="col-xs-12 col-sm-3">Phone Contact:</span>
+                <span class="col-xs-12 col-sm-9"> @Model.Person.TelephoneContact</span>
+            </div>
+            <br />
+            <div class="row">
+                <span class="col-xs-12 col-sm-3">Alternative Phone Contact: </span>
+                <span class="col-xs-12 col-sm-9">@Model.Person.AltTelephoneContact</span>
+            </div>
+            <br />
+            <div class="row">
+                <span class="col-xs-12 col-sm-3">Next of Kin:</span>
+                <span class="col-xs-12 col-sm-9"> @Model.Person.NextOfKinName</span>
+            </div>
+            <br />
+            <div class="row">
+                <span class="col-xs-12 col-sm-3">Next of Kin Contact: </span>
+                <span class="col-xs-12 col-sm-9">@Model.Person.NextOfKinContact</span>
+            </div>
+            <br />
+            <div class="row">
+                <span class="col-xs-12 col-sm-3">Next of Kin Relationship: </span>
+                <span class="col-xs-12 col-sm-9">@Model.Person.NextOfKinRelationship</span>
+            </div>
+            <br />
+            <div class="row">
+                <span class="col-xs-12 col-sm-3">Next of Kin Address: </span>
+                <span class="col-xs-12 col-sm-9">@Model.Person.NextOfKinAddress</span>
+            </div>
+            <br />
+            <div class="row">
+                <span class="col-xs-12 col-sm-3">Website: </span>
+                <span class="col-xs-12 col-sm-9">@Model.Person.WebsiteUrl</span>
+
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var studentId = '@Model.Id';
+
+            if ($('#btn-reset-password').length) {
+                $('#btn-reset-password').click(function () {
+                    var userId = '@Model.User.Id';
+
+                    BootstrapDialog.confirm("You are about to reset @Model.Person.FullName's password, Are you sure?", function (result) {
+                        if (result) {
+                            ResetPassword(userId);
+
+                        } else {
+                            //Do nothing
+                        }
+                    });
+
+                });
+            }
+
+            //Activate Code
+            if ($('#btn-activate-student').length) {
+                $('#btn-activate-student').click(function () {
+                    var studentId = '@Model.Id';
+
+                    BootstrapDialog.confirm("You are about to activate @Model.Person.FullName's account, Are you sure?", function (result) {
+                        if (result) {
+                            ActivateStudent(studentId);
+
+                        } else {
+                            //Do nothing
+                        }
+                    });
+
+                });
+            }
+            //End Activate Code
+
+            //Deactivate Code
+            if ($('#btn-deactivate-student').length) {
+                $('#btn-deactivate-student').click(function () {
+                    var studentId = '@Model.Id';
+
+                    BootstrapDialog.confirm("You are about to de-activate @Model.Person.FullName's account, Are you sure?", function (result) {
+                        if (result) {
+                            DeactivateStudent(studentId);
+
+                        } else {
+                            //Do nothing
+                        }
+                    });
+
+                });
+            }
+            //End De-activate Code
+
+            //Account Creation Code
+            if ($('#btn-create-account').length) {
+                $('#btn-create-account').click(function () {
+                    var studentId = '@Model.Id';
+
+                    BootstrapDialog.confirm("You are about to create a user account for @Model.Person.FullName, Are you sure?", function (result) {
+                        if (result) {
+                            CreateStudentAccount(studentId);
+
+                        } else {
+                            //Do nothing
+                        }
+                    });
+
+                });
+            }
+            //End Account Creation Code
+        }
+        );
+
+        function ResetPassword(userId) {
+            $.post(baseUrl + "Api/UtilsApi/ResetPassword/" + userId, function (data) {
+                if (data == true) {
+                    showToast("You have successfully reset @Model.Person.FullName's password to 123456.", "success");
+
+                } else {
+                    showToast("Something went wrong while resetting @Model.Person.FullName's password.", "error");
+                }
+            });
+        }
+
+        function ActivateStudent(studentId) {
+            $.post(baseUrl + "Api/UtilsApi/ToggleStudentActivation/" + studentId, function (data) {
+                if (data == true) {
+                    showToast("@Model.Person.FullName's account has successfully been activated.", "success");
+                    setTimeout(function () {
+
+                        window.location.reload(true);
+                    }, 3000);
+                } else {
+                    showToast("Something went wrong while activating @Model.Person.FullName's account.", "error");
+                }
+
+            });
+
+        }
+
+        function DeactivateStudent(studentId) {
+            $.post(baseUrl + "Api/UtilsApi/ToggleStudentActivation/" + studentId, function (data) {
+                if (data == true) {
+                    showToast(" @Model.Person.FullName's account has successfully been deactivated.", "success");
+                    setTimeout(function () {
+
+                        window.location.reload(true);
+                    }, 3000);
+
+                } else {
+                    showToast("Something went wrong while deactivating @Model.Person.FullName's account.", "error");
+                }
+            });
+        }
+
+        function CreateStudentAccount(studentId) {
+            $.post(baseUrl + "Api/UtilsApi/CreateStudentAccount/" + studentId, function (data) {
+                if (data == true) {
+                    showToast(" @Model.Person.FullName's account has successfully been created.", "success");
+                    setTimeout(function () {
+
+                        window.location.reload(true);
+                    }, 3000);
+
+                } else {
+                    showToast("Something went wrong while creating @Model.Person.FullName's account.", "error");
+                }
+            });
+        }
+
+    </script>
+}

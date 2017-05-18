@@ -1,0 +1,85 @@
+﻿@using ARMSv2.Helper
+@model ARMSv2.Models.student.StudentListModel
+@{
+    ViewBag.Title = "Lists";
+    Html.EnableClientValidation();
+}
+
+<h3 class="greyHeader"><strong>View All Students</strong></h3>
+
+<h3 class="greyHeader">Please specify the program, specialisation (if applicable), Year of Study and Academic Year for which to Load Students</h3>
+
+@using (Html.BeginForm("Lists", "Student", null, FormMethod.Post,
+    new {@class = "form-horizontal"}))
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+
+        <div>
+            @Html.Raw(Html.UnEncodedValidationSummary())
+        </div>
+
+        @Html.EditorFor(m => m.YearSemesterPogramSelectItem)
+
+        <div class="form-group col-md-12">
+            @Html.LabelFor(m => m.AcademicYearId, new { @class = "col-md-4 control-label" })
+            <div class="col-md-8">
+                @Html.DropDownWithModelSelectable(m => m.AcademicYearId, Model.AcademicYearOptions,
+                        Model.YearSemesterPogramSelectItem.ProgramSelectItem.AdministrativeSelectItem.DefaultFirstItem,
+                        new { @class = "form-control", id = "drpdwn-academic-year" })
+                <small><em>The desired academic year.</em></small>
+            </div>
+        </div>
+        
+        <div class="pull-right">
+            <button type="submit" class="btn saveBtn">
+                Load Students
+                <span class="glyphicon glyphicon-chevron-right"></span>
+            </button>
+        
+        </div>
+        
+        <div class="clearfix"></div>
+        <br/>
+        @if (Model.Students.Any())
+        {
+            <div>
+                <table id="students-table" class='table'>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Registration Number</th>
+                            <th>Fees Number</th>
+                            <th>Gender</th>
+                            </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var sc in Model.Students)
+                        {
+
+                            <tr class="">
+                                <td title="View @sc.Person.GivenName's details">@Html.ActionLink(@sc.Person.FullName, "StudentDetails", "Student", new { id = sc.Id }, null)</td>
+                                <td>@sc.RegistrationNumber</td>
+                                <td>@sc.StudentNumber</td>
+                                <td>@Html.DisplayEnum(@sc.Person.Gender)</td>
+                                
+                            </tr>
+
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                
+                <a class="btn btn-default pull-left" href="@Url.Action("PrintStudentsExcel", routeValues: Model.RouteObject)" target="_blank">
+                    <span class="fa fa-download fa-2x"></span>
+                    <span class="fa fa-file-excel-o fa-2x"></span>
+                </a>
+                <a class="btn btn-default pull-right" href="@Url.Action("PrintStudentsPdf", routeValues: Model.RouteObject)" target="_blank">
+                    <span class="fa fa-download fa-2x"></span>
+                    <span class="fa fa-file-pdf-o fa-2x"></span>
+                </a>
+            </div>
+        }
+    </div>
+}

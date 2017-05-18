@@ -1,0 +1,95 @@
+﻿@using System.Activities.Expressions
+@using ARMSv2.Core.Model
+@using ARMSv2.Utils
+@using ARMSv2.Core.Model
+@model ARMSv2.Models.StudentFinanceView
+@{
+    ViewBag.Title = "Bank Payslip";
+}
+
+<h2 class="blueHeader">Bank Payslip</h2>
+
+
+<div class="tabs bodytext tabs-pilled noborder">
+    
+    <div class="col-lg-5">
+        <h5>@Model.Bank.Name</h5>
+
+        <p><b>@Model.Bank.AccountName</b></p>
+        <p>@Model.Bank.AccountNumber</p>
+        
+        <p><b>Student Number</b></p>
+        <p>@Model.Student.StudentNumber</p>
+        <br/>
+        <p><b>Student Name: </b>@Model.Student.Person.FullName</p>
+        <p><b>Faculty: </b>@Model.Student.Program.Faculty.FacultyCore.Name</p>
+        <p><b>Course: </b>@Model.Student.Program.ProgramCore.Name</p>
+        <p><b>Year of Study:</b> @Model.SemesterRegistration.Student.CurrentYear</p>
+    </div>
+    <div class="col-lg-7">
+        <div class="center-block"><h4>Ndejje University</h4></div>
+        <div class="clearfix"></div>
+        <div>
+           
+            <table class="table" id="">
+                <thead>
+
+                    <tr>
+                        <th class="centerTh">
+                            Fee
+                        </th>
+                        <th class="centerTh">
+                            Amount
+                        </th>
+                        
+                    </tr>
+
+                </thead>
+                <tbody>
+                    @if (Model.SemesterFees != null)
+                    {
+                        foreach (var k in Model.SemesterFees)
+                        {
+                            
+                            <tr>
+                                <td>
+                                    @k.Name
+
+                                </td>
+
+
+                                <td>
+                                    @k.Fee.ToString("N0")
+                                </td>
+                                    
+                            </tr>
+                            
+                        }
+                        <tr>
+                            <td>Bank Charge</td>
+                            <td>@Model.Bank.BankCharges.ToString("N0")</td>
+                        </tr>
+                        <tr>
+                            <td><b>Total</b></td>
+                            <td><b>@Model.TotalPayment.ToString("N0")</b></td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+    <div class="col-md-3 col-lg-offset-4">
+        @using (Html.BeginForm("PrintPaySlip", "StudentFinance", FormMethod.Post))
+        {
+            @Html.HiddenFor(model => model.ActiveSemesterRegId)
+            @Html.HiddenFor(model => model.TotalPayment)
+            @Html.HiddenFor(model => model.BankId)
+            <span class="pdfIcon" onclick="$(this).closest('form').submit(); return false;"></span>
+            @*<button type="submit">Printable PDF <span class="fa-file-pdf-o"></span></button>*@
+        }
+    </div>
+    
+</div>
+

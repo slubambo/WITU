@@ -1,0 +1,179 @@
+﻿@using System.Globalization
+@using ARMSv2.Core.Model
+@model ARMSv2.Models.Finance.FinanceOverview
+@{
+    ViewBag.Title = "University Financial Overview";
+    Html.EnableClientValidation();
+}
+
+
+<h2 class="blueHeader">
+    University Financial Overview: <span class="greyHeader">
+                                       @Model.Semester.AcademicYear.Name Semester @{
+                                                                                      if (Model.Semester.SemesterSession == 1)
+                                                                                      {
+                                                                                          <span>I</span>
+                                                                                      }
+                                                                                      else
+                                                                                      {
+                                                                                          <span>II</span>
+                                                                                      }
+                                                                                  }
+                                   </span>
+</h2>
+<div class="clearfix"></div>
+<p></p>
+<div class="row">
+    @using (Html.BeginForm("Overview", "Financial", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-group">
+            @Html.LabelFor(m => m.AcademicYearSelectedId, new { @class = "col-md-2" })
+            <div class="col-md-3">
+                @Html.DropDownWithModelSelectable(m => m.AcademicYearSelectedId, Model.AcademicYears,
+                    new SelectListItem() {Text = "-- Academic Year -- ", Value = "0"}, new {@class = "form-control addControl"})
+            </div>
+            @Html.LabelFor(m => m.SemesterSession, new {@class = "col-md-2"})
+            <div class="col-md-3">
+                @Html.DropDownWithModelSelectable(m => m.SemesterSession, Model.SemesterSessions,
+                    new SelectListItem() {Text = "-- Semester Session -- ", Value = "0"}, new {@class = "form-control addControl"})
+            </div>
+            <div class="">
+                <input type="submit" class="btn saveBtn" value="Load">
+            </div>
+        </div>
+    }
+
+</div>
+<div class="clearfix"></div>
+<p></p>
+@{
+    int i;
+    var cmpsCount = Model.Campuses.Count;
+    <div>
+        <div class="form-horizontal tabs bodytext tabs-pilled noborder">
+            <ul class="">
+                @for (i = 0; i < cmpsCount; i++)
+                {
+                    <li>
+                        <a href="#Campus-@Model.Campuses[i].Id" role="tab" data-toggle="tab">
+                            @Model.Campuses[i].Name
+                        </a>
+                    </li>
+                }
+            </ul>
+
+            @foreach (var campus in Model.Campuses)
+            {
+                <div id="Campus-@campus.Id" class="bodytext tab-pane nopadding ">
+                    <div class="clearfix">
+                        <br />
+                    </div>
+                    <table class="table dataTable" id="inboxTable">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Faculty
+                                </th>
+                                @if (campus.Id == 0)
+                                {
+                                    <th>
+                                        Campus
+                                    </th>
+                                }
+                                <th>
+                                    Total Returns (UGX)
+                                </th>
+                                <th>
+                                    Pending Payments (UGX)
+                                </th>
+                                <th>
+                                    Enrolement
+                                </th>
+                                <th>
+                                    Defaulters
+                                </th>
+                            </tr>
+
+                        </thead>
+                        <tbody>
+
+
+                            @foreach (var m in Model.FacultyFinanceSummaries)
+                            {
+                                if (m.Faculty != null)
+                                {
+                                    if (campus.Id > 0)
+                                    {
+                                        if ((m.Faculty.Campus.Id == campus.Id && campus.Id != 0))
+                                        {
+                                            <tr onclick="location.href = '@Url.Action("FacultyFinancialOverview", "Financial", new {id = @m.Faculty.Id})' " style="cursor: pointer;">
+
+                                                <td>
+                                                    @m.Faculty.FacultyCore.CoreName
+                                                </td>
+
+                                                <td>
+                                                    @m.TotalReturns.ToString("N0")
+                                                </td>
+
+                                                <td>
+                                                    @m.PendingReturns.ToString("N0")
+                                                </td>
+                                                <td>
+                                                    @m.Enrollement
+                                                </td>
+                                                <td>
+                                                    @m.DefaultersCount
+                                                </td>
+
+                                            </tr>
+                                        }
+                                    }
+                                    else if(campus.Id == 0)
+                                    {
+                                        <tr onclick="location.href = '@Url.Action("FacultyFinancialOverview", "Financial", new {id = @m.Faculty.Id})' " style="cursor: pointer;">
+
+                                            <td>
+                                                @m.Faculty.FacultyCore.CoreName
+                                            </td>
+                                            <td>
+                                                @m.Faculty.Campus.Name
+                                            </td>
+                                            <td>
+                                                @m.TotalReturns.ToString("N0")
+                                            </td>
+                                                
+                                            <td>
+                                                @m.PendingReturns.ToString("N0")
+                                            </td>
+                                            <td>
+                                                @m.Enrollement
+                                            </td>
+                                            <td>
+                                                @m.DefaultersCount
+                                            </td>
+
+                                        </tr>
+                                    }
+
+                                }
+                            }
+                        </tbody>
+                    </table>
+                    <br/>
+                    <br />
+                    <div class="clearfix row col-lg-3 col-lg-offset-10">
+                        <a class="" href="@Url.Action("PrintUniversitySummary", new { campusId = campus.Id })" target="_blank">
+                            <span class="pdfIcon"></span>
+                        </a>
+                    </div>
+                </div>
+
+            }
+        </div>
+
+    </div>
+}
+
+

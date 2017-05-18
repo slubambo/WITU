@@ -1,0 +1,64 @@
+﻿@model ARMSv2.Models.CustomListReceipient
+@{
+    ViewBag.Title = "Custom Lists";
+}
+<div class="pull-right">
+    <div class="btn"><span class="fa fa-inbox"></span>  @Html.ActionLink("Inbox", "Inbox", "Messenger")</div>
+    <div class="btn"><span class="fa fa-paper-plane"></span>  @Html.ActionLink("Sent", "SentMessages", "Messenger")</div>
+    <div class="btn"><span class="fa fa-floppy-o"></span>  @Html.ActionLink("Drafts", "Drafts", "Messenger")</div>
+    <div class="btn"><span class="fa fa-trash-o"></span>  @Html.ActionLink("Trash", "Trash", "Messenger")</div>
+</div>
+<div class="pull-left">
+    <div class="btn"><span class="fa fa-pencil"></span> <a href="@Url.Action("AddUserToCustomList", "Messenger", new { id = @Model.CustomListId })"> Add Receipient</a> </div>
+    <div class="btn"><span class="fa fa-pencil"></span>  <a href="@Url.Action("EditCustomList", "Messenger", new { id = Model.CustomListId })"> Edit Custom List</a></div>
+
+</div>
+<br />
+<br />
+<table class="table dataTable">
+    <thead>
+
+        <tr>
+            <th>
+                Username
+            </th>
+            <th>
+                Position
+            </th>
+            <th>
+                Email Address
+            </th>
+            <th>
+                
+            </th>
+        </tr>
+
+    </thead>
+    <tbody>
+        @if (Model.CustomListRecipients != null)
+        {
+            foreach (var m in Model.CustomListRecipients)
+            {
+                <tr>
+                    <td>
+                        @m.Name
+                    </td>
+                    <td>
+                        @m.Position
+                    </td>
+                    <td>
+                        @m.EmailAddress
+                    </td>
+                    <td>
+                        <button class="btn removeUser" id="@m.Id">Remove</button>
+
+                    </td>
+
+
+                </tr>
+
+            }
+        }
+
+    </tbody>
+</table>

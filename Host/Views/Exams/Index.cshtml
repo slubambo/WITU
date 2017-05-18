@@ -1,0 +1,35 @@
+﻿@using System.Activities.Expressions
+@using ARMSv2.Core.Model
+@using ARMSv2.Utils
+@model ARMSv2.Models.ProgrammesModel
+
+@{
+    ViewBag.Title = "Exams";
+   // Layout = "~/Views/Shared/_LayoutStaff.cshtml";
+}
+
+<div>
+    @*<h2>Programs</h2>*@
+
+    <div class="tabs bodytext tabs-pilled noborder">
+        <ul class="nav nav-pills programUl">
+
+           
+            @foreach (Campus campus in Model.Campuses)
+            {
+                <li class="" id="tab-header-campus-@campus.Id"><a role="tab" data-togle="tab" href="#tab-div-campus-@campus.Id">@campus.Name</a></li>
+            }
+            
+        </ul>
+
+
+       @foreach (var campus in Model.Campuses)
+        {
+            <div id="tab-div-campus-@campus.Id" class="tab-pane">
+                @Html.Partial("Display/_ProgramTables", Model.AllPorgrams.Where(x => x.Program.Campus.Id == campus.Id))
+            </div>
+        }
+
+
+    </div>
+</div>

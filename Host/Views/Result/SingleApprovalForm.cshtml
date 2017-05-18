@@ -1,0 +1,46 @@
+﻿@model ARMSv2.Models.Result.SingleApprovalForm
+
+@{
+    Layout = null;
+}
+
+@Scripts.Render("~/bundles/jqueryval")
+
+@using (Html.BeginForm("SingleApprovalForm", "Result"))
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(x => x.ResultApprovalId)
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.HasApproved, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <label class="radio-inline">
+                    @Html.RadioButtonFor(model => model.HasApproved, true, new {@class = "radio"}) Approve
+                </label>
+                <label class="radio-inline">
+                    @Html.RadioButtonFor(model => model.HasApproved, false, new { @class = "radio" }) Rejected
+                </label>
+            </div>
+            @Html.ValidationMessageFor(model => model.HasApproved)
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Reason, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Reason, new {placeholder = "Reason", @class = "form-control"})
+                @Html.ValidationMessageFor(model => model.Reason)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}

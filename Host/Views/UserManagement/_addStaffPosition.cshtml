@@ -1,0 +1,136 @@
+﻿@{
+    ViewBag.Title = "Staff Accounts Management";
+    //Layout = null;
+
+    List<PositionCategory> categories = new List<PositionCategory>();
+    if (ViewBag.Positions != null)
+    {
+        categories = ((List<Position>)ViewBag.Positions).Select(a => a.PositionCategory).Distinct().ToList();
+    }
+}
+@using ARMSv2.Core.Model
+@model ARMSv2.Models.UserInfoViewModel
+
+@*@Html.AntiForgeryToken()*@
+<div class="staffPositionDiv" id="div-StaffPosition">
+
+    <div class="row form-group">
+        <p class="col-md-3 control-label">Position Category</p>
+        <div class="col-md-8 progCoreInput">
+
+            <select name='StaffPosition.Position.Id'>
+                @foreach (var category in categories)
+                {
+                <optgroup label="@category.Name">
+
+                    @foreach (var position in category.Positions)
+                        {
+                        <option value="@position.Id" @(position.Id == Model.StaffPosition.Position.Id? "selected":"" )> @position.Name</option>
+                        }
+
+                </optgroup>
+                }
+
+            </select>
+            @Html.ValidationMessageFor(model => model.StaffPosition.Position)
+        </div>
+    </div>
+
+    <div class="row form-group" id="Us_scope">
+        @Html.LabelFor(model => model.StaffPosition.LevelId, new { @class = "control-label col-md-3" })
+        <div class="col-md-8 progCoreInput">
+
+            <div class="btn-group">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"> Choose a Level <span class="caret"></span> </button>
+                <ul class="dropdown-menu">
+                    <li>
+                        @Ajax.ActionLink("University", "PreloadLevel", new { @level = "1" }, new AjaxOptions { UpdateTargetId = "populatedbyLevel" })
+                    </li>
+                    <li>
+                        @Ajax.ActionLink("Campus", "PreloadLevel", new { @level = "2" }, new AjaxOptions { UpdateTargetId = "populatedbyLevel" })
+                    </li>
+                    <li>
+                        @Ajax.ActionLink("Faculty", "PreloadLevel", new { @level = "3" }, new AjaxOptions { UpdateTargetId = "populatedbyLevel" })
+
+                    </li>
+                    <li>
+                        @Ajax.ActionLink("Department", "PreloadLevel", new { @level = "4" }, new AjaxOptions { UpdateTargetId = "populatedbyLevel" })
+
+                    </li>
+                    <li>
+                        @Ajax.ActionLink("Program", "PreloadLevel", new { @level = "5" }, new AjaxOptions { UpdateTargetId = "populatedbyLevel" })
+
+                    </li>
+                    <li>
+                        @Ajax.ActionLink("Course", "PreloadLevel", new { @level = "6" }, new AjaxOptions { UpdateTargetId = "populatedbyLevel" })
+
+                    </li>
+                </ul>
+            </div><br /><br />
+            @Html.ValidationMessageFor(model => model.StaffPosition.LevelId)
+            @Html.ValidationSummary()
+        </div>
+    </div>
+
+    <div class="form-group ">
+
+        <div id="populatedbyLevel" class="col-md-9">
+            @if (Model.StaffPosition != null)
+            {
+                @Html.Action("PreloadLevel", "UserManagement", Model);
+            }
+           
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.StaffPosition.IdNumber, new { @class = "control-label col-md-3" })
+        <div class="col-md-8 progCoreInput">
+            @Html.EditorFor(model => model.StaffPosition.IdNumber)
+            @Html.ValidationMessageFor(model => model.StaffPosition.IdNumber)
+        </div>
+        @Html.ValidationMessageFor(model => model.StaffPosition.IdNumber)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.StaffPosition.WorkStatus, new { @class = "control-label col-md-3" })
+        <div class="col-md-8 progCoreInput">
+            @Html.DropDownListFor(model => model.StaffPosition.WorkStatus,
+                new SelectList(
+                    new List<Object>
+                    {
+                        //new { value = 0 , text = "Select Gender"  },
+                        new {value = 0, text = "Active"},
+                        new {value = 1, text = "On Leave"},
+
+                    },
+                    "value",
+                    "text",
+                    Model.StaffPosition.WorkStatus), "--- Select Work Status ---"
+                )
+
+            @Html.ValidationMessageFor(model => model.StaffPosition.WorkStatus)
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.StaffPosition.IsActive, new { @class = "control-label col-md-3" })
+        <div class="col-md-8">
+            @Html.EditorFor(model => model.StaffPosition.IsActive, new { @checked = "checked" })
+            @Html.ValidationMessageFor(model => model.StaffPosition.IsActive)
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="col-lg-offset-9">
+
+    @Html.HiddenFor(x => x.User.Id)
+    @Html.HiddenFor(model => model.StaffPosition.Id)
+ 
+    <input type="submit" value="Cancel" class="btn btn-default" name="buttonClicked" />
+    <input type="submit" value="Save" id="postTable" class="btn saveBtn" name="buttonClicked" />
+    <div class="clearfix"> </div>
+</div>

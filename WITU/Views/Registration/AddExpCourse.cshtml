@@ -1,0 +1,212 @@
+﻿@model WITU.Models.Registration.StudentRegModelView
+@{
+    Layout = null;
+}
+@if (Model == null)
+{
+    <div>
+        @if (TempData[ApplicationConstants.ErrorNotification] != null)
+        {
+            <p class="alert alert-danger well-sm">
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                <span>
+                    <span class="glyphicon glyphicon-warning-sign"></span>
+                    @Html.Raw(TempData[ApplicationConstants.ErrorNotification])
+                </span>
+            </p>
+        }
+    </div>
+}
+@if (Model != null)
+{
+    <p class="maroonHeader">Courses</p>
+    <p class="greyHeader">Please select the courses you would to Exempt for <b>@Model.Student.Person.FullName</b></p>
+    <div id="CreditStatusDiv" class="fleft alert-warning"></div>
+    <div id="dv-add-response"></div>
+    <table class="table RegCoursesTable">
+        <thead>
+
+            <tr>
+                <th class="">
+
+                </th>
+                <th>
+                    Course Code
+                </th>
+                <th>
+                    Course Name
+                </th>
+                <th>
+                    Credit Units
+                </th>
+
+            </tr>
+
+        </thead>
+        <tbody>
+            @if (Model.CoursesList.Any())
+            {
+                foreach (var m in Model.CoursesList)
+                {
+                    <tr>
+                        <td>
+                            @if (m.IsRetaken3X == false)
+                            {
+                                <input name="selectedToAddCourses" type="checkbox"  autocomplete="off" value="@m.Id" class="course_selected_to_@m.Id" />
+                            }
+                        </td>
+                        <td>@m.Code</td>
+                        <td>@m.Name</td>
+                        <td>@m.CreditUnits</td>
+
+                    </tr>
+                }
+            }
+            @if (!Model.CoursesList.Any())
+            {
+                <tr>
+                    <td>
+                        <p><b>No Courses found for the program</b></p>
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+    <br />
+    <input type="hidden" value="@Model.Student.Id" id="studentIdValue" />
+    <input type="hidden" value="@Model.MaximumSemLoad" id="MaximumSemLoad" />
+    <input type="hidden" value="@Model.CurrentSemLoad" id="SemesterLoad" />
+    <div class="col-lg-offset-9">
+        <input type="button" onclick=" exemptCourses() " value="Exempt Course(s)" class="btn saveBtn" />
+        <div class="clearfix"> </div>
+    </div>
+}
+
+<script>
+    $('.RegCoursesTable').dataTable({
+        "pageLength": 7,
+        "lengthChange": false,
+        "bInfo": false
+    });
+
+    function exemptCourses() {
+        var rows = [];
+
+        var studentId = $('#studentIdValue').val();
+        var semRegId = $('#semRegId').val();
+
+        var oTable = $('.RegCoursesTable').DataTable();
+        var nNodes = oTable.rows().nodes();
+
+        $(nNodes).find(':checkbox:checked').each(function (i, obj) {
+            //console.log('Selected Value: ' + $(obj).val());
+            rows.push($(obj).val());
+        });
+
+        console.log('Items selected: ' + rows.length);
+
+
+        //getting the loading dialog...
+
+        $("div#dv-add-response").html(function () {
+            var loadingDiv = '<div class"alert alert-info well-sm">' +
+                '<span class=""><span class="fa fa-2x fa-spin fa-spinner"></span></span>' +
+                '<span class="text-warning">Exempting Course(s), Please Wait... </span>' +
+                '<div>';
+            return "<div> " + loadingDiv + "</div>";
+        });
+
+
+        var response = {
+            CourseIds: rows,
+            StudentId: studentId,
+            SemesterRegistrationId: semRegId
+        };
+
+        if (rows.length > 0) {
+            $.ajax({
+                url: baseUrl + 'Api/UtilsApi/ExemptCourses',
+                type: 'POST',
+                data: response,
+                success: function (data) {
+                    if (data.SaveStatus) {
+
+                        $("div#dv-add-response").html(function () {
+                            var emphasis = '<div class"alert alert-success well-sm">' +
+                                '<button type="button" class="close" data-dismiss="alert">×</button>' +
+                                '<span class="glyphicon glyphicon-saved"></span>' +
+                                '<span class="text-success text-left">Courses have been successfully exempted. </span>' +
+                                '<div>';
+                            return "<div> " + emphasis + "</div>";
+                        });
+
+                        //reload after some mill seconds..
+                        setTimeout(function () {
+                            window.location.reload(true);
+                        }, 1000);
+
+
+                    } else {
+
+                        $("div#dv-add-response").html(function () {
+                            var emphasis = '<div class"alert alert-danger well-sm">' +
+                                '<button type="button" class="close" data-dismiss="alert">×</button>' +
+                                '<span class=""><span class="glyphicon glyphicon-warning-sign"></span></span>' +
+                                '<span class="text-danger text-left">Course(s) not added. </span>' +
+                                '<div>';
+                            return "<div> " + emphasis + "</div>";
+                        });
+
+                    }
+                },
+                error: function () {
+
+                    $("div#dv-add-response").html(function () {
+                        var emphasis = '<div class"alert alert-danger well-sm">' +
+                            '<button type="button" class="close" data-dismiss="alert">×</button>' +
+                            '<span class=""><span class="glyphicon glyphicon-warning-sign"></span></span>' +
+                            '<span class="text-danger text-left">Server Access Error. </span>' +
+                            '<div>';
+                        return "<div> " + emphasis + "</div>";
+                    });
+
+
+                }
+            });
+        } else {
+            $("div#dv-add-response").html(function () {
+                var emphasis = '<div class"alert alert-danger well-sm">' +
+                    '<button type="button" class="close" data-dismiss="alert">×</button>' +
+                    '<span class=""><span class="glyphicon glyphicon-warning-sign"></span></span>' +
+                    '<span class="text-danger text-left">No Course Selected. </span>' +
+                    '<div>';
+                return "<div> " + emphasis + "</div>";
+            });
+        }
+    }
+
+    var maximumSelectedSemLoad = parseInt($('#MaximumSemLoad').val(), 10);
+    var creditSumm = parseInt($('#SemesterLoad').val(), 10);
+
+    function warmonOverloadCredit(credit, id) {
+        if ($(".course_selected_to_" + id).is(":checked")) {
+            if (creditSumm >= maximumSelectedSemLoad || (creditSumm + credit) > maximumSelectedSemLoad) {
+                var message = "Adding a course exceeds the maximum load";
+                var title = "Maximum Semester Load";
+                AlertMessageDialog(message, title);
+                $(".course_selected_to_" + id).prop('checked', false);
+            } else {
+                creditSumm =
+                parseInt(creditSumm + credit);
+            }
+        } else {
+            creditSumm -= credit;
+        }
+        //creditSum += credit;
+        $("#CreditStatusDiv").html("Total Credit Summation: " + creditSumm);
+    }
+</script>

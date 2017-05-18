@@ -1,0 +1,75 @@
+﻿@using System.Web.Configuration
+@model WITU.Models.AdminUnits.EditUniversity
+
+@{
+    ViewBag.Title = "AddorEditUniversity";
+    //Layout = "~/Views/Shared/_LayoutStaff.cshtml";
+}
+
+<h2 class="greyHeader">Manage University</h2>
+
+@using (Html.BeginForm("AddOrEditUniversity", "AdministrativeUnits", FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" })) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        
+        @Html.ValidationSummary(true)
+
+
+        
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, new { @class = "control-label col-md-3" })
+            <div class="col-md-9">
+                @Html.TextBoxFor(model => model.Name, new { autocomplete = "off" })
+                @Html.ValidationMessageFor(model => model.Name)
+            </div>
+        </div>
+        
+        <div class="form-group">
+            @Html.LabelFor(model => model.ShortName, new { @class = "control-label col-md-3" })
+            <div class="col-md-9">
+                @Html.TextBoxFor(model => model.ShortName, new { autocomplete = "off" })
+                @Html.ValidationMessageFor(model => model.ShortName)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.LogoPathName, new { @class = "control-label col-md-3" })
+            <div class="col-md-6">
+                @Html.TextBoxFor(model => model.logoFile, new {@type = "file"})
+                @Html.ValidationMessageFor(model => model.LogoPathName)
+               
+            </div>
+            @if (Model.LogoPathName != null)
+            {
+                <div class="col-md-3">
+                    <span>Current Logo:</span>
+                    <br />
+                    <img class="img img-responsive" src="@Url.Content(WebConfigurationManager.AppSettings["BaseResourcesUrl"] + @Model.LogoPathName)" />
+                </div>
+            }
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, new { @class = "control-label col-md-3" })
+            <div class="col-md-9">
+                @Html.TextAreaFor(model => model.Description, new { @class = "tinymce-textarea" })
+                @*@Html.ValidationMessageFor(model => model.Description)*@
+            </div>
+        </div>
+
+        
+        
+        @Html.HiddenFor(model => model.ContactOwnerId)
+        @Html.HiddenFor(model => model.Id)
+        <div class="col-md-3"></div>
+        <div class="col-md-9 noMarginCol2" >
+            <input type="submit" value="Save" class="btn saveBtn" />
+            <input type="button" value="Cancel"
+                   onclick="javascript: cancelSubmission('@Url.Action("University", "AdministrativeUnits", null)');" class="btn delBtn" />
+        </div>
+    </div>
+}
+

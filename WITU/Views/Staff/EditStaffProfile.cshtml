@@ -1,0 +1,13 @@
+﻿@model WITU.Models.EditPerson
+@using WITU.Utils
+@using NHibernate.Linq
+
+@{
+    ViewBag.Title = "Ndejje Univeristy Records Management System";
+}
+
+@using (Html.BeginForm("EditStaffProfile", "Staff", FormMethod.Post, new {enctype = "multipart/form-data"}))
+{
+    @Html.AntiForgeryToken()
+    @Html.Partial("~/Views/Shared/_EditProfilePartial.cshtml")
+}

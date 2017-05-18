@@ -1,0 +1,70 @@
+﻿@using ARMSv2.Utils
+@model ARMSv2.Core.Model.ProgramCore
+
+@{
+    ViewBag.Title = "Ndejje University Records Management System";
+}
+<div class="">
+
+    <p class="greyHeader">Add/Edit Program</p>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+
+            @Html.ValidationSummary(false)
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Name, new { @class = "control-label col-md-3" })
+                <div class="col-md-9 progCoreInput">
+                    @Html.EditorFor(model => model.Name)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.MinimumDuration, new { @class = "control-label col-md-3" })
+                <div class="col-md-9 progCoreInput">
+                    @Html.EditorFor(model => model.MinimumDuration)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.MaximumDuration, new { @class = "control-label col-md-3" })
+                <div class="col-md-9 progCoreInput">
+                    @Html.EditorFor(model => model.MaximumDuration)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.AwardTypeId, new { @class = "control-label col-md-3" })
+                <div class="col-md-9 progCoreInput">
+                    @Html.DropDownWithModelSelectable(model => model.AwardTypeId, (List<SelectListItem>)@ViewBag.AwardTypeOptions,
+                new SelectListItem() { Value = "0", Text = "-- Select --" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div>
+                    <span class="control-label col-md-12 greyHeader">About Program</span>
+                </div>
+                <div class="col-md-12">
+                    @Html.TextAreaFor(model => model.GeneralInformation, new { @class = "tinymce-textarea" })
+                </div>
+            </div>
+            <div class="pull-right">
+
+                <input type="submit" value="Save" class="btn saveBtn" onclick="javascript: showLoadingDialog(' @(Model.Id > 0? "Updating Program Components. This may take a while" : "Adding Program")');" />
+                <input type="button" value="Cancel"
+                       onclick="javascript: cancelSubmission('@Url.Action("ProgramCore", "Program", new {id = Model.Id})');" class="btn delBtn" />
+                <div class="clearfix">  </div>
+
+            </div>
+        </div>
+
+        @Html.HiddenFor(x => x.Id)
+        @Html.HiddenFor(x => x.AwardTypeId)
+    }
+</div>
+

@@ -1,0 +1,191 @@
+﻿@using WITU.Core.Model
+@model WITU.Core.Model.Program
+
+@Scripts.Render("~/bundles/custom")
+<div>
+    @* Courses view  *@
+    @if (Model != null)
+    {
+        int i;
+        for (i = 0; i < Model.ProgramCore.MinimumDuration; i++)
+        {
+
+            <div class="form-horizontal tabs bodytext tabs-pilled noborder">
+                <ul class="">
+
+                    @for (i = 0; i < Model.ProgramCore.MinimumDuration; i++)
+                    {
+                        <li>
+                            <a href="#Year@(i)" role="tab" data-toggle="tab">
+                                Year @(i + 1)
+                            </a>
+                        </li>
+                    }
+                </ul>
+
+                @for (i = 0; i < Model.ProgramCore.MinimumDuration; i++)
+                {
+                    <div id="Year@(i)" class="bodytext tab-pane nopadding ">
+                        <div class="clearfix">
+                            <br />
+                        </div>
+
+                        <div class="form-horizontal noborder">
+                            <h5 class="greyHeader">Semester I</h5>
+
+                            <div class="clearfix"></div>
+                            <br />
+                            <table class="table table-condensed coursesRegTableOne">
+                                <thead>
+                                    <tr>
+                                        <th>
+
+                                        </th>
+                                        <th>
+                                            Course Code
+                                        </th>
+                                        <th>
+                                            Course Name
+                                        </th>
+                                        <th>
+                                            Credit Units
+                                        </th>
+                                        <th>
+                                            Course Type
+                                        </th>
+                                        <th>Specialisation</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.Courses != null)
+                                    {
+                                        foreach (var m in Model.Courses.Where(a => a.SemesterLevel.Level == (i + 1) && a.SemesterLevel.SemesterSession == 1))
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <input name="selection" class="courseSelectOne" value="@m.Id" type="checkbox" />
+                                                </td>
+                                                <td>
+                                                    @m.Code
+
+                                                </td>
+                                                <td>
+                                                    @m.Name
+                                                </td>
+                                                <td>
+                                                    @m.CreditUnits
+                                                </td>
+                                                <td>
+                                                    @if (m.CourseType != null && m.CourseType.Value == CourseType.Core)
+                                                    {
+                                                        <p>Core</p>
+                                                    }
+                                                    @if (m.CourseType != null && m.CourseType.Value == CourseType.Elective)
+                                                    {
+                                                        <p>Elective</p>
+                                                    }
+                                                    @if (m.CourseType != null && m.CourseType.Value == CourseType.Audited)
+                                                    {
+                                                        <p>Audited</p>
+                                                    }
+                                                </td>
+                                                <td>
+                                                    @{if(m.Specialisation != null){@m.Specialisation.SpecialisationCore.Name}}
+                                                </td>
+                                            </tr>
+                                        }
+
+                                    }
+                                </tbody>
+
+                            </table>
+
+                            <br />
+                            <br />
+                            <br />
+                            <h5>Semester II</h5>
+                            <br />
+
+                            <div class="clearfix"></div>
+                            <br />
+                            <table class="table table-condensed coursesRegTableTwo">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>
+                                            Course Code
+                                        </th>
+                                        <th>
+                                            Course Name
+                                        </th>
+                                        <th>
+                                            Credit Units
+                                        </th>
+                                        <th>
+                                            Course Type
+                                        </th>
+                                        <th>Specialisation</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.Courses != null)
+                                    {
+                                        foreach (var m in Model.Courses.Where(a => a.SemesterLevel.Level == (i + 1) && a.SemesterLevel.SemesterSession == 2))
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <input name="selection" class="courseSelectOne" value="@m.Id" type="checkbox"  />
+                                                </td>
+                                                <td>
+                                                    @m.Code
+
+                                                </td>
+                                                <td>
+                                                    @m.Name
+                                                </td>
+                                                <td>
+                                                    @m.CreditUnits
+                                                </td>
+                                                <td>
+                                                    @if (m.CourseType != null && m.CourseType.Value == CourseType.Core)
+                                                    {
+                                                        <p>Core</p>
+                                                    }
+                                                    @if (m.CourseType != null && m.CourseType.Value == CourseType.Elective)
+                                                    {
+                                                        <p>Elective</p>
+                                                    }
+                                                    @if (m.CourseType != null && m.CourseType.Value == CourseType.Audited)
+                                                    {
+                                                        <p>Audited</p>
+                                                    }
+                                                </td>
+                                                <td> @{if (m.Specialisation != null){@m.Specialisation.SpecialisationCore.Name}}</td>
+                                            </tr>
+
+                                        }
+
+
+                                    }
+
+                                </tbody>
+                            </table>
+
+
+                        </div>
+                    </div>
+
+                }
+
+            </div>
+        }
+    }
+</div>
+<script>
+    $(document).ready(function () {
+        $('.table').DataTable({
+            "displayLength": 5,
+            "bDestroy": true
+        });
+    });
+</script>

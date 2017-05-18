@@ -1,0 +1,46 @@
+﻿@using System.Web.Configuration
+@using WITU.Utils
+@model WITU.Core.Model.RegulationProcedure
+
+@{
+    ViewBag.title = @ViewBag.AddorEdit  + " Regulation or Procedure";
+    Layout = "~/Views/Shared/_LayoutStaff.cshtml";
+}
+
+<div class="">
+    <h2 class="blueHeader">@ViewBag.AddorEdit @Model.Title</h2>
+    
+    @using (Html.BeginForm("AddorEditRegulation", "Semester", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post,
+        new { @class = "form-horizontal", role = "form"}))
+    {
+        <p>
+            @Html.ValidationSummary(true)
+        </p>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Title, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Title, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Title)
+            </div>
+        </div>
+
+       <div class="">
+            @Html.TextAreaFor(m => m.Content, new { @class = "tinymce-textarea" })
+        </div>
+        <div class="clearfix"></div>
+        <br />
+        <div class="pull-right">
+            <input type="submit" value="Save" class="btn saveBtn" />
+            <input type="button" value="Cancel"
+                   onclick="javascript: cancelSubmission('@Url.Action("RegulationsAndProcedures", "Semester", new { id = Model.Id })');" class="btn delBtn" />
+
+          
+        </div>
+        <div class="clearfix"></div>
+        <br />
+
+        @Html.HiddenFor(x => x.Id)
+    }
+
+</div>

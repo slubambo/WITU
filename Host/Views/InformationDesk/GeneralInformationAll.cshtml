@@ -1,0 +1,47 @@
+﻿@using ARMSv2.Core.Model
+@using ARMSv2.Models
+@using ARMSv2.Utils
+@using ARMSv2.Models.UserManagement
+@{ var sessionDetails = (SessionUserManagementDetails)HttpContext.Current.Session["LoggedInUserRoles"]; }
+@model IEnumerable<ARMSv2.Core.Model.GeneralInformation>
+@{
+    ViewBag.Title = "General Information";
+}
+ 
+<div class="">
+    <p class="blueHeader">General Information</p>
+
+    
+    <div class="row">
+        @foreach (var gi in Model)
+        {
+            <div class="col-md-4">
+                <div class="infoSection">
+                    <span class="maroonTxt">@gi.Title</span>
+                    <img class="img img-responsive" src="@ViewBag.InformationDeskResourcesUrl@gi.DefaultImageFilelName" />
+                    <div class="caption text-justify">
+                        @gi.ShortDescription
+                        @Html.ActionLink("Read More", "GeneralInformation", "InformationDesk", new {id = gi.Id}, new { @class = "moreLink" })
+                    </div>
+                    @if (Request.IsAuthenticated)
+                    {
+                        if (User.ApplicationUserType() == (int) UserTypes.Staff)
+                        {
+                            if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) ARMSv2.Models.ServiceDetail.GeneralInformation
+                                                                                                    && (x.Role.CanCreate == true || x.Role.CanUpdate == true || x.Role.CanDelete == true)))
+                            {
+                                <div class="bottom text-center hideDiv ">
+                                    @Html.ActionLink("Edit", "EditGeneralInformation", "InformationDesk", new {id = gi.Id}, new {@class = "btn saveBtn "})
+
+                                    @Html.ActionLink("Attach Files", "UploadAttachment", "InformationDesk", new {id = gi.Id, type = AttachmentType.GeneralInformation}, new {@class = "btn delBtn leftBtn"})
+                                </div>
+                            }
+                        }
+                    }
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+

@@ -1,0 +1,56 @@
+﻿@model ARMSv2.Core.Model.InformationDesk
+
+@{
+    ViewBag.Title = "Edit InformationDesk";
+    Layout = "~/Views/Shared/_LayoutStaff.cshtml";
+}
+
+<div>
+    <h2 class="blueHeader col-md-12">Add / Edit Item</h2>
+    
+    @using (Html.BeginForm("EditInformationDesk", "InformationDesk", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post,
+        new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
+    {
+        <p>
+            @Html.ValidationSummary(false)
+        </p>
+        
+        <div class="form-group nomargin">
+            @Html.LabelFor(m => m.Title, new { @class = "col-md-3 control-label" })
+            <div class="col-md-9 ">
+                @Html.TextBoxFor(m => m.Title, new { @class = "form-control" })
+            </div>
+        </div>
+        <br/>
+        <div class="form-group nomargin">
+            @Html.LabelFor(m => m.UploadImage, new { @class = "col-md-3 control-label" })
+            <div class="col-md-9 progCoreInput">
+                @Html.TextBoxFor(x => x.UploadImage, new { @class = "", @type = "file" })
+            </div>
+        </div>
+        <br/>
+
+        @*<div class="form-group">
+            @Html.LabelFor(m => m.ShortDescription, new { @class = "col-md-3 control-label" })
+            <div class="col-md-9 progCoreInput">
+                @Html.TextAreaFor(m => m.ShortDescription, new { @class = "" })
+                @Html.ValidationMessageFor(m => m.ShortDescription)
+            </div>
+        </div>*@
+        
+        <div class="">
+            @Html.TextAreaFor(m => m.Content, new { @class = "tinymce-textarea"})
+        </div>
+        <br/>
+    <div class="pull-right">
+
+            <input type="submit" value="Save" class="btn saveBtn" />
+            <input type="button" value="Cancel"
+                   onclick="javascript: cancelSubmission('@Url.Action("Information", "InformationDesk", new {id = Model.Id})');" class="btn delBtn" />
+            <div class="clearfix"></div>
+        </div>
+        
+        @Html.HiddenFor(x => x.DefaultImageFileName)
+    }
+</div>
+

@@ -1,0 +1,91 @@
+﻿@using ARMSv2.Utils
+@model ARMSv2.Models.program.AddOrEditProgramRequirement
+
+@{
+    Layout = null;
+}
+
+<script src="~/Scripts/base/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/base/jquery.validate.min.js"></script>
+<script src="~/Scripts/base/jquery.unobtrusive-ajax.min.js"></script>
+<script src="~/Scripts/base/jquery.validate.unobtrusive.min.js"></script>
+
+<div id="dvAddEditProgRequirementContent">
+    @using (Ajax.BeginForm("AddOrEditProgramRequirement", new { controller = "Program" },
+        new AjaxOptions()
+        {
+            HttpMethod = FormMethod.Post.ToString(),
+            UpdateTargetId = "formAddOrEditProgramRequirement",
+            OnSuccess = "OnSuccessProgramRequirementPost",
+            OnFailure = "OnFailureProgramRequirementPost(xhr)",
+            LoadingElementId = "dvLoadEleProgramRequirement",
+            OnBegin = "OnBeginProgramRequirementPost"
+        },
+        new { id = "formAddOrEditProgramRequirement" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-horizontal">
+            <div id="dvAddEditProgRequirementUpdateTarget">
+
+            </div>
+            <div id="dvLoadEleProgramRequirement">
+                <label>Saving, Please wait...</label>
+                <span class="fa fa-spinner"></span>
+            </div>
+
+            @Html.ValidationSummary(true)
+
+            @Html.HiddenFor(x => x.ProgramId)
+            @Html.HiddenFor(x => x.SemesterLevelId)
+            @Html.HiddenFor(x => x.SemesterSession)
+            @Html.HiddenFor(x => x.Id)
+            @Html.HiddenFor(x => x.Year)
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.StartAcademicYear, new { @class = "control-label col-md-4" })
+                <div class="col-md-8">
+                    @Html.DropDownWithModelSelectable(x => x.StartAcademicYear, Model.AcademicYearOptions, new SelectListItem() { Value = "0", Text = "-- Select --" })
+                    @Html.ValidationMessageFor(model => model.StartAcademicYear)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.MinimumCreditUnitLoad, new { @class = "control-label col-md-4" })
+                <div class="col-md-8">
+                    @Html.TextBoxFor(model => model.MinimumCreditUnitLoad)
+                    @Html.ValidationMessageFor(model => model.MinimumCreditUnitLoad)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.MaximumCreditUnitLoad, new { @class = "control-label col-md-4" })
+                <div class="col-md-8">
+                    @Html.TextBoxFor(model => model.MaximumCreditUnitLoad)
+                    @Html.ValidationMessageFor(model => model.MaximumCreditUnitLoad)
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-4 col-md-8">
+                    <input type="submit" value="Save" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<script>
+    $(document).ready(function() {
+        //showing load...
+        if ($('#dvLoadEleProgramRequirement').length)
+            $('#dvLoadEleProgramRequirement').hide();
+    });
+</script>
+
+@*<div>
+        @Html.ActionLink("Back to List", "Index")
+    </div>*@
+
+@*@Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jquery-unobstrusive-ajax")
+    @Scripts.Render("~/bundles/jqueryval")*@

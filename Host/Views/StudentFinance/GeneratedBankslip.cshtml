@@ -1,0 +1,219 @@
+﻿@using System.Activities.Expressions
+@using ARMSv2.Core.Model
+@using ARMSv2.Utils
+@using ARMSv2.Core.Model
+@model ARMSv2.Models.StudentFinanceView
+@{
+    ViewBag.Title = "Generated Bankslip";
+}
+
+<h2 class="blueHeader">Bank Payslip</h2>
+<br/>
+
+@if (Model.PaymentMethod == (decimal) PaymentMethod.Cash)
+{
+    <p class="center"><b>CASH DEPOSIT SLIP</b></p>
+}
+
+@if (Model.PaymentMethod == (decimal)PaymentMethod.Cheque)
+{
+    <p class="center"><b>CHEQUE DEPOSIT SLIP</b></p>
+}
+
+@if (Model.PaymentMethod == (decimal)PaymentMethod.WireTransfer)
+{
+    <p class="center"><b>WIRE TRANSFER DEPOSIT SLIP</b></p>
+}
+
+<div class="tabs bodytext tabs-pilled noborder">
+
+    <div class="col-lg-4">
+        <div class="pull-left">
+            <img src="@ApplicationConstants.FinanceBankUrl@Model.Bank.LogoFileName" class="img-responsive" style="width: 50px; height: auto; padding: 5px;" />
+            </div>
+        <h5><b>@Model.Bank.Name</b></h5>
+        <div class="clearfix"></div><br/>
+        <p><b>@Model.Bank.AccountName</b></p>
+        <p>@Model.Bank.AccountNumber</p>
+
+        <p><b>Fees Number</b></p>
+        <p>@Model.Student.StudentNumber</p>
+        <br />
+        <p><b>Student Name: </b>@Model.Student.Person.FullName</p>
+        <p><b>Faculty: </b>@Model.Student.Program.Faculty.FacultyCore.Name</p>
+        <p><b>Course: </b>@Model.Student.Program.ProgramCore.Name</p>
+        <p><b>Registration No.: </b>@Model.Student.RegistrationNumber</p>
+        <p><b>Year of Study:</b> @Model.SemesterRegistration.Student.CurrentYear</p>
+        
+        <br />
+        <p><b>Paid By:</b></p>
+        <p></p>
+        <p><b>Tel:</b></p>
+        <p></p>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="pull-left">
+            <img src="@ApplicationConstants.FinanceBankUrl@Model.Bank.LogoFileName" class="img-responsive" style="width: 50px; height: auto; padding: 5px;" />
+        </div>
+        <h5><b>Ndejje University</b></h5>
+        <div class="clearfix"></div><br />
+        <p><b>S/No.</b> @Model.PayslipSerial</p>
+        <p class="center"><b>Fees for this Semester</b></p>
+        <div class="clearfix"></div>
+        <div>
+
+            <table class="table" id="">
+                <thead>
+
+                    <tr>
+                        <th>
+                            Fee
+                        </th>
+                        <th>
+                            Amount
+                        </th>
+
+                    </tr>
+
+                </thead>
+                <tbody>
+                    @if (Model.SemesterFees != null)
+                    {
+                        foreach (var k in Model.SemesterFees)
+                        {
+
+                            <tr>
+                                <td>
+                                    @k.Name
+
+                                </td>
+
+
+                                <td>
+                                    
+                                </td>
+
+                            </tr>
+
+                        }
+                        
+                    }
+
+                </tbody>
+            </table>
+
+        </div>
+        <br/>
+        <p><b>Amount in words:</b></p>
+        <p></p>
+    </div>
+    
+    <div class="col-lg-4">
+        <p class="fright col-lg-offset-2"><b>Cash</b></p>
+        <div class="clearfix"></div>
+        <div>
+
+            <table class="table" id="">
+                <thead>
+
+                    <tr>
+                        <th>
+                            Denominations
+                        </th>
+                        <th>
+                            Total
+                        </th>
+
+                    </tr>
+
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <td>
+                            50,000 UGX
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            20,000 UGX
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            10,000 UGX
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            5,000 UGX
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            1,000 UGX
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            500 UGX
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            200 UGX
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            100 UGX
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            50 UGX
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>Bank Charges</b>
+                        </td>
+                        <td>@Model.Bank.BankCharges</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>Total Amount</b>
+                        </td>
+                        <td></td>
+                    </tr>
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+    
+    @using (Html.BeginForm("PrintBankSlip", "StudentFinance", FormMethod.Post))
+    {
+    <div class="col-lg-3 col-lg-offset-10">
+        @Html.HiddenFor(model => model.ActiveSemesterRegId)
+        @Html.HiddenFor(model => model.BankId)
+        @Html.HiddenFor(model => model.PaymentMethod)
+        @Html.HiddenFor(model => model.PayslipSerial)
+        <button type="submit">Print Payslip <i class="fa fa-print"></i></button>
+        <div class="clearfix"></div>
+    </div>
+    }
+
+    
+</div>

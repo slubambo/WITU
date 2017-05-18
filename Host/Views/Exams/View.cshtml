@@ -1,0 +1,217 @@
+﻿@using ARMSv2.Core.Model
+@using ARMSv2.Models
+@using ARMSv2.Utils
+@model ARMSv2.Models.ExamProgramView
+
+@{
+    ViewBag.Title = "Ndejje University Records Management System";
+
+}
+
+<div class="">
+    <div class="row">
+        <div class="col-md-9 programViewCont ">
+            <div class="row">
+                <h2 class="blueHeader col-sm-9 nomargin">
+                    @Model.Program.ProgramCore.Name
+                </h2>
+            </div>
+            <div>
+                @if (Model.Program.Campus != null)
+                {
+                    <div class="row">
+                        <span class="col-xs-12 col-sm-2">Campus: </span>
+                        <span class="col-xs-12 col-sm-10">@Model.Program.Campus.Name</span>
+                    </div>
+                }
+
+                @if (Model.Program.Faculty != null)
+                {
+                    <div class="row">
+                        <span class="col-xs-12 col-sm-2">Faculty:</span>
+                        <span class="col-xs-12 col-sm-10">
+                            @Model.Program.Faculty.FacultyCore.Name
+                        </span>
+                    </div>
+                }
+
+                @if (Model.Program.Department != null)
+                {
+                    <div class="row">
+                        <span class="col-xs-12 col-sm-2">Department:</span>
+                        <span class="col-xs-12 col-sm-10"> @Model.Program.Department.DepartmentCore.Name</span>
+                    </div>
+                }
+            </div>
+
+            <div class="">
+                <div class="row">
+                    <label class="control-label col-xs-12 col-sm-2">Duration :</label>
+                    <label class="control col-xs-12 col-sm-10">
+                        @Model.Program.ProgramCore.MinimumDuration Years
+                    </label>
+                </div>
+
+                <div class="row">
+                    <label class="control-label col-xs-12 col-sm-2">Program Code :</label>
+                    <label class="control col-xs-12 col-sm-10">
+                        @Model.Program.Code
+                    </label>
+                </div>
+
+                <div class="row">
+                    <label class="control-label col-xs-12 col-sm-2">Program Number :</label>
+                    <label class="control col-md-8">
+                        @Model.Program.ProgramNumber
+                    </label>
+                </div>
+
+                <div class=" row">
+                    <label class="control-label col-xs-12 col-sm-4">Minimum Graduation Requirement :</label>
+                    <label class="control col-xs-12 col-sm-8">
+                        @Model.Program.MinimumLoad
+                    </label>
+                </div>
+
+            </div>
+            <div class="clearfix"></div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            @*<div class="panel panel-primary">
+                    <div class="panel-heading">
+                        Study Times and Tuition
+                    </div>
+                    <ul class="list-group">
+                        @foreach (var prog in Model.StudyTimes)
+                        {
+                            <li class="list-group-item">
+                                @prog.Key - @prog.Value
+                            </li>
+                        }
+
+                        @if (Request.IsAuthenticated)
+                        {
+                            if (User.ApplicationUserType() == (int)UserTypes.Staff)
+                            {
+                                <li class="list-group-item text-center">
+                                    <a href="#">Add Study Time</a>
+                                </li>
+                            }
+                        }
+
+                    </ul>
+
+                </div>*@
+
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <span>Specialisation</span>
+                    @if (Model.Program.Specialisations.Any() && Model.Program.SpecialisationLevel != null)
+                    {
+                        if (Model.Program.SpecialisationLevel > 0)
+                        {
+                            <br />
+                            <span>
+                                (Year of Specialisation: @Model.Program.SpecialisationLevel)
+                            </span>
+                        }
+                    }
+                </div>
+                <ul class="list-group">
+                    @if (Model.Program.Specialisations.Any())
+                    {
+                        foreach (var prog in Model.Program.Specialisations)
+                        {
+                            <li class="list-group-item">
+                                @Html.ActionLink(@prog.SpecialisationCore.Name, "ViewSpecialisation", "Program", new { id = prog.Id }, new { @class = "" })
+                            </li>
+                        }
+                    }
+                    else
+                    {
+                        <li class=" list-group-item text">No Specialisations</li>
+                    }
+
+                    @if (Request.IsAuthenticated)
+                    {
+                        if (User.ApplicationUserType() == (int)UserTypes.Staff)
+                        {
+                    @*<li class="list-group-item text-center">
+                            <a href="#">Add Specialisation</a>
+                        </li>*@
+                        }
+                    }
+
+                </ul>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="row">
+        <label class="control-label col-xs-12 col-sm-2">Academic Year :</label>
+        <select id="drdAcademicYrId" class="control col-xs-12 col-sm-10">
+            @{
+                int counter = 0;
+                int sizeAcYrs = Model.AcademicYears.Count;
+            }
+            @foreach (var yr in Model.AcademicYears)
+            {
+                if (counter == sizeAcYrs - 1)
+                {
+                    <option value="@yr.Value" selected="selected">@yr.Text</option>
+                }
+                else
+                {
+                    <option value="@yr.Value">@yr.Text</option>
+                }
+
+                counter++;
+            }
+        </select>
+    </div>
+
+    <div class="tabs bodytext noborder borderedTabs">
+
+        <ul class="nav">
+            @for (var i = 1; i <= Model.Program.ProgramCore.MinimumDuration; i++)
+            {
+                <li><a role="tab" data-toggle="tab" href="#tab-courses-body-@i">Year @i</a></li>
+            }
+        </ul>
+
+        @for (var i = 1; i <= Model.Program.ProgramCore.MinimumDuration; i++)
+        {
+
+            <div id="tab-courses-body-@i" class="tab-pane semProgTabs">
+                <div class="col-md-12">
+                    @for (var j = 1; j <= 2; j++)
+                    {
+                        <div class="panel ">
+                            <div class="panel-heading nopadding">
+                                <p class="maroonHeader">Semester @j</p>
+                            </div>
+                            <div class="panel-body nopadding">
+                                @Html.Partial("Display/_ProgramCourses",
+                                    new CoursesListView()
+                                    {
+                                        Courses = Model.Program.Courses.Where(x => x.SemesterLevel.Level == i && x.SemesterLevel.SemesterSession == j),
+                                        ProgramId = Model.Program.Id,
+                                        SpecialisationId = 0,
+                                        Year = i,
+                                        Semester = j
+                                    })
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                
+                <div class="clearfix"></div>
+            </div>
+        }
+    </div>
+</div>

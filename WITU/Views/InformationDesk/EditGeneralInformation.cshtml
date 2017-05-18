@@ -1,0 +1,62 @@
+﻿@using System.Web.Configuration
+@using WITU.Utils
+@model WITU.Core.Model.GeneralInformation
+
+@{
+    ViewBag.Title = "Edit General Information";
+    Layout = "~/Views/Shared/_LayoutStaff.cshtml";
+}
+
+
+<div class="">
+    <h2 class="blueHeader">Edit General Information - @Model.Title</h2>
+
+    @using (Html.BeginForm("EditGeneralInformation", "InformationDesk", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post,
+        new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
+    {
+        <p>
+            @Html.ValidationSummary(false)
+        </p>
+
+        <div class="form-group">
+            <span class="col-md-2 control-label">Brief Description</span>
+            <div class="col-md-10">
+                @Html.TextAreaFor(m => m.ShortDescription, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <span class="col-md-2 control-label">Change Photo</span>
+            <div class="col-md-6">
+                @Html.TextBoxFor(x => x.UploadImage, new { @class = "", @type = "file" })
+            </div>
+            @if (Model.DefaultImageFilelName != null)
+            {
+                <div class="col-md-4">
+                    <span>Current Photo:</span>
+                    <br />
+                    <img class="img img-responsive" src="@Url.Content(WebConfigurationManager.AppSettings["InformationDeskResourcesUrl"] + @Model.DefaultImageFilelName)" />
+                </div>
+            }
+        </div>
+
+        <div class="">
+            <br/>
+            <span class="greyHeader">Details</span>
+            @Html.TextAreaFor(m => m.Content, new { @class = "tinymce-textarea" })
+        </div>
+        <div class="clearfix"></div>
+        <br />
+        <div class="pull-right">
+            <input type="submit" value="Save" class="btn saveBtn" />
+            <input type="button" value="Cancel" 
+                onclick="javascript: cancelSubmission('@Url.Action("GeneralInformation", "InformationDesk", new {id = Model.Id})');" class="btn delBtn" />
+        </div>
+        <div class="clearfix"></div>
+        <br />
+
+        @Html.HiddenFor(x => x.Title)
+        @Html.HiddenFor(x => x.DefaultImageFilelName)
+    }
+</div>
+

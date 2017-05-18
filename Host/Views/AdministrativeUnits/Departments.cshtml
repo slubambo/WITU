@@ -1,0 +1,62 @@
+﻿@using ARMSv2.Core.Model
+@model IEnumerable<ARMSv2.Models.DepartmentListView>  
+@using ARMSv2.Utils
+@using ARMSv2.Models.UserManagement
+@{ var sessionDetails = (SessionUserManagementDetails)HttpContext.Current.Session["LoggedInUserRoles"]; }
+@{
+    ViewBag.Title = "Departments";
+}
+<div class="">
+    <div>
+        <h2 class="blueHeader">Departments</h2>
+    </div>        
+    @if (Request.IsAuthenticated)
+    {
+        if (User.ApplicationUserType() == (int) UserTypes.Staff)
+        {
+            if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) ARMSv2.Models.ServiceDetail.Department
+                                                                                    && (x.Role.CanCreate == true || x.Role.CanUpdate == true || x.Role.CanDelete == true)))
+            {
+                <div class="row">
+                            
+                    @Html.ActionLink("Add New Department", "AddOrEditDepartmentCore", "AdministrativeUnits", new {id = 0}, new {@class = "btn saveBtn"})
+                </div>
+            }
+        }
+    }
+    <br/>
+    <div>
+        <table class="table dataTable">
+            <thead>
+                <tr>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Faculty
+                    </th>
+                    <th>Campuses</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var departmentCore in Model)
+                {
+                    <tr>
+                        <td title="Click to View the Department">
+                            @Html.ActionLink(departmentCore.DepartmentCoreDetails.Name, "ViewDepartmentCore", "AdministrativeUnits", new { id = departmentCore.DepartmentCoreDetails.Id }, null)
+
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => departmentCore.DepartmentCoreDetails.Faculty)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => departmentCore.DepartmentCoreDetails.Campus)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+    </div>
+
+</div>

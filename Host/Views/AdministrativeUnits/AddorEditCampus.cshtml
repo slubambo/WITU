@@ -1,0 +1,90 @@
+﻿@model ARMSv2.Models.AdminUnits.EditCampus
+
+@{
+    ViewBag.Title = "AddorEditCampus";
+   // Layout = "~/Views/Shared/_LayoutStaff.cshtml";
+}
+
+@{ var pageHeading = Model.Id == 0 ? "Add Campus" : "Edit Campus";}
+<h2 class="greyHeader">@pageHeading  </h2>
+
+@using (Html.BeginForm("AddorEditCampus", "AdministrativeUnits", FormMethod.Post, new {@class = "form", @id = "add-campus-form"})) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <hr/>
+        @Html.ValidationSummary(true)
+        
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, new { @class = "control-label col-md-3" })
+            <div class="col-md-9">
+                @Html.TextBoxFor(model => model.Name, new { autocomplete = "off" })
+                @Html.ValidationMessageFor(model => model.Name)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Code, new { @class = "control-label col-md-3" })
+            <div class="col-md-9">
+                @Html.TextBoxFor(model => model.Code, new { autocomplete = "off" })
+                @Html.ValidationMessageFor(model => model.Code)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, new { @class = "control-label col-md-3" })
+            <div class="col-md-9">
+                @Html.TextAreaFor(model => model.Description)
+                @Html.ValidationMessageFor(model => model.Description)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ShortName, new { @class = "control-label col-md-3" })
+            <div class="col-md-9">
+                @Html.TextBoxFor(model => model.ShortName, new { autocomplete = "off" })
+                @Html.ValidationMessageFor(model => model.ShortName)
+            </div>
+        </div>
+        
+        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.ContactOwnerId)
+
+        <div class="form-group">
+            <div class="col-md-3"></div>
+            <div class="col-md-9">
+                @if (Model.Id == 0)
+{
+    <div class="noMarginCol">
+        <input type="submit" value="Create" class="btn saveBtn" />
+        <input type="button" value="Cancel"
+               onclick="javascript: cancelSubmission('@Url.Action("Campuses", "AdministrativeUnits", null)');" class="btn delBtn" />
+    </div>
+
+                                    <div class="clearfix"></div>
+                    
+                    <br />
+                    
+}
+                else
+                {
+                   <div class="pull-right">
+                        <input type="submit" value="Update" class="btn saveBtn" />
+                        <input type="button" value="Cancel"
+                               onclick="javascript: cancelSubmission('@Url.Action("ViewCampus", "AdministrativeUnits", @Model.Id)');" class="btn delBtn" />
+                    </div>
+                    
+                    <div class="clearfix"></div>
+                    <br />
+                    
+                }
+            </div>
+            
+        </div>
+    </div>
+}
+
+<div class="backLink">
+    @Html.ActionLink("Back to List of Campuses", "Campuses")
+</div>

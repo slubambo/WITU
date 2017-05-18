@@ -1,0 +1,93 @@
+﻿@model WITU.Models.widgets.EntryYearSemesterProgramSelectItem
+
+@Html.EditorFor(m => m.ProgramSelectItem)
+
+@Html.HiddenFor(m => m.IncludeSemester)
+
+<div class="form-group col-md-12">
+    @Html.LabelFor(m => m.Year, new { @class = "col-md-4 control-label" })
+    <div class="col-md-8">
+        @Html.DropDownWithModelSelectable(m => m.Year, Model.YearOptions, Model.ProgramSelectItem.AdministrativeSelectItem.DefaultFirstItem,
+            new { @class = "form-control drpdwn-campus-change drpdwn-faculty-change drpdwn-department-change drpdwn-program-change drpdwn-call-course-change", id = "drpdwn-year" })
+    </div>
+</div>
+
+@if (Model.IncludeSemester)
+{
+    <div class="form-group col-md-12">
+        @Html.LabelFor(m => m.Semester, new { @class = "col-md-4 control-label" })
+        <div class="col-md-8">
+            @Html.DropDownWithModelSelectable(m => m.Semester, Model.YearOptions, Model.ProgramSelectItem.AdministrativeSelectItem.DefaultFirstItem,
+                new { @class = "form-control drpdwn-campus-change drpdwn-faculty-change drpdwn-department-change drpdwn-program-change drpdwn-call-course-change", id = "drpdwn-semester" })
+        </div>
+    </div>
+}
+
+<script>
+
+    $(document).ready(function() {
+        if ($('#drpdwn-program')) {
+            $('#drpdwn-program').change(function () {
+                //whenever the program changes, we need to pick the year and present it...
+                var programId = $("#drpdwn-program :selected").val();
+
+                onProgramYearSelected(programId);
+
+                if ($('#drpdwn-semester')) {
+                    loadSemesters(programId); //loadin semester details..
+                }
+
+            });
+        }
+
+        var programId = '@Model.ProgramSelectItem.ProgramId';
+        if (programId > 0) {
+            var yearSelected = '@Model.Year';
+            var semeseterSelected = '@Model.Semester';
+
+            onProgramYearSelected(programId, yearSelected);
+            loadSemesters(programId, semeseterSelected);
+        }
+    });
+
+    function onProgramYearSelected(programId, yearSelected) {
+        $("#drpdwn-year").empty();
+
+        $('#drpdwn-year').append($('<option></option>').val('@Model.ProgramSelectItem.AdministrativeSelectItem.DefaultFirstItem.Value')
+            .html('@Model.ProgramSelectItem.AdministrativeSelectItem.DefaultFirstItem.Text'));
+
+        $.get(baseUrl + "Api/UtilsApi/ProgramMinimumDuration/" + programId, function (data) {
+            var noOfYears = parseInt(data);
+
+            for (var i = 1; i <= noOfYears; i++) {
+                $('#drpdwn-year').append($('<option></option>').val(i).html("Year " + i));
+            }
+
+            if (yearSelected != undefined) {
+                $('#drpdwn-year').val(yearSelected);
+            }
+
+        });
+    }
+
+    function loadSemesters(programId, semesterId) {
+
+        $("#drpdwn-semester").empty();
+
+        $('#drpdwn-semester').append($('<option></option>').val('@Model.ProgramSelectItem.AdministrativeSelectItem.DefaultFirstItem.Value')
+            .html('@Model.ProgramSelectItem.AdministrativeSelectItem.DefaultFirstItem.Text'));
+
+        if (programId != 0){
+            //semester details...
+            for (var i = 1; i <= 2; i++) {
+                $('#drpdwn-semester').append($('<option></option>').val(i).html("Semester " + i));
+            }
+
+            //setting the semester
+            if (semesterId != undefined) {
+                $('#drpdwn-semester').val(semesterId);
+            }
+        }
+    }
+
+</script>

@@ -1,0 +1,63 @@
+﻿@using ARMSv2.Core.Model
+@using ARMSv2.Models
+@using ARMSv2.Utils
+@using ARMSv2.Models.UserManagement
+@{ var sessionDetails = (SessionUserManagementDetails)HttpContext.Current.Session["LoggedInUserRoles"]; }
+@model IEnumerable<ARMSv2.Models.ProgramModel>
+
+<div>
+    @if (User.ApplicationUserType() == (int)UserTypes.Staff)
+    {
+        if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int)ServiceDetail.Programme
+                                                                                         && (x.Role.CanCreate || x.Role.CanUpdate || x.Role.CanDelete)))
+        {
+            <div class="addProgBtn">
+                @Html.ActionLink("Add Program", "EditProgram", new { campusId = Model.FirstOrDefault().Program.Campus.Id, controller = "Program" }, new { @class = "saveBtn btn-primary" })
+            </div>
+        }
+    }
+
+    <div class="table-responsive ">
+        <table class="table dataTable tbl-campus-programs">
+            <thead>
+                <tr>
+                    <th>Program Name</th>
+                    <th>Faculty</th>
+                    <th>
+                        <select id="drdTuitition" class="col-xs-12">
+                            <option value="0">Study Times(UGX Tuition)</option>
+                            <option value="1">Study Times(USD Tuition)</option>
+                        </select>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var prog in Model)
+                {
+                    <tr>
+                        <td>@Html.ActionLink(prog.Program.ProgramCore.Name, "View", new { id = @prog.Program.Id, controller = "Program" })</td>
+                        <td>@Html.ActionLink(prog.Program.Faculty.FacultyCore.Name, "View", new { id = @prog.Program.Id, controller = "Program" })</td>
+                        <td>
+                            @for (var i = 0; i < @prog.ProgramStudyTimeSummaries.Count; i++)
+                            {
+                                <label>@prog.ProgramStudyTimeSummaries[i].StudyTime</label>
+                                @*<label>(</label>
+                                <label class="tuition-ugx">@prog.ProgramStudyTimeSummaries[i].Tuition</label>
+                                <label class="tuition-dollar">@prog.ProgramStudyTimeSummaries[i].DollarTuition</label>
+                                <label>)</label>*@
+                                if (i != prog.ProgramStudyTimeSummaries.Count - 1)
+                                {
+                                    <label>,</label>
+                                }
+                            }
+                            @*@prog.StudyTimesSummary*@
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="clearfix"></div>
+    <br/>
+    <br/>
+</div>

@@ -1,0 +1,55 @@
+﻿@using ARMSv2.Models
+@using ARMSv2.Core.Model
+@model ARMSv2.Core.Model.Specialisation
+
+@{
+    ViewBag.Title = "ViewSpecialisation";
+}
+
+<div>
+    <h2>
+        @Model.Program.ProgramCore.Name (@Model.SpecialisationCore.Name)
+      
+    </h2>
+    <hr />
+    <div>
+        <h4>Courses</h4>
+        
+        <div class="tabs">
+            <ul class="nav">
+                @for (var i = 1; i <= Model.Program.ProgramCore.MinimumDuration; i++)
+                {
+                    <li><a role="tab" data-toggle="tab" href="#tab-courses-body-@i">Year @i</a></li>
+                }
+            </ul>
+            
+            @for (var i = 1; i <= Model.Program.ProgramCore.MinimumDuration; i++)
+            {
+
+                <div id="tab-courses-body-@i" class="tab-pane">
+                    @for (var j = 1; j <= 2; j++)
+                    {
+                        <div class="panel panel-success">
+                            <div class="panel-heading">
+                                <h3>Semester @j</h3>
+                            </div>
+                            <div class="panel-body">
+                                @Html.Partial("Display/_ProgramCourses",
+                                    new CoursesListView()
+                                    {
+                                        Courses = Model.Program.Courses.Where(x => x.SemesterLevel.Level == i && x.SemesterLevel.SemesterSession == j && (x.Specialisation == null || x.Specialisation.Id == Model.Id)),
+                                        ProgramId = Model.Program.Id,
+                                        SpecialisationId = Model.Id,
+                                        Year = i,
+                                        Semester = j,
+                                        //Enable Add Course if Specialisation within Program doesn't have graduates
+                                        EnableAddCourse = Model.Program.Students.Where(st => st.Specialisation != null && st.Specialisation.Id == Model.Id).All(st => st.StudentStatus != StudentStatus.Graduated) 
+                                    })
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>

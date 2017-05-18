@@ -1,0 +1,83 @@
+﻿
+@using WITU.Core.Model
+@model WITU.Models.Result.UpdateStudentStatus
+           
+@{
+    ViewBag.Title = "Update Student Status";
+}
+
+<div>
+    
+    <hgroup>
+        @if (Model.IsActivation)
+        {
+            <h3>Student Re-Activation</h3>
+            <h3>@Model.Student.Person.FullName - @Model.Student.RegistrationNumber</h3>
+        }
+        else
+        {
+            <h2>Re-Activate Student</h2>
+        }
+        
+        <h4>Current Status: @Html.DisplayEnumFor(m => m.Student.StudentStatus, typeof(StudentStatus))</h4>
+    </hgroup>
+    
+    <hr />
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+
+            @Html.ValidationSummary(true)
+            @Html.HiddenFor(m => m.StudentId)
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.AcademicYearId, new { @class = "control-label col-md-4" })
+                <div class="col-md-8">
+                    @Html.DropDownListFor(model => model.AcademicYearId, Model.AcademicYearOptions, "-- Select Academic Year--", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.AcademicYearId)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.SemesterSession, new { @class = "control-label col-md-4" })
+                <div class="col-md-8">
+                    @Html.DropDownListFor(model => model.SemesterSession, Model.SemesterOptions, "-- Select Semester --", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.SemesterSession)
+                </div>
+            </div>
+
+            @if (!Model.IsActivation)
+            {
+                <div class="form-group">
+                    @Html.LabelFor(model => model.StudentStatus, new {@class = "control-label col-md-4"})
+                    <div class="col-md-8">
+                        @Html.DisplayEnumFor(model => model.StudentStatus, "-- Select Status --", Model.StatusOptions, new {@class = "form-control"})
+                        @Html.ValidationMessageFor(model => model.StudentStatus)
+                    </div>
+                </div>
+            }
+            else
+            {
+                @Html.HiddenFor(x => x.StudentStatus, new {value = StudentStatus.NormalProgress })
+            }
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Comment, new { @class = "control-label col-md-4" })
+                <div class="col-md-8">
+                    @Html.TextAreaFor(model => model.Comment, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Comment)
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-4 col-md-8">
+                    <input type="submit" value="Save" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+    }
+
+</div>

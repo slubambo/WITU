@@ -1,0 +1,101 @@
+﻿@model ARMSv2.Models.Result.EditStudentCourse
+@{
+    Layout = null;
+
+}
+@*<script src="~/Scripts/base/jquery.unobtrusive-ajax.js"></script>
+<script src="~/Scripts/base/jquery.validate.js"></script>
+<script src="~/Scripts/base/jquery.validate.unobtrusive.js"></script>*@
+
+<div>
+    <p>@Model.ProgramName</p>
+</div>
+
+@if (Model.DeniableEditableStatuses.Contains(Model.ResultStatus))
+ {
+     <div>
+         <p class="alert alert-danger well-sm">
+             <span>
+                 <span class="glyphicon glyphicon-warning-sign"></span>
+                 The Result cannot be edited. It has either been removed or is pending removal.
+             </span>
+         </p>
+     </div>
+ }
+ else
+ {
+     <div>
+    @using (Ajax.BeginForm("EditStudentCourse", "Result",
+        new AjaxOptions()
+        {
+            OnBegin = "EditStudentCourseOnBegin",
+            LoadingElementId = "sp-loading-icon",
+            OnComplete = "EditStudentCourseOnComplete",
+            HttpMethod = "PUT",
+            OnSuccess = "EditStudentCourseOnSuccess",
+            OnFailure = "EditStudentCourseOnFailure"
+        },
+        new { @class = "form form-horizontal" }))
+    {
+        @Html.HiddenFor(x => x.CourseTypeEditable)
+        @Html.HiddenFor(x => x.StudentCourseId)
+        @Html.HiddenFor(x => x.ResultStatus)
+        @Html.HiddenFor(x => x.ProgramName)
+
+        @Html.ValidationSummary(false)
+
+        <div class="alert alert-success well-sm hide" id="dv-edit-student-course-success">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            <span>
+                <span class="glyphicon glyphicon-saved"></span>
+                <span class="" id="sp-edit-student-course-success">
+                    Changes successfully saved.
+                </span>
+            </span>
+        </div>
+
+        if (Model.CourseTypeEditable)
+        {
+            <div class="form-group">
+                @Html.LabelFor(x => x.CourseType, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-9">
+                    @Html.DisplayEnumFor(x => x.CourseType, "None", Model.CourseTypeOptions.ToList(), new { @class = "form-control" })
+                </div>
+            </div>
+        }
+        else
+        {
+            @Html.HiddenFor(x => x.CourseType)
+        }
+        <div class="form-group">
+            @Html.LabelFor(x => x.ContinousAssessment, new { @class = "col-sm-3 control-label" })
+            <div class="col-sm-9">
+                @Html.TextBoxFor(x => x.ContinousAssessment, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(x => x.ExaminationMark, new { @class = "col-sm-3 control-label" })
+            <div class="col-sm-9">
+                @Html.TextBoxFor(x => x.ExaminationMark, new { @class = "form-control" })
+            </div>
+        </div>
+        
+        if (Model.EditablePublishableStatuses.Contains(Model.ResultStatus))
+         {
+             <div class="form-group">
+                @Html.LabelFor(x => x.Reason, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-9">
+                    @Html.TextAreaFor(x => x.Reason, new { @class = "form-control" })
+                </div>
+            </div>
+         }
+
+        <button type="submit" class="btn saveBtn" id="btn-edit-student-course">
+            Save
+        </button>
+        <span id="sp-loading-icon" class="fa fa-2x fa-spinner fa-spin hide"></span>
+    }
+</div>
+ }
+

@@ -1,0 +1,57 @@
+﻿@model WITU.Models.Result.PublishStudentCourses
+           
+@{
+    ViewBag.Title = "Publish Student Courses";
+}
+
+<div>
+    <hgroup>
+        <h2 class="blueHeader">Publishing Student Course Results</h2>
+        <h3>@Model.Program.ProgramCore.Name - @Model.Program.StartAcademicYear.Name</h3>
+        @if (Model.Specialisation != null)
+        {
+            <h4>@Model.Specialisation.SpecialisationCore.Name</h4>
+        }
+    </hgroup>
+    
+    <div class="pull-right voffset1 btn-group btn-group-sm">
+        <button id="btn-publish" class="btn btn-info btn-sm voffset1 btn-multiselect">
+            <span class="fa fa-pencil-square-o"></span>
+            Publish Results
+        </button>
+        <input id="in-publish-semester-id" value="@Model.Semester.Id" class="hide" />
+    </div>
+    
+    <div>
+        @foreach (var course in Model.Courses.OrderBy(x => x.Name))
+        {
+            <h4>@course.Name - @course.Code</h4>
+
+            <table class="table tbl-publish-sc">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" autocomplete="off" value="allChecked" class="pull-left tbl-chbx-publish-sc-all" id="tbl-chbx-publish-sc-@course.Id" /></th>
+                        <th>Name</th>
+                        <th>Registration Number</th>
+                        <th>Continous Assessment</th>
+                        <th>Examination Mark</th>
+                        <th>Final Mark</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var sc in Model.StudentCourses.Where(x => x.Course.Id == course.Id))
+                    {
+                        <tr>
+                            <td><input type="checkbox" value="@sc.Id" autocomplete="off" onchange="javascript: publishCheckBoxChange(this);" class="tbl-chbx-publish-sc pull-left" /></td>
+                            <td>@(sc.Student != null ? @sc.Student.Person.FullName : "")</td>
+                            <td>@(sc.Student != null ? @sc.Student.RegistrationNumber : "")</td>
+                            <td>@sc.ContinousAssessment</td>
+                            <td>@sc.ExamMark</td>
+                            <td>@sc.FinalMark</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>

@@ -1,0 +1,431 @@
+﻿@using System.Activities.Expressions
+@using WITU.Core.Model
+@using WITU.Utils
+@using WITU.Core.Model
+@model WITU.Models.RegistrationView
+@{
+    ViewBag.Title = "Confirm Courses - Registration";
+}
+
+@if (Model.ConfirmationStatus == (decimal)ConfirmationStatus.Registration)
+{
+    using (Html.BeginForm("ConfirmedRegister", "Registration", FormMethod.Post))
+    {
+        <div class="form-horizontal noborder">
+            <h2 class="blueHeader">@ViewBag.headline</h2>
+            <p>These are the courses you have chosen. Click <b>Back</b> to make changes and <b> Submit</b> to register.</p>
+        </div>
+
+        <table class="table" id="">
+            <thead>
+
+                <tr>
+                    <th class="fa fa-inbox hidden">
+
+                    </th>
+                    <th>
+                        Course Code
+                    </th>
+                    <th>
+                        Course Name
+                    </th>
+                    <th>
+                        Credit Units
+                    </th>
+                    <th>
+                        Course Type
+                    </th>
+                    @*<th>
+                        Year
+                    </th>
+                    <th>Semester</th>*@
+
+                </tr>
+
+            </thead>
+            <tbody>
+                @if (Model.CoursesToRegister != null)
+                {
+                    foreach (var m in Model.CoursesToRegister)
+                    {
+                        <tr>
+                            <td class="hidden">
+                                <input name="selectedCourses" type="checkbox" onchange="warmonExtraCreditUnits(@m.CreditUnits, @m.Id)" class="course_checked_@m.Id" value="@m.Id" checked="checked" />
+                            </td>
+
+                            <td>
+                                @m.Code
+                            </td>
+
+
+                            <td>
+                                @m.Name
+                            </td>
+                            <td class="creditUnitVal">
+                                @m.CreditUnits
+                            </td>
+                            <td>
+                                @if (m.CourseType == CourseType.Core)
+                                {
+                                    <p>Core</p>
+                                }
+                                @if (m.CourseType == CourseType.Elective)
+                                {
+                                    <p>Elective</p>
+                                }
+                                @if (m.CourseType == CourseType.Audited)
+                                {
+                                    <p>Audited</p>
+                                }
+
+                            </td>
+                            @*<td>
+                                @if (m.SemesterLevel != null)
+                                {
+                                    @m.SemesterLevel.Level
+                                   
+                                }
+                            </td>
+                            <td>
+                                @if (m.SemesterLevel != null)
+                                {
+                                    @m.SemesterLevel.SemesterSession
+                                }
+                            </td>*@
+
+                        </tr>
+                    }
+
+                }
+            </tbody>
+        </table>
+        @Html.HiddenFor(model => model.StudentId)
+        @Html.HiddenFor(model => model.ConfirmationStatus)
+
+    <div class="pull-right ">
+
+        <input type="submit" value="Submit" class="btn saveBtn" />
+
+       <input type="button" value="Back"
+                   onclick="javascript: cancelSubmission('@Url.Action("SubmitCreditTransfer", "Registration" )'); " class=" btn delbtn" />
+
+        <div class="clearfix"> </div>
+    </div>
+    }
+}
+
+
+@if (Model.ConfirmationStatus == (decimal)ConfirmationStatus.Exemption)
+{
+    using (Html.BeginForm("SubmitExemption", "Registration", FormMethod.Post))
+    {
+        <div class="form-horizontal noborder">
+            <h2 class="blueHeader">These are the courses you have chosen for Exemption</h2>
+        </div>
+
+        <table class="table" id="">
+            <thead>
+
+                <tr>
+                    <th class="fa fa-inbox hidden">
+
+                    </th>
+                    <th>
+                        Course Code
+                    </th>
+                    <th>
+                        Course Name
+                    </th>
+                    <th>
+                        Credit Units
+                    </th>
+                    <th>
+                        Course Type
+                    </th>
+                    <th>
+                        Year
+                    </th>
+                    <th>Semester</th>
+
+                </tr>
+
+            </thead>
+            <tbody>
+                @if (Model.CoursesList.Any())
+                {
+                    foreach (var k in Model.CoursesList)
+                    {
+                        <tr>
+                            <td class="hidden">
+                                <input name="selectedCourses" type="checkbox" autocomplete="off" class="course_checked_@k.StudentCourseId" value="@k.StudentCourseId" checked="checked" />
+                            </td>
+
+                            <td>
+                                @k.Code
+                            </td>
+
+
+                            <td>
+                                @k.Name
+                            </td>
+                            <td class="creditUnitVal">
+                                @k.CreditUnits
+                            </td>
+                            <td>
+                                @if (k.CourseType == CourseType.Core)
+                                {
+                                    <p>Core</p>
+                                }
+                                @if (k.CourseType == CourseType.Elective)
+                                {
+                                    <p>Elective</p>
+                                }
+                                @if (k.CourseType == CourseType.Audited)
+                                {
+                                    <p>Audited</p>
+                                }
+
+                            </td>
+                            <td>
+                                @k.Level
+                            </td>
+                            <td>
+                               @k.Session
+                            </td>
+
+                        </tr>
+                    }
+
+                }
+            </tbody>
+        </table>
+        @Html.HiddenFor(model => model.StudentId)
+        @Html.HiddenFor(model => model.ConfirmationStatus)
+
+        <div class="pull-right ">
+            
+            
+            <input type="submit" value="Submit Exemptions" class="btn saveBtn" />
+
+          
+
+            <input type="button" value="Cancel"
+                   onclick="javascript: cancelSubmission('@Url.Action("Report", "Registration" )');" class="btn delbtn" />
+
+            <div class="clearfix"> </div>
+        </div>
+    }
+}
+
+@if (Model.ConfirmationStatus == (decimal)ConfirmationStatus.Audit)
+{
+    using (Html.BeginForm("SubmitCoursesToAudit", "Registration", FormMethod.Post))
+    {
+        <div class="form-horizontal noborder">
+            <h2 class="blueHeader">@ViewBag.headline</h2>
+            <p><b>Courses to Audit From - @Model.ProgramName</b></p>
+        </div>
+
+        <table class="table" id="">
+            <thead>
+
+                <tr>
+                    <th class="fa fa-inbox hidden">
+
+                    </th>
+                    <th>
+                        Course Code
+                    </th>
+                    <th>
+                        Course Name
+                    </th>
+                    <th>
+                        Credit Units
+                    </th>
+                    <th>
+                        Course Type
+                    </th>
+                    <th>
+                        Year 
+                    </th>
+                    <th>Semester</th>
+                    <th>Remove</th>
+
+                </tr>
+
+            </thead>
+            <tbody>
+                @if (Model.CoursesList != null)
+                {
+                    foreach (var m in Model.CoursesList)
+                    {
+                        <tr>
+                            <td class="hidden">
+                                <input name="selectedCourses" type="checkbox" autocomplete="off" class="course_checked_@m.Id" value="@m.Id" checked="checked" />
+                            </td>
+
+                            <td>
+                                @m.Code
+                            </td>
+
+
+                            <td>
+                                @m.Name
+                            </td>
+                            <td class="creditUnitVal">
+                                @m.CreditUnits
+                            </td>
+                            <td>
+                                @if (m.CourseType == CourseType.Core)
+                                {
+                                    <p>Core</p>
+                                }
+                                @if (m.CourseType == CourseType.Elective)
+                                {
+                                    <p>Elective</p>
+                                }
+                                @if (m.CourseType == CourseType.Audited)
+                                {
+                                    <p>Audited</p>
+                                }
+
+                            </td>
+                            <td>
+                                @m.Level 
+                            </td>
+                            <td>
+                                @m.Session
+                            </td>
+                            <td>
+                                <button class="btn removeCourse" id="@m.Id">Remove</button>
+                            </td>
+
+                        </tr>
+                    }
+
+                }
+            </tbody>
+        </table>
+        @Html.HiddenFor(model => model.StudentId)
+        @Html.HiddenFor(model => model.ConfirmationStatus)
+
+        <div class="pull-right ">
+
+            <input type="submit" value="Audit Courses" class="btn saveBtn" />
+
+
+            <input type="button" value="Cancel"
+                   onclick="javascript: cancelSubmission('@Url.Action("register", "Registration" )'); " class=" btn delbtn" />
+
+            <div class="clearfix"> </div>
+        </div>
+    }
+}
+
+@if (Model.ConfirmationStatus == (decimal)ConfirmationStatus.CreditTransfer)
+{
+    using (Html.BeginForm("SubmitCreditTransfer", "Registration", FormMethod.Post))
+    {
+        <div class="form-horizontal noborder">
+            <h2 class="blueHeader">@ViewBag.headline</h2>
+        </div>
+
+        <table class="table" id="">
+            <thead>
+
+                <tr>
+                    <th class="fa fa-inbox hidden">
+
+                    </th>
+                    <th>
+                        Course Code
+                    </th>
+                    <th>
+                        Course Name
+                    </th>
+                    <th>
+                        Credit Units
+                    </th>
+                    <th>
+                        Course Type
+                    </th>
+                    <th>
+                        Year & Semester
+                    </th>
+
+                </tr>
+
+            </thead>
+            <tbody>
+                @if (Model.CoursesList != null)
+                {
+                    foreach (var m in Model.CoursesList)
+                    {
+                        <tr>
+                            <td class="hidden">
+                                <input name="selectedCourses" type="checkbox" autocomplete="off" class="course_checked_@m.Id" value="@m.Id" checked="checked" />
+                            </td>
+
+                            <td>
+                                @m.Code
+                            </td>
+
+
+                            <td>
+                                @m.Name
+                            </td>
+                            <td class="creditUnitVal">
+                                @m.CreditUnits
+                            </td>
+                            <td>
+                                @if (m.CourseType == CourseType.Core)
+                                {
+                                    <p>Core</p>
+                                }
+                                @if (m.CourseType == CourseType.Elective)
+                                {
+                                    <p>Elective</p>
+                                }
+                                @if (m.CourseType == CourseType.Audited)
+                                {
+                                    <p>Audited</p>
+                                }
+
+                            </td>
+                            <td>
+                                Year: @m.Level Semester: @m.Session
+                            </td>
+
+                        </tr>
+                    }
+
+                }
+            </tbody>
+        </table>
+        @Html.HiddenFor(model => model.StudentId)
+        @Html.HiddenFor(model => model.ConfirmationStatus)
+
+        <div class="pull-right ">
+            
+                <input type="submit" value="Submit" class="btn saveBtn" />
+
+       
+          <input type="button" value="Cancel"
+                   onclick="javascript: cancelSubmission('@Url.Action("SubmitCreditTransfer", "Registration" )'); " class=" btn delbtn" />
+
+            <div class="clearfix"> </div>
+        </div>
+    }
+}
+@*@if (Request.UrlReferrer != null)
+{
+    <a class="bottomNav" onclick="history.go(-1); return false;" href="#">Back</a><br />
+}*@
+    
+<script>
+    $(document).ready(function() {
+        $(".removeCourse").on('click', function () {
+            $(this).parent().parent().remove();
+        });
+    });
+</script>

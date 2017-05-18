@@ -1,0 +1,36 @@
+﻿@model IEnumerable<WITU.Core.Model.ProgramCore>
+           
+<div>
+    <table class="table dataTable">
+        <thead>
+            <tr>
+                <th>Program</th>
+                <th>Locations</th>
+                <th>Minimum Duration</th>
+                <th>Maximum Duration</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var prog in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.ActionLink(prog.Name, "ProgramCore", "Program", new {id = prog.Id}, null)
+                    </td>
+                    <td>
+                        @foreach (var ap in prog.Programs@*.Where(x => x.IsAdmittion)*@)
+                        {
+                            <label>@ap.Campus.Name</label>
+                            if (ap.Id != prog.Programs.LastOrDefault().Id)
+                            {
+                                <label>,</label>
+                            }
+                        }
+                    </td>
+                    <td class="center">@prog.MinimumDuration</td>
+                    <td class="center">@prog.MaximumDuration</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

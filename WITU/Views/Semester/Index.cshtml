@@ -1,0 +1,33 @@
+﻿@using WITU.Utils
+@using WITU.Models.UserManagement
+@{
+    ViewBag.Title = "SemesterConfiguration";
+
+}
+@{ var sessionDetails = (SessionUserManagementDetails)HttpContext.Current.Session["LoggedInUserRoles"]; }
+
+<div class="profInfo tabs bodytext tabs-pilled noborder">
+    @if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int)WITU.Models.ServiceDetail.Semester
+                                                   && (x.Role.CanCreate == true)))
+    {
+        <div class="pull-right">
+            <a href="@Url.Action("AddorEdit", "Semester")" class="btn saveBtn">Add Semester</a>
+            <div class="clearfix"></div>
+        </div>
+    }
+    <br/>
+    <p class="blueHeader index-margin">Semester Configuration</p>
+    <ul class="nav nav-pills">
+        @*<li><a href="#tab-contact" role="tab" data-toggle="tab" class="btn">Semester Information</a></li>*@
+    </ul>
+    <div class="tab-content">
+        <div id="tab-prof" class="tab-pane active">
+            @Html.Partial("~/Views/Semester/Display/_ViewSemesterConfiguration.cshtml")
+
+        </div>
+        @*<div id="tab-contact" class="tab-pane">
+         
+        </div>*@
+    </div>
+
+</div>

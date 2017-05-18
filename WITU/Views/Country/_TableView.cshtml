@@ -1,0 +1,32 @@
+﻿@model IEnumerable<WITU.Models.TableView>
+           
+<table class="table dataTable" id="table-countries">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Code</th>
+            <th>Date Added</th>
+            @if (Model.Any(x => x.Id > 0))
+            {
+                <th></th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var c in Model)
+        {
+            <tr>
+                <td>@c.Name</td>
+                <td>@c.Code</td>
+                <td>@c.CreatedOn</td>
+                @if (Model.Any(x => x.Id > 0))
+                {
+                    <td>
+                        @Html.ActionLink("Edit", "AddEditCountry", "Country", new {id = c.Id}, new {@class = "btn btn-primary", id="btn-add"})
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+

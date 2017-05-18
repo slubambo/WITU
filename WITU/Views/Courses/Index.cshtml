@@ -1,0 +1,64 @@
+﻿@using System.Activities.Expressions
+@using WITU.Core.Model
+@using WITU.Models.UserManagement
+@{ var sessionDetails = (SessionUserManagementDetails)HttpContext.Current.Session["LoggedInUserRoles"]; }
+@model WITU.Models.Courses.CoursesModel
+
+@{
+    ViewBag.Title = "WITU E-Learning Platform ";
+}
+
+<div>
+    <div class="tabs bodytext tabs-pilled noborder">
+        <ul class="nav nav-pills programUl">
+
+
+            @*@if (User.ApplicationUserType() == (int)UserTypes.Staff)
+            {*@
+                <li class="tab-header-all"><a href="#tab-div-all" role="tab" data-toggle="tab">All</a></li>
+            @*}*@
+
+
+            @foreach (Campus campus in Model.Campuses)
+            {
+                <li class="" id="tab-header-campus-@campus.Id"><a role="tab" data-togle="tab" href="#tab-div-campus-@campus.Id">@campus.Name</a></li>
+            }
+            
+        </ul>
+
+
+        @*@if (User.ApplicationUserType() == (int)UserTypes.Staff)
+    { *@
+            <div id="tab-div-all" class="tab-pane">
+
+                @*@if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int)ARMSv2.Models.ServiceDetail.Programme
+                                                                                         && (x.Role.CanCreate == true || x.Role.CanUpdate == true || x.Role.CanDelete == true)))
+                {
+                    <div class="row fright">
+                        @Html.ActionLink("Create Program", "EditProgramCore", null, new { @class = "saveBtn btn-primary" })
+                    </div>
+                @*}
+                <div class="clearfix"></div>
+                <br />
+                @*This was the old implementation, only program cores of active programs were shown*@
+                @*@if (Request.IsAuthenticated && User.ApplicationUserType() == (int)UserTypes.Staff)
+                {*@
+                    @Html.Partial("Display/_CourseCoreList", Model.AllCourseCores)
+                @*}
+                else
+                {*@
+                    @*@Html.Partial("Display/_CourseCoreList", Model.AllCourses.Select(x => x.Course.CourseCore).Distinct())*@
+                @*}*@
+
+            </div>
+        @*}*@
+
+
+        @foreach (var campus in Model.Campuses)
+        {
+            <div id="tab-div-campus-@campus.Id" class="tab-pane">
+                @Html.Partial("Display/_CourseTables", Model.AllCourses.Where(x => x.Course.Campus.Id == campus.Id))
+            </div>
+        }
+    </div>
+

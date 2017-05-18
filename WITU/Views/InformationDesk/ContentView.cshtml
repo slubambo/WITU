@@ -1,0 +1,98 @@
+﻿@using WITU.Models
+@using WITU.Core.Model
+@model WITU.Models.ContentView
+@using WITU.Utils
+@using WITU.Models.UserManagement
+@{ var sessionDetails = (SessionUserManagementDetails)HttpContext.Current.Session["LoggedInUserRoles"]; }
+
+@{
+    ViewBag.Title = Model.Title;
+}
+
+<div class="homeWrap homePages">
+
+    @if (Request.IsAuthenticated)
+    {
+        <div class="pull-right">
+            @if (Model.Type == InformationDeskType.GeneralInformation)
+            {
+                if (User.ApplicationUserType() == (int) UserTypes.Instructor)
+                {
+                    if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) WITU.Models.ServiceDetail.GeneralInformation
+                                                                                            && (x.Role.CanCreate == true || x.Role.CanUpdate == true || x.Role.CanDelete == true)))
+                    {
+                        @Html.ActionLink("Edit", "EditGeneralInformation", "InformationDesk", new {id = Model.Id}, new {@class = "btn saveBtn"})
+                    }
+                }
+                @Html.ActionLink("Attach Files", "UploadAttachment", "InformationDesk", new { id = Model.Id, type = AttachmentType.GeneralInformation }, new { @class = "btn delBtn" })
+                <div class="clearfix"></div>
+            }
+            else
+            {
+                if (User.ApplicationUserType() == (int) UserTypes.Instructor)
+                {
+                    if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) WITU.Models.ServiceDetail.GeneralInformation
+                                                                                            && (x.Role.CanCreate == true || x.Role.CanUpdate == true || x.Role.CanDelete == true)))
+                    {
+                        @Html.ActionLink("Edit", "EditInformationDesk", "InformationDesk", new {id = Model.Id}, new {@class = "btn saveBtn"})
+                    }
+                }
+
+            }
+        </div>
+    }
+    <h2 class="sectionHeader">@Model.Title</h2>
+    <div class="col-md-12 text-justify">
+        <div id="info-attached-files">
+            @Html.HiddenFor(x => Model.Id, new { id = "UploadFileId" })
+            @Html.HiddenFor(x => Model.Type, new { id = "UploadedFileType" })
+            <div id="info-attach-actual-files">
+                <!--Where the files shall be placed-->
+            </div>
+            <button class="linkBtn small btn-sm pull-left" onclick="javascript: AllAttachedFiles('@Model.Id', '@Model.Type');">
+               View All Attached Files <span class="fa fa-list"></span> 
+            </button> <div class="clearfix"></div>
+        </div>
+        <div class="pageImg">
+            @if (Model.ImageUrl != null)
+            {
+                <img src="@Url.Content(Model.ImageUrl)" class="img-responsive" />
+            }
+        </div>
+        
+        @Html.Raw(@Model.Content)
+    </div>
+    <div class="clearfix"></div>
+</div>
+
+
+<script type="x-jquery-tmpl" id="tmpl-uploaded-file-view">
+    <div class="info-file-view">
+        <a href="${Url}" target="_blank" title="Click to View File">
+           
+                {{if IsImage}}
+                <img class="img img-responsive text-center" src="${ThumbnailUrl}" />
+
+                {{else FileType == "pdf"}}
+                <span class="fa fa-file-pdf-o fa-align-center text-center"></span>
+
+                {{else FileType == "doc" || FileType == "docx"}}
+                <span class="fa fa-file-word-o fa-align-center text-center"></span>
+
+                {{else FileType == "xls" || FileType == "xlsx" }}
+                <span class="fa fa-file-excel-o fa-align-center text-center"></span>
+
+                {{else}}
+                    <span class="fa fa-file fa-align-center text-center"></span>
+                {{/if}}
+                    @*<label class="text-center text-info">${OriginalFileName}</label>*@
+          
+                <span> &nbsp;${FriendlyName}</span>
+                {{if AcademicYear > 0}}
+                    <span>(${AcademicYearName})</span>
+                {{/if}}
+                     
+        </a>    
+        
+    </div>
+</script>

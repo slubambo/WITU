@@ -1,0 +1,281 @@
+﻿@model WITU.Models.student.InteractiveStudentModel
+@{
+    ViewBag.Title = "Interactive Enrollment";
+}
+
+<h3 >Create Student Account</h3>
+<p class="greyTxt">Please fill in the form shown below in order to create an account for a Student.</p>
+
+@using (Html.BeginForm("InteractiveEnrollment", "Student", FormMethod.Post, new {enctype = "multipart/form-data", @class="interactive-student-form"}))
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="tabs bodytext tabs-pilled noborder">
+        <ul class="nav nav-pills programUl">
+            <li class="tab-header-personalinfo"><a href="#tab-div-personalinfo" role="tab" data-toggle="tab">Personal Information</a></li>
+            <li class="tab-header-academicinfo"><a href="#tab-div-academicinfo" role="tab" data-toggle="tab">Academic Information</a></li>
+            <li class="tab-header-contactinfo"><a href="#tab-div-contactinfo" role="tab" data-toggle="tab">Contact Information</a></li>
+        </ul>
+        <div>
+            @Html.Raw(Html.UnEncodedValidationSummary())
+        </div>
+        <div id="tab-div-personalinfo" class="tab-pane">
+        
+            
+            <div class="form-group col-md-12">
+                @Html.LabelFor(model => model.Title, "Title*", new {@class = "control-label col-md-3"})
+                <div class="col-md-9 progCoreInput">
+                    @Html.DropDownWithModelSelectable(m => m.Title,
+                        new List<SelectListItem>()
+                        {
+                            new SelectListItem() {Value = "Mr", Text = "Mr"},
+                            new SelectListItem() {Value = "Ms", Text = "Ms"},
+                            new SelectListItem() {Value = "Miss", Text = "Miss"},
+                            new SelectListItem() {Value = "Mrs", Text = "Mrs"},
+                            new SelectListItem() {Value = "Dr", Text = "Dr"},
+                            new SelectListItem() {Value = "Prof", Text = "Prof"},
+                            new SelectListItem() {Value = "Rev", Text = "Rev"},
+                            new SelectListItem() {Value = "Fr", Text = "Fr"}
+                        },
+                        new SelectListItem() {Text = "Select Title", Value = "empty"},
+                        new {@class = "form-control"})
+                </div>
+            </div>
+            <div class="form-group col-md-12">
+                @Html.LabelFor(model => model.Surname, new {@class = "control-label col-md-3"})
+                <div class="col-md-9 progCoreInput">
+                    @Html.TextBoxFor(model => model.Surname)
+                </div>
+            </div>
+            <div class="form-group col-md-12">
+                @Html.LabelFor(model => model.GivenName, new {@class = "control-label col-md-3"})
+                <div class="col-md-9 progCoreInput">
+                    @Html.TextBoxFor(model => model.GivenName)
+                </div>
+            </div>
+            <div class="form-group col-md-12 col-md-12">
+                @Html.LabelFor(model => model.OtherName, new {@class = "control-label col-md-3"})
+                <div class="col-md-9 progCoreInput">
+                    @Html.TextBoxFor(model => model.OtherName)
+                </div>
+            </div>
+            <div class="form-group col-md-12">
+                @Html.LabelFor(model => model.Gender, "Gender*", new {@class = "control-label col-md-3"})
+                <div class="col-md-9 progCoreInput">
+                    @Html.DropDownWithModelSelectable(m => m.Gender,
+                        new List<SelectListItem>()
+                        {
+                            new SelectListItem() {Text = "Male", Value = "1"},
+                            new SelectListItem() {Text = "Female", Value = "2"},
+                            new SelectListItem() {Text = "Other or Decline to State", Value = "0"}
+                        },
+                        new SelectListItem() {Text = "--- Select Gender ---", Value = "-1"},
+                        new {@class = "form-control"})
+                </div>
+            </div>
+
+
+
+            <div class="form-group col-md-12">
+                @Html.LabelFor(m => m.DateOfBirth, "Date of Birth*", new {@class = "col-md-3 control-label"})
+                <div class="col-md-9 progCoreInput">
+                    <div class="input-group">
+
+                        <label class="input-group-addon noborder btn" for="DateOfBirth"><span class="glyphicon glyphicon-calendar" data-for="DateOfBirth"></span></label>
+                        @Html.TextBoxFor(m => m.DateOfBirth, "{0:dd MMM yyyy}", new {@id = "DateOfBirth", @class = "noborder birthday-date-picker uneditable-input"})
+
+                    </div>
+                </div>
+            </div>
+
+        
+
+            <div class="form-group col-md-12">
+                @Html.LabelFor(model => model.MaritalStatus, "Marital Status*", new {@class = "control-label col-md-3"})
+                <div class="col-md-9 progCoreInput">
+                    @Html.DropDownWithModelSelectable(m => m.MaritalStatus,
+                        new List<SelectListItem>()
+                        {
+                            new SelectListItem() {Value = "Single", Text = "Single"},
+                            new SelectListItem() {Value = "Married", Text = "Married"},
+                            new SelectListItem() {Value = "Separated", Text = "Separated"},
+                            new SelectListItem() {Value = "Divorced", Text = "Divorced"},
+                            new SelectListItem() {Value = "Widowed", Text = "Widowed"},
+                            new SelectListItem() {Value = "Other", Text = "Other"}
+                        },
+                        new { @class = "form-control" })
+                </div>
+            </div>
+
+            <div class="form-group col-md-12">
+                @Html.LabelFor(model => model.Religion, "Religion*", new {@class = "control-label col-md-3"})
+                <div class="col-md-9 progCoreInput">
+                    @Html.DropDownWithModelSelectable(m => m.Religion,
+                        new List<SelectListItem>()
+                        {
+                            new SelectListItem(){Value = "Anglican", Text = "Anglican"},
+                            new SelectListItem(){Value = "Roman Catholic", Text = "Roman Catholic"},
+                            new SelectListItem() {Value = "Seventh-day Adventist", Text = "Seventh-day Adventist"},
+                            new SelectListItem() {Value = "Pentecostal", Text = "Pentecostal"},
+                            new SelectListItem(){Value = "Moslem", Text = "Moslem"},
+                            new SelectListItem(){Value = "Hindu", Text = "Hindu"},
+                            new SelectListItem(){Value = "Buddhist", Text = "Buddhist"},
+                            new SelectListItem(){Value = "Other", Text = "Other"}
+                        },
+                        new { @class = "form-control" })
+                </div>
+            </div>
+
+
+            <div class="form-group col-md-12">
+                @Html.LabelFor(model => model.CountryId, "Nationality*", new {@class = "control-label col-md-3"})
+                <div class="col-md-9 progCoreInput">
+                    @Html.DropDownWithModelSelectable(model => model.CountryId, Model.CountryOptions, new SelectListItem {Value = "0", Text = "Select Country of Origin"}, new {@class = "form-control chosen-select"})
+                    
+                </div>
+            </div>
+            <div class="form-group col-md-12">
+                @Html.LabelFor(model => model.ProfilePhotoFile, new { @class = "control-label col-md-3" })
+                <div class="col-md-8">
+                    @Html.TextBoxFor(x => x.ProfilePhotoFile, new { @class = "", @type = "file" })
+                </div>
+            </div>
+            <div class="form-group col-md-12">
+                <small><em>Please fill all fields marked with an asterisk (*)</em></small>
+            </div>
+        </div>
+        <div id="tab-div-academicinfo" class="tab-pane">
+            <div class="form-group col-md-12">
+                @Html.LabelFor(m => m.RegistrationNumber, new {@class = "col-md-4 control-label "})
+                <div class="col-md-8">
+                    @Html.TextBoxFor(m => m.RegistrationNumber)
+                </div>
+            </div>
+            <div class="form-group col-md-12">
+                @Html.LabelFor(m => m.FeesNumber, new {@class = "col-md-4 control-label "})
+                <div class="col-md-8">
+                    @Html.TextBoxFor(m => m.FeesNumber)
+                </div>
+            </div>
+            <div class="form-group col-md-12">
+                @Html.LabelFor(m => m.ResidenceStatus, "Residence Status*", new {@class = "col-md-4 control-label "})
+                <div class="col-md-8">
+                    @Html.DropDownWithModelSelectable(m => m.ResidenceStatus,
+                        new List<SelectListItem>() {new SelectListItem() {Text = "Resident", Value = "0"}, new SelectListItem() {Text = "Non-Resident", Value = "1"}},
+                        new {@class = "form-control"})
+                </div>
+            </div>
+            <div class="form-group col-md-12">
+                @Html.LabelFor(m => m.ResidentHallId, "Hall of Residence*", new { @class = "col-md-4 control-label " })
+                <div class="col-md-8">
+                    @Html.DropDownWithModelSelectable(m => m.ResidentHallId, Model.ResidentHallOptions, new SelectListItem() {Value = "0", Text = "Select Hall of Residence"}, new {@class = "form-control"})
+                </div>
+            </div>
+            @Html.EditorFor(x => x.StudyPeriodProgramSelectItem)
+            <div class="form-group col-md-12">
+                @Html.LabelFor(m => m.AcademicYearId, new {@class = "col-md-4 control-label"})
+                <div class="col-md-8">
+                    @Html.DropDownWithModelSelectable(m => m.AcademicYearId, Model.AcademicYearOptions,
+                        Model.StudyPeriodProgramSelectItem.YearSemesterPogramSelectItem.ProgramSelectItem.AdministrativeSelectItem.DefaultFirstItem,
+                        new {@class = "form-control", id = "drpdwn-academic-year"})
+                    <small><em>The academic year to admit the student to.</em></small>
+                </div>
+            </div>
+            <div class="form-group col-md-12">
+                <small><em>Please fill all fields marked with an asterisk (*)</em></small>
+            </div>
+        </div>
+        <div id="tab-div-contactinfo" class="tab-pane">
+            <div class="form-group col-md-12">
+                @Html.LabelFor(model => model.PermanentAddress, new { @class = "control-label col-md-3" })
+                <div class="col-md-8 progCoreInput">
+                    @Html.EditorFor(model => model.PermanentAddress)
+                </div>
+            </div>
+            <div class="form-group col-md-12">
+                @Html.LabelFor(model => model.PostalAddress, new {@class = "control-label col-md-3"})
+                <div class="col-md-8 progCoreInput">
+                    @Html.EditorFor(model => model.PostalAddress)
+                </div>
+            </div>
+
+            <div class="form-group col-md-12">
+                @Html.LabelFor(model => model.EmailAddress, new {@class = "control-label col-md-3"})
+                <div class="col-md-8 progCoreInput">
+                    @Html.EditorFor(model => model.EmailAddress)
+                </div>
+            </div>
+            <div class="form-group col-md-12">
+                @Html.LabelFor(model => model.AltEmailAddress, new {@class = "control-label col-md-3"})
+                <div class="col-md-8 progCoreInput">
+                    @Html.EditorFor(model => model.AltEmailAddress)
+                </div>
+            </div>
+
+            <div class="form-group col-md-12">
+                @Html.LabelFor(model => model.TelephoneContact, new {@class = "control-label col-md-3"})
+                <div class="col-md-8 progCoreInput">
+                    @Html.EditorFor(model => model.TelephoneContact)
+                </div>
+            </div>
+
+            <div class="form-group col-md-12">
+                @Html.LabelFor(model => model.AltTelephoneContact, new {@class = "control-label col-md-3"})
+                <div class="col-md-8 progCoreInput">
+                    @Html.EditorFor(model => model.AltTelephoneContact)
+                </div>
+            </div>
+
+            <div class="form-group col-md-12">
+                @Html.LabelFor(model => model.NextOfKinName, new {@class = "control-label col-md-3"})
+                <div class="col-md-8 progCoreInput">
+                    @Html.EditorFor(model => model.NextOfKinName)
+                </div>
+            </div>
+
+            <div class="form-group col-md-12">
+                @Html.LabelFor(model => model.NextOfKinRelationship, new {@class = "control-label col-md-3"})
+                <div class="col-md-8 progCoreInput">
+                    @Html.EditorFor(model => model.NextOfKinRelationship)
+                </div>
+            </div>
+
+            <div class="form-group col-md-12">
+                @Html.LabelFor(model => model.NextOfKinContact, new {@class = "control-label col-md-3"})
+                <div class="col-md-8 progCoreInput">
+                    @Html.EditorFor(model => model.NextOfKinContact)
+                </div>
+            </div>
+
+            <div class="form-group col-md-12">
+                @Html.LabelFor(model => model.NextOfKinAddress, new {@class = "control-label col-md-3"})
+                <div class="col-md-8 progCoreInput">
+                    @Html.EditorFor(model => model.NextOfKinAddress)
+                </div>
+            </div>
+
+            <div class="form-group col-md-12">
+                @Html.LabelFor(model => model.WebsiteUrl, new {@class = "control-label col-md-3"})
+                <div class="col-md-8 progCoreInput">
+                    @Html.EditorFor(model => model.WebsiteUrl)
+                </div>
+            </div>
+            
+            <div class="pull-right">
+                @*<input type="submit" value="Save" class="btn saveBtn" />*@
+                <button type="submit" class="btn saveBtn">
+                    Create Account
+                    @*<span class="glyphicon glyphicon-chevron-right"></span>*@
+                </button>
+                @*<input type="button" value="Cancel"
+            onclick="javascript: cancelSubmission('@Url.Action("GeneralInformation", "InformationDesk", new {id = Model.Id})');" class="btn delBtn" />*@
+            </div>
+            <p class="clearfix"></p>
+            <div class="form-group col-md-12">
+                <small><em>Please fill all fields marked with an asterisk (*)</em></small>
+            </div>
+        </div>
+    </div>
+    
+    @Html.HiddenFor(x => x.Id)
+}

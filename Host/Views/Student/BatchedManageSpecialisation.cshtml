@@ -1,0 +1,40 @@
+﻿@model ARMSv2.Models.student.ImportSpecialisationSelector
+@{
+    ViewBag.Title = "Batched Manage Specialisation";
+    Html.EnableClientValidation();
+}
+
+<h3 class="greyHeader"> Manage Specialisation - Batched</h3>
+<h3 class="blueHeader">Step 1: Select the Specialisation and upload the Spreadsheet</h3>
+
+@using (Html.BeginForm("BatchedManageSpecialisation", "Student", null, FormMethod.Post,
+        new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    <h3 class="greyHeader">Please specify the program and the specialisation to which you're assigning students</h3>
+    <div class="form-horizontal">
+
+        <div>
+            @Html.Raw(Html.UnEncodedValidationSummary())
+        </div>
+
+        @Html.EditorFor(m => m.ProgramSelectItem)
+
+        <p class="well-sm">
+            Please browse for the spreadsheet and click Next to upload.
+        </p>
+        <div class="form-group col-md-12">
+            @Html.LabelFor(m => m.ExcelFle, new { @class = "col-md-4 control-label" })
+            <div class="col-md-8">
+                @Html.TextBoxFor(x => x.ExcelFle, new { @class = "", @type = "file" })
+            </div>
+        </div>
+        <div class="pull-right">
+            <button type="submit" class="btn saveBtn">
+                Next
+                <span class="glyphicon glyphicon-chevron-right"></span>
+            </button>
+            
+        </div>
+    </div>
+}

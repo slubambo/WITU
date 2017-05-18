@@ -1,0 +1,13 @@
+﻿@model IList<WITU.Core.Model.InformationDesk>
+
+@foreach (var id in @Model)
+{
+    <div class="">
+        <h4 class="greyHeader nomargin">@id.Title</h4>
+        <p class="text-justify">
+            @id.ShortDescription
+
+            @Html.ActionLink("Read More", "Information", "InformationDesk", new { id = @id.Id }, new { @class = "moreLink" })
+        </p>
+    </div>
+}

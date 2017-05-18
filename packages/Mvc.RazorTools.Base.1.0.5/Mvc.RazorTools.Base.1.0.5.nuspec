@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>Mvc.RazorTools.Base</id>
+    <version>1.0.5</version>
+    <title>MVC Razor Tools Base Library</title>
+    <authors>Daniel M. Porrey</authors>
+    <owners>Daniel M. Porrey</owners>
+    <licenseUrl>https://mvcrazor.codeplex.com/license</licenseUrl>
+    <projectUrl>https://mvcrazor.codeplex.com/</projectUrl>
+    <iconUrl>https://download-codeplex.sec.s-msft.com/Download?ProjectName=mvcrazor&amp;DownloadId=775456&amp;Build=20841</iconUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>Provides basic functionality to create a page tag with class information and place this HTML into a Razor View. This library is the base for all Razor Tools libraries that provided unobtrusive JavaScript capabilities for well-known jQuery plug-ins.</description>
+    <summary>Base object for all MVC Razor Tools Projects</summary>
+    <releaseNotes>Added bundle manager.</releaseNotes>
+    <language>es-US</language>
+    <tags>MVC 5 Razor Tools unobtrusive JavaScript</tags>
+  </metadata>
+</package>

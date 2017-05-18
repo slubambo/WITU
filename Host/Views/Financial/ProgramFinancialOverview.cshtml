@@ -1,0 +1,215 @@
+﻿@using System.Globalization
+@using ARMSv2.Core.Model
+@model ARMSv2.Models.Finance.FinanceOverview
+@{
+    ViewBag.Title = "Program Financial Overview";
+    Html.EnableClientValidation();
+}
+
+<h2 class="blueHeader">
+    @Model.Program.ProgramCore.Name Financial Overview
+    <span class="greyHeader">
+
+        @Model.Program.Campus.Name @Model.Semester.AcademicYear.Name Semester @{
+            if (Model.Semester.SemesterSession == 1)
+            {
+                <span>I</span>
+            }
+            else
+            {
+                <span>II</span>
+            }
+            if (Model.AcademicYearInt > 0)
+            {
+                if (Model.AcademicYearInt == 1)
+                {
+                    <span>Year I</span>
+                }
+                if (Model.AcademicYearInt == 2)
+                {
+                    <span>Year II</span>
+                }
+                if (Model.AcademicYearInt == 3)
+                {
+                    <span>Year III</span>
+                }
+                if (Model.AcademicYearInt == 4)
+                {
+                    <span>Year IV</span>
+                }
+                if (Model.AcademicYearInt == 5)
+                {
+                    <span>Year V</span>
+                }
+                if (Model.AcademicYearInt == 6)
+                {
+                    <span>Year VI</span>
+                }
+                if (Model.AcademicYearInt > 6)
+                {
+                    <span>Year @Model.AcademicYearInt</span>
+                }
+            }
+        }
+    </span>
+</h2>
+
+<p></p>
+<div class="row">
+    @using (Html.BeginForm("ProgramFinancialOverview", "Financial", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-group">
+            @Html.LabelFor(m => m.AcademicYearSelectedId, new { @class = "col-md-2" })
+            <div class="col-md-3">
+                @Html.DropDownWithModelSelectable(m => m.AcademicYearSelectedId, Model.AcademicYears,
+                    new SelectListItem() { Text = "-- Academic Year -- ", Value = "0" }, new { @class = "form-control addControl" })
+            </div>
+            @Html.LabelFor(m => m.SemesterSession, new { @class = "col-md-2" })
+            <div class="col-md-3">
+                @Html.DropDownWithModelSelectable(m => m.SemesterSession, Model.SemesterSessions,
+                    new SelectListItem() { Text = "-- Semester Session -- ", Value = "0" }, new { @class = "form-control addControl" })
+            </div>
+            <div class="">
+                <input type="submit" class="btn saveBtn" value="Load">
+            </div>
+        </div>
+    }
+
+</div>
+<div class="clearfix"></div>
+<p></p>
+
+<table class="table" id="academic-board-table">
+    <thead>
+        <tr>
+            <th rowspan="2">
+                SN
+            </th>
+            <th rowspan="2">
+                Registration Number
+            </th>
+            <th rowspan="2">
+                Name
+            </th>
+            @foreach (var fee in Model.SemesterPaymentsList)
+            {
+                <th colspan="2">@fee.FeeName (UGX)</th>
+            }
+
+            <th rowspan="2">
+                Total Balance (UGX)
+            </th>
+        </tr>
+        <tr>
+            @foreach (var fee in Model.SemesterPaymentsList)
+            {
+                <th>Paid</th>
+                <th>Balance</th>
+            }
+
+        </tr>
+
+    </thead>
+    <tbody>
+
+        @for (var i = 0; i < Model.SemesterPaymentsListCount; i++)
+        {
+            var m = Model.StudentFinancialSummaries[i];
+
+            if (m.Student != null)
+            {
+                <tr onclick="location.href = '@Url.Action("StudentFinancialOverview", "Financial", new { id = @m.Student.Id})' " style="cursor: pointer;">
+
+                    <td>
+                        @(i + 1)
+
+                    </td>
+
+                    <td>
+                        @m.Student.RegistrationNumber
+                    </td>
+
+                    <td>
+                        @m.Student.Person.FullName
+                    </td>
+                    @{
+                        var totalSum = 0;
+                    }
+
+                    @foreach (var fee in Model.SemesterPaymentsList)
+                    {
+                        var invoiceDetail = m.StudentInvoices.FirstOrDefault(x => x.Invoice.Title == fee.FeeName && x.Invoice.Student.Id == m.Student.Id);
+
+                        var retakeFees = m.StudentInvoices.Where(x => x.Type == (decimal)InvoiceType.RetakeFee && x.Invoice.Student.Id == m.Student.Id).ToList();
+
+                        if (retakeFees.Any())
+                        {
+                            totalSum = (int)retakeFees.Sum(x => x.Value);
+                        }
+
+                        if (invoiceDetail != null && fee.FeeName != "Retake Fees")
+                        {
+                            var feePayment = m.StudentPayments.FirstOrDefault(x => x.Invoice != null && x.Invoice.Id == invoiceDetail.Invoice.Id && x.Invoice.Student.Id == m.Student.Id);
+                            if (feePayment != null)
+                            {
+                                <td>@feePayment.Paid.ToString("N0")</td>
+                                <td>@feePayment.RemainingBalance.ToString("N0")</td>
+                            }
+                            else
+                            {
+                                <td>0</td>
+                                <td>@invoiceDetail.Value.ToString("N0")</td>
+                            }
+                        }
+                        else
+                        {
+                            if (fee.FeeName == "Retake Fees")
+                            {
+                                var d = m.TotalRetakeFees - m.TotalRetakeFeesPaid;
+
+                                <td>
+                                    @if (@m.TotalRetakeFees > 0)
+                                    {
+                                        <p>@m.TotalRetakeFeesPaid</p>
+                                    }
+                                    else
+                                    {
+                                        <p>NA</p>
+                                    }
+                                </td>
+
+                                <td>
+                                    @if (@m.TotalRetakeFees > 0)
+                                    {
+                                        <p>@d</p>
+                                    }
+                                    else
+                                    {
+                                        <p>NA</p>
+                                    }
+                                </td>
+                            }
+                            else
+                            {
+                                <td>NA</td>
+                                <td>NA</td>
+                            }
+
+                        }
+
+                    }
+                    <td>@m.TotalBalance.ToString("N0")</td>
+
+                </tr>
+
+            }
+        }
+    </tbody>
+</table>
+<br />
+@*<div class="clearfix row col-lg-3 col-lg-offset-10">
+    <a class="" href="@Url.Action("PrintProgramSummary", new { programId = Model.Program.Id })" target="_blank">
+        <span class="pdfIcon"></span>
+    </a>
+</div>*@

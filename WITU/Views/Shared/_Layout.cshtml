@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+    <head>
+        
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Inspire. Teach. Create"/>
+        <meta name="author" content="Women in Technology Uganda"/>
+        <title>@ViewBag.Title - WITU</title>
+        
+        @Styles.Render("~/Content/css")
+        @Styles.Render("~/Content/font-awesome")
+        @Scripts.Render("~/bundles/modernizr")
+        <script type="text/javascript">
+            var baseUrl = "@Url.Content("~/")";
+        </script>
+        
+        @Scripts.Render("~/bundles/jquery")
+        @*@Scripts.Render("~/bundles/jqueryval")*@
+    </head>
+<body>
+    <div class="wrapper">
+        @Html.Partial("Partials/_LayoutHeader")
+
+        <div class="container body-content">
+            @RenderBody()
+        </div>
+        <div class="push"></div>
+    </div>
+    <div class="footer">
+        @Html.Partial("Partials/_LayoutFooter")
+    </div>
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/jquery-libs")
+    @Scripts.Render("~/bundles/custom")
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>

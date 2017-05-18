@@ -1,0 +1,210 @@
+﻿@using WITU.Core.Model
+@model WITU.Models.student.InteractiveManageSpecialisationModel
+@{
+    ViewBag.Title = "Manage Specialisation";
+    Html.EnableClientValidation();
+}
+
+<h3 class="greyHeader"><strong>Manage Specialisation - Interactive</strong></h3>
+
+<h3 class="greyHeader">Please specify the program with atleast one specialisation, specialisation (if applicable), Year of Study and Academic Year for which to Load Students</h3>
+
+@using (Html.BeginForm("InteractiveManageSpecialisation", "Student", null, FormMethod.Post,
+    new { @class = "form-horizontal" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+
+        <div>
+            @Html.Raw(Html.UnEncodedValidationSummary())
+        </div>
+
+        @Html.EditorFor(m => m.YearSemesterPogramSelectItem)
+
+        <div class="form-group col-md-12">
+            @Html.LabelFor(m => m.AcademicYearId, new { @class = "col-md-4 control-label" })
+            <div class="col-md-8">
+                @Html.DropDownWithModelSelectable(m => m.AcademicYearId, Model.AcademicYearOptions,
+                        Model.YearSemesterPogramSelectItem.ProgramSelectItem.AdministrativeSelectItem.DefaultFirstItem,
+                        new { @class = "form-control", id = "drpdwn-academic-year" })
+                <small><em>The desired academic year.</em></small>
+            </div>
+        </div>
+
+        <div class="pull-right">
+            <button type="submit" class="btn saveBtn" id="btn-load-spec-students">
+                Load Students
+                <span class="glyphicon glyphicon-chevron-right"></span>
+            </button>
+
+        </div>
+        
+        <div class="clearfix"></div>
+        @if (Model.Students.Any())
+        {
+            var student = Model.Students.FirstOrDefault();
+            var specialisations = student!= null ? student.Program.Specialisations.Select(x => new SelectListItem { Text = x.SpecialisationCore.Name, Value = x.Id.ToString() }) : null;
+             <br/>              
+            <div>
+                
+                <h5 class="blueTxt">Use the Dropdown to specify the specialisation</h5>
+                <table class='tbl-spec-students'>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Registration Number</th>
+                            <th>Gender</th>
+                            <th>Specialisation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var sc in Model.Students)
+                        {
+                            var oldSpecId = sc.Specialisation == null ? 0 : sc.Specialisation.Id;
+                            <tr class="">
+                                <td title="View @sc.Person.GivenName's details">@Html.ActionLink(@sc.Person.FullName, "StudentDetails", "Student", new { id = sc.Id }, null)</td>
+                                <td>
+                                    @sc.RegistrationNumber
+                                    <small class="hidden">
+                                        <span> @((sc.Specialisation != null && specialisations != null) ? (specialisations.FirstOrDefault(spec => spec.Value == sc.Specialisation.Id.ToString()) != null ? specialisations.FirstOrDefault(spec => spec.Value == sc.Specialisation.Id.ToString()).Text : "None") : "None")</span>
+                                    </small>
+                                </td>
+                                <td>@Html.DisplayEnum(@sc.Person.Gender)</td>
+                                @*<td>@Html.DropDownWithModelSelectable(x => sc.Specialisation.Id, specialisations, new SelectListItem{Text = "None", Value ="0"}, new{@class ="drp-dwn-specialisation", onchange="javascript: alert('@sc.Id')"})</td>*@
+                                <td>
+                                    @if (sc.StudentStatus != StudentStatus.Graduated)
+                                    {
+
+                                        <select name="specialisation-dropdown" id="drpdwn-studspec-@sc.Id" class="drpdwm-spec" onchange="javascript:ChangeSpecialisationForStudent('@sc.Id', '@sc.Person.FullName', '@oldSpecId'); ">
+                                            <option value="0"> None </option>
+                                            @if (specialisations != null)
+                                            {
+                                                foreach (var spec in specialisations)
+                                                {
+                                                    if (oldSpecId.ToString() == spec.Value)
+                                                    {
+                                                        <option value="@spec.Value" selected>@spec.Text</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@spec.Value">@spec.Text</option>
+                                                    }
+
+                                                }
+
+                                            }
+
+                                        </select>
+                                    }
+                                    else
+                                    {
+                                        <span>
+                                            Graduated
+                                        </span>
+                                    }
+                                    
+                                </td>
+
+                            </tr>
+
+                        }
+                    </tbody>
+                </table> 
+            </div>
+        }
+    </div>
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        if ($('#btn-load-spec-students')) {
+            $('#btn-load-spec-students').attr("disabled", "disabled");
+
+            if ($('#drpdwn-program')) {
+                $('#drpdwn-program').change(function () {
+                    $('#btn-load-spec-students').attr("disabled", "disabled");
+                    var programId = $("#drpdwn-program :selected").val();
+                    CheckForSpecialisations(programId);
+                    @*if (@Model.YearSemesterPogramSelectItem.ProgramSelectItem.SpecialisationOptions.Any()) {
+
+                        $('#btn-load-spec-students').removeAttr('disabled');
+                    }*@
+                });
+            }
+        }
+
+        var programId = '@Model.YearSemesterPogramSelectItem.ProgramSelectItem.ProgramId';
+        if (programId > 0) {
+            CheckForSpecialisations(programId);
+        }
+        
+
+        $(".tbl-spec-students").dataTable(
+            {
+                "aoColumnDefs": [
+      { "bSearchable": false, "aTargets": [3] }
+                ],
+                "bSort": false, "bDestroy": true, responsive: true
+            }
+
+            );
+
+
+    });
+
+    function CheckForSpecialisations(programId) {
+
+        $.get(baseUrl + "Api/UtilsApi/HasSpecialisations/" + programId, function(data) {
+
+            if (data) {
+                if ($('#btn-load-spec-students')) {
+
+                    $('#btn-load-spec-students').removeAttr('disabled');
+                }
+            } else {
+
+            }
+
+        });
+    }
+
+    function ChangeSpecialisationForStudent(studentId, studentName, oldSpecialisationId) {
+
+        var specId = $("#drpdwn-studspec-" + studentId + " :selected").val();
+        var specName = $("#drpdwn-studspec-" + studentId + " :selected").text();
+        
+        if (specId != oldSpecialisationId) {
+            //alert('studentId: ' + studentId + ' studentName: ' + studentName + " oldSpecId: " + oldSpecialisationId + " new Spec Id and Name: " + specId + " " + specName);
+            BootstrapDialog.confirm("You are about to change " + studentName + "'s specialisation to "+ specName+ ", Are you sure?", function(result) {
+                if (result) {
+                    ChangeSpecialisation(studentId, specId, studentName, specName);
+
+                } else {
+                    //Change back to old value
+                    $("#drpdwn-studspec-" + studentId).val(oldSpecialisationId);
+                }
+            });
+
+        } else {
+            //No change in specialisation, do nothing
+        }
+        
+    }
+
+    function ChangeSpecialisation(studentId, specialisationId, studentName, specialisationName) {
+        $.post(baseUrl + "Api/UtilsApi/ChangeSpecialisation/" + studentId+"/"+specialisationId, function (data) {
+            if (data == true) {
+                if (specialisationId != 0) {
+                    showToast("You have successfully changed " + studentName + "'s specialisation to " + specialisationName + ".", "success");
+
+                } else {
+                    showToast("You have removed " + studentName + "'s specialisation.", "success");
+                }
+                
+                //TODO: Update model with new specialisation
+            } else {
+                showToast("Something went wrong while changing "+studentName+"'s specialisation.", "error");
+            }
+        });
+    }
+</script>

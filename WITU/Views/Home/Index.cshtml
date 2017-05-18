@@ -1,0 +1,200 @@
+﻿@model WITU.Models.HomeView
+
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="homeWrap">
+    <div class="jumbotron welcomediv">
+        <h1 class="center jbtn-title"><span class="jbtn-title-one">Teach.</span> <span class="jbtn-title-two">Create.</span> <span class="jbtn-title-three">Learn.</span></h1>
+        <br /><br />
+        <button type='button' class='btn btn-primary center-block btn-lg btn-witu-bg'>Join for free</button>
+    </div>
+    <div class="homeLowerContent">
+        <div class="homeCenter">
+            <div class="col-lg-12">
+                <section class="regular slider homeItems">
+                    @foreach (var gi in Model.GeneralInformations)
+                    {
+                        <div class="col-lg-4">
+                            <h3 class="hidden-xs hidden-sm">@gi.Title</h3>
+                            <img src="@ViewBag.InformationDeskResourcesUrl@gi.DefaultImageFilelName" class="img img-responsive" />
+                            <p class="right text-justify">
+                                @gi.ShortDescription
+                                @Html.ActionLink("Read More", "GeneralInformation", "InformationDesk", new { id = gi.Id }, new { @class = "moreLink" })
+                            </p>
+                        </div>
+                    }
+                </section>
+            </div>
+
+            <div class="clearfix"></div>
+        </div>
+        <div class="col-md-12 homeNewsSection">
+            <h3 class="text-left text-header">Courses</h3>
+
+            <div id="tile-wrapper">
+                <ul style="height: 153.25px;">
+                    <li class="col-lg-3 course-pill business-course course-box">
+                        <div class="flip-container" ontouchstart="this.classList.toggle('hover');">
+                            <div class="flipper">
+                                <div class="front">
+                                    <h3 class="text-white">Business</h3><span class="glyphicon glyphicon-briefcase course-icon"></span><p class="attribution-text text-highlight">5 Units</p>
+                                </div>
+                                <div class="back">
+                                    <h3 class="text-white">Syllabus</h3><p class="attribution-text text-white">Finances, Start ups, Savings, Customers, Great</p>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li class="col-lg-3 course-pill life-skills">
+                        <div class="flip-container" ontouchstart="this.classList.toggle('hover');">
+                            <div class="flipper">
+                                <div class="front">
+                                    <h3 class="text-white">Life Skills</h3><span class="glyphicon glyphicon-eye-open course-icon"></span><p class="attribution-text text-highlight">7 Units</p>
+                                </div>
+                                <div class="back">
+                                    <h3 class="text-white">Syllabus</h3><p class="attribution-text text-white">Finances, Start ups, Savings, Customers, Great</p>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li class="col-lg-3 course-pill calculus-course">
+                        <div class="flip-container" ontouchstart="this.classList.toggle('hover');">
+                            <div class="flipper">
+                                <div class="front">
+                                    <h3 class="text-white">Records Management</h3><span class="glyphicon glyphicon-folder-open course-icon"></span><p class="attribution-text text-highlight">8 Units</p>
+                                </div>
+                                <div class="back">
+                                    <h3 class="text-white">Syllabus</h3><p class="attribution-text text-white">Finances, Start ups, Savings, Customers, Great</p>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li class="col-lg-3 course-pill internet-usage">
+                        <div class="flip-container" ontouchstart="this.classList.toggle('hover');">
+                            <div class="flipper">
+                                <div class="front">
+                                    <h3 class="text-white">Internet Usage</h3><span class="glyphicon glyphicon-globe course-icon"></span><p class="attribution-text text-highlight">11 Units</p>
+                                </div>
+                                <div class="back">
+                                    <h3 class="text-white">Syllabus</h3><p class="attribution-text text-white">Finances, Start ups, Savings, Customers, Great</p>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <ul style="height: 153.25px;">
+
+                    <li class="col-lg-4 course-pill sound-course">
+                        <div class="flip-container" ontouchstart="this.classList.toggle('hover');">
+                            <div class="flipper">
+                                <div class="front">
+                                    <h3 class="text-white">Arithmetic</h3><span class="glyphicon glyphicon-sort-by-attributes course-icon"></span><p class="attribution-text text-highlight">11 Units</p>
+                                </div>
+                                <div class="back">
+                                    <h3 class="text-white">Syllabus</h3><p class="attribution-text text-white">Finances, Start ups, Savings, Customers, Great</p>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li class="col-lg-4 course-pill graphics-course">
+                        <div class="flip-container" ontouchstart="this.classList.toggle('hover');">
+                            <div class="flipper">
+                                <div class="front">
+                                    <h3 class="text-white">Graphics</h3><span class="glyphicon glyphicon-picture course-icon"></span><p class="attribution-text text-highlight">10 Units</p>
+                                </div>
+                                <div class="back">
+                                    <h3 class="text-white">Syllabus</h3><p class="attribution-text text-white">Finances, Start ups, Savings, Customers, Great</p>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li class="col-lg-4 course-pill printing-course">
+                        <div class="flip-container" ontouchstart="this.classList.toggle('hover');">
+                            <div class="flipper">
+                                <div class="front">
+                                    <h3 class="text-white">Printing</h3><span class="glyphicon glyphicon-print course-icon"></span><p class="attribution-text text-highlight">8 Units</p>
+                                </div>
+                                <div class="back">
+                                    <h3 class="text-white">Syllabus</h3><p class="attribution-text text-white">Finances, Start ups, Savings, Customers, Great</p>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+
+                <ul style="height: 153.25px;">
+
+                    <li class="col-lg-6 course-pill sales-course">
+                        <div class="flip-container" ontouchstart="this.classList.toggle('hover');">
+                            <div class="flipper">
+                                <div class="front">
+                                    <h3 class="text-white">Sales</h3><span class="glyphicon glyphicon-barcode course-icon"></span><p class="attribution-text text-highlight">5 Units</p>
+                                </div>
+                                <div class="back">
+                                    <h3 class="text-white">Syllabus</h3><p class="attribution-text text-white">Finances, Start ups, Savings, Customers, Great</p>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li class="col-lg-6 course-pill photography-skills">
+                        <div class="flip-container" ontouchstart="this.classList.toggle('hover');">
+                            <div class="flipper">
+                                <div class="front">
+                                    <h3 class="text-white">Photography</h3><span class="glyphicon glyphicon-camera course-icon"></span><p class="attribution-text text-highlight">7 Units</p>
+                                </div>
+                                <div class="back">
+                                    <h3 class="text-white">Syllabus</h3><p class="attribution-text text-white">Finances, Start ups, Savings, Customers, Great</p>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+    @*<li class="col-lg-2 course-pill calculus-course"><h3 class="text-white">Records Management</h3><span class="glyphicon glyphicon-folder-open course-icon"></span><p class="attribution-text text-highlight">8 Units</p></li>
+        <li class="col-lg-2 course-pill internet-usage"><h3 class="text-white">Internet Usage</h3><span class="glyphicon glyphicon-globe course-icon"></span><p class="attribution-text text-highlight">11 Units</p></li>
+        <li class="col-lg-2 course-pill business-course"><h3 class="text-white">Business</h3><span class="glyphicon glyphicon-briefcase course-icon"></span><p class="attribution-text text-highlight">5 Units</p></li>
+        <li class="col-lg-2 course-pill life-skills"><h3 class="text-white">Life Skills</h3><span class="glyphicon glyphicon-eye-open course-icon"></span><p class="attribution-text text-highlight">7 Units</p></li>*@
+    </ul>
+</div>
+
+            
+
+            <div class="clearfix"></div>
+            <br />
+        </div>
+
+        <div class="col-md-12 homeNewsSection">
+            <h3 class="text-left text-header">Recent Discussions</h3>
+
+            <div class="homeCenter">
+                <div class="col-lg-12">
+                    <section class="regular-two slider homeItems">
+                        @foreach (var gi in Model.GeneralInformations)
+                        {
+                            <div class="col-lg-3">
+                                <h3 class="hidden-xs hidden-sm">@gi.Title</h3>
+                                <img src="@ViewBag.InformationDeskResourcesUrl@gi.DefaultImageFilelName" class="img img-responsive" />
+                                <p class="right text-justify">
+                                    @gi.ShortDescription
+                                    @Html.ActionLink("Read More", "GeneralInformation", "InformationDesk", new { id = gi.Id }, new { @class = "moreLink" })
+                                </p>
+                            </div>
+                        }
+                    </section>
+                </div>
+
+                <div class="clearfix"></div>
+            </div>
+
+            <div class="clearfix"></div>
+            <br />
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>

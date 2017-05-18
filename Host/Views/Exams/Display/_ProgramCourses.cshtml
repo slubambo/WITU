@@ -1,0 +1,46 @@
+﻿@using ARMSv2.Core.Model
+@using ARMSv2.Utils
+@using Microsoft.Ajax.Utilities
+@model ARMSv2.Models.CoursesListView
+<div>
+    <div class="">
+        <div></div>
+        <table class=" table dataTable table-hover tbl-program-courses">
+            <thead>
+                <tr>
+                    <th>Course Name</th>
+                    <th>Course Code</th>
+                    <th>Credit Units</th>
+                    <th>Course Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var c in Model.Courses.DistinctBy(x => x.Code))
+                {
+                    if (Request.IsAuthenticated)
+                    {
+                        <tr onclick="javascript: ViewCourse('@c.Id', '@c.Name'); ">
+                            <td>@c.Name</td>
+                            <td>@c.Code</td>
+                            <td>@c.CreditUnits</td>
+                            <td>
+                                @Enum.GetName(typeof(CourseType), @c.CourseType)
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr>
+                            <td>@c.Name</td>
+                            <td>@c.Code</td>
+                            <td>@c.CreditUnits</td>
+                            <td>
+                                @Enum.GetName(typeof(CourseType), @c.CourseType)
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

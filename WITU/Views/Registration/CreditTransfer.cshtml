@@ -1,0 +1,455 @@
+﻿@using System.Activities.Expressions
+@using WITU.Core.Model
+@using WITU.Utils
+@using WITU.Core.Model
+@model WITU.Models.RegistrationView
+@{
+    ViewBag.Title = "Credt Transfer";
+}
+
+@if (Model != null)
+{
+
+    if (Model.ResultStatus != (decimal) StudentStatus.Absconded && Model.ResultStatus != (decimal) StudentStatus.Graduated)
+    {
+        if (Model.AppliedForCreditTransfer == true)
+        {
+            <h2 class="maroonHeader">These are the course you requested for credit transfer from this semester. </h2>
+        }
+        else
+        {
+            <h2 class="maroonHeader">Please select the courses for credit transfer</h2>
+        }
+
+        using (Html.BeginForm("CreditTransfer", "Registration", FormMethod.Post))
+        {
+
+            int i;
+            for (i = 0; i < Model.ProgramDuration; i++)
+            {
+                <div>
+                    @Html.ValidationSummary(true)
+
+                </div>
+                @*if (Model.AppliedForCreditTransfer == true)
+                {
+                    <div class="form-horizontal tabs bodytext tabs-pilled noborder">
+                        <ul class="">
+
+                            @for (i = 0; i < Model.ProgramDuration; i++)
+                            {
+                                <li>
+                                    <a href="#Year@(i)" role="tab" data-toggle="tab">
+                                        Year @(i + 1)
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+
+                        @for (i = 0; i < Model.ProgramDuration; i++)
+                        {
+                            <div id="Year@(i)" class="bodytext tab-pane nopadding ">
+                                <div class="clearfix">
+                                    <br />
+                                </div>
+
+                                <div class="form-horizontal noborder">
+                                    <h5>Semester I</h5>
+
+                                    <br />
+                                    <table class="table" id="">
+                                        <thead>
+
+                                            <tr>
+                                                <th class="fa fa-inbox">
+
+                                                </th>
+                                                <th>
+                                                    Course Code
+                                                </th>
+                                                <th>
+                                                    Course Name
+                                                </th>
+                                                <th>
+                                                    Credit Units
+                                                </th>
+                                                <th>
+                                                    Course Type
+                                                </th>
+                                                <th>
+                                                    Remarks
+                                                </th>
+
+                                            </tr>
+
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var m in Model.CoursesList)
+                                            {
+                                                if ((m.SemesterLevel.Level == (i + 1)) && m.SemesterLevel.SemesterSession == 1)
+                                                {
+                                                    <tr>
+                                                        <td>
+                                                            
+                                                        </td>
+                                                        <td>
+                                                            @m.Code
+                                                         </td>
+                                                        
+                                                        <td>
+                                                            @m.Name
+                                                        </td>
+                                                        <td class="creditUnitVal">
+                                                            @m.CreditUnits
+                                                        </td>
+                                                        <td>
+                                                            
+                                                                @if (m.CourseType == CourseType.Core)
+                                                                {
+                                                                    <p>Core</p>
+                                                                }
+                                                                @if (m.CourseType == CourseType.Elective)
+                                                                {
+                                                                    <p>Elective</p>
+                                                                }
+                                                                @if (m.CourseType == CourseType.Audited)
+                                                                {
+                                                                    <p>Audited</p>
+                                                                }
+                                                            
+                                                        </td>
+                                                        <td>
+                                                            @m.Remark
+                                                        </td>
+                                                    </tr>
+                                                }
+
+
+                                            }
+                                        </tbody>
+                                    </table>
+                                    <br />
+                                    <br />
+                                    <h5>Semester II</h5>
+                                    <br />
+
+                                    <table class="table" id="">
+                                        <thead>
+
+                                            <tr>
+                                                <th class="fa fa-inbox">
+
+                                                </th>
+                                                <th>
+                                                    Course Code
+                                                </th>
+                                                <th>
+                                                    Course Name
+                                                </th>
+                                                <th>
+                                                    Credit Units
+                                                </th>
+                                                <th>
+                                                    Course Type
+                                                </th>
+                                                <th>
+                                                    Remarks
+                                                </th>
+
+                                            </tr>
+
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var m in Model.CoursesList)
+                                            {
+                                                if ((m.SemesterLevel.Level == (i + 1)) && m.SemesterLevel.SemesterSession == 2)
+                                                {
+                                                     <tr>
+                                                        <td>
+                                                            
+                                                        </td>
+                                                        <td>
+                                                            @m.Code
+                                                         </td>
+                                                        
+                                                        <td>
+                                                            @m.Name
+                                                        </td>
+                                                        <td class="creditUnitVal">
+                                                            @m.CreditUnits
+                                                        </td>
+                                                        <td>
+                                                            
+                                                                @if (m.CourseType == CourseType.Core)
+                                                                {
+                                                                    <p>Core</p>
+                                                                }
+                                                                @if (m.CourseType == CourseType.Elective)
+                                                                {
+                                                                    <p>Elective</p>
+                                                                }
+                                                                @if (m.CourseType == CourseType.Audited)
+                                                                {
+                                                                    <p>Audited</p>
+                                                                }
+                                                            
+                                                        </td>
+                                                        <td>
+                                                            @m.Remark
+                                                        </td>
+                                                    </tr>
+
+                                                }
+
+                                            }
+                                        
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+
+                        }
+
+                        @Html.HiddenFor(model => model.MaximumSemLoad, new {id = "MaximumSemLoad"})
+                        @Html.HiddenFor(model => model.StudentId)
+
+
+                    </div>
+                }
+
+                else
+                {*@
+                    <div class="form-horizontal tabs bodytext tabs-pilled noborder">
+
+                        <ul class="">
+
+                            @for (i = 0; i < Model.ProgramDuration; i++)
+                            {
+                                <li>
+                                    <a href="#Year@(i)" role="tab" data-toggle="tab">
+                                        Year @(i + 1)
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+
+                        @for (i = 0; i < Model.ProgramDuration; i++)
+                        {
+                            <div id="Year@(i)" class="bodytext tab-pane nopadding ">
+                                <div class="clearfix">
+                                    <br />
+                                </div>
+
+                                <div class="form-horizontal noborder">
+                                    <h5>Semester I</h5>
+
+                                    <br />
+                                    <table class="table" id="">
+                                        <thead>
+
+                                            <tr>
+                                                <th class="fa fa-inbox">
+
+                                                </th>
+                                                <th>
+                                                    Course Code
+                                                </th>
+                                                <th>
+                                                    Course Name
+                                                </th>
+                                                <th>
+                                                    Credit Units
+                                                </th>
+                                                <th>
+                                                    Course Type
+                                                </th>
+                                                <th>
+                                                    Remarks
+                                                </th>
+
+                                            </tr>
+
+                                        </thead>
+                                        <tbody>
+                                            @if (Model.CoursesList != null)
+                                            {
+                                                foreach (var m in Model.CoursesList)
+                                                {
+                                                    if ((m.SemesterLevel.Level == (i + 1)) && m.SemesterLevel.SemesterSession == 1)
+                                                    {
+                                                        <tr>
+                                                            <td>
+                                                                @if (m.Remark != "CT Pending" || m.Remark != "CT Rejected" || m.Remark != "CT")
+                                                                {
+                                                                    <input name="selectedCourses" type="checkbox" @*onchange=" warmonExtraCreditUnits(@m.CreditUnits, @m.Id) "*@ autocomplete="off" class="course_checked_@m.Id" value="@m.Id" />
+                                                                }
+                                                                    </td>
+
+                                                            <td>
+                                                                @m.Code
+                                                            </td>
+
+
+                                                            <td>
+                                                                @m.Name
+                                                            </td>
+                                                            <td class="creditUnitVal">
+                                                                @m.CreditUnits
+                                                            </td>
+                                                            <td>
+                                                                @if (m.CourseType == CourseType.Core)
+                                                                {
+                                                                    <p>Core</p>
+                                                                }
+                                                                @if (m.CourseType == CourseType.Elective)
+                                                                {
+                                                                    <p>Elective</p>
+                                                                }
+                                                                @if (m.CourseType == CourseType.Audited)
+                                                                {
+                                                                    <p>Audited</p>
+                                                                }
+
+                                                            </td>
+                                                            <td>
+                                                          @if (string.IsNullOrEmpty(m.Remark))
+{
+    <p>Not Registered</p>
+}
+else
+{
+    @m.Remark
+}
+                                                            </td>
+                                                        </tr>
+                                                    }
+
+
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                    <br />
+                                    <br />
+                                    <h5>Semester II</h5>
+                                    <br />
+
+                                    <table class="table" id="">
+                                        <thead>
+
+                                            <tr>
+                                                <th class="fa fa-inbox">
+
+                                                </th>
+                                                <th>
+                                                    Course Code
+                                                </th>
+                                                <th>
+                                                    Course Name
+                                                </th>
+                                                <th>
+                                                    Credit Units
+                                                </th>
+                                                <th>
+                                                    Course Type
+                                                </th>
+                                                <th>
+                                                    Remarks
+                                                </th>
+
+                                            </tr>
+
+                                        </thead>
+                                        <tbody>
+                                            @if (Model.CoursesList != null)
+                                            {
+                                                foreach (var m in Model.CoursesList)
+                                                {
+                                                    if ((m.SemesterLevel.Level == (i + 1)) && m.SemesterLevel.SemesterSession == 2)
+                                                    {
+                                                        <tr>
+                                                            <td>
+                                                                @if (m.Remark != "CT Pending" || m.Remark != "CT Rejected" || m.Remark != "CT")
+                                                                {
+                                                                    <input name="selectedCourses" type="checkbox" @*onchange="warmonExtraCreditUnits(@m.CreditUnits, @m.Id)"*@ autocomplete="off" class="course_checked_@m.Id" value="@m.Id" />
+                                                                }
+                                                                    </td>
+
+                                                            <td>
+                                                                @m.Code
+                                                            </td>
+
+
+                                                            <td>
+                                                                @m.Name
+                                                            </td>
+                                                            <td class="creditUnitVal">
+                                                                @m.CreditUnits
+                                                            </td>
+                                                            <td>
+                                                                @if (m.CourseType == CourseType.Core)
+                                                                {
+                                                                    <p>Core</p>
+                                                                }
+                                                                @if (m.CourseType == CourseType.Elective)
+                                                                {
+                                                                    <p>Elective</p>
+                                                                }
+                                                                @if (m.CourseType == CourseType.Audited)
+                                                                {
+                                                                    <p>Audited</p>
+                                                                }
+                                                            </td>
+                                                            <td>
+                                                            @if (string.IsNullOrEmpty(m.Remark))
+                                                            {
+                                                                <p>Not Registered</p>
+                                                            }
+                                                            else
+                                                            {
+                                                                @m.Remark
+                                                            }
+                                                            </td>
+                                                        </tr>
+                                                    }
+
+
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+
+                        }
+                        @Html.HiddenFor(model => model.MaximumSemLoad, new {id = "MaximumSemLoad"})
+                        @Html.HiddenFor(model => model.StudentId)
+
+
+                    </div>
+
+
+                    <div class="pull-right ">
+                    
+                        @if (Model.CoursesList != null)
+                        {
+                            <input type="submit" value="Next" class="btn saveBtn" />
+
+                            <input type="button" value="Cancel"
+                                   onclick="javascript: cancelSubmission('@Url.Action("Register", "Registration")');" class="btn delBtn" />
+
+                        }
+                        <div class="clearfix"> </div>
+                    </div>
+
+
+
+                }
+
+
+            }
+        }
+    }
+@*}*@

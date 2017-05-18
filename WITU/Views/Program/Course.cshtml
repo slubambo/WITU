@@ -1,0 +1,163 @@
+﻿@using WITU.Core.Model
+@using WITU.Utils
+@using WITU.Models.UserManagement
+@{ var sessionDetails = (SessionUserManagementDetails)HttpContext.Current.Session["LoggedInUserRoles"]; }
+@model WITU.Core.Model.Course
+@{
+    Layout = null;
+    var canEdit = false;
+    var canDelete = false;
+    var graduatedCount = 0;
+    if (Request.IsAuthenticated && User.ApplicationUserType() == (int)UserTypes.Staff)
+    {
+        if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int)WITU.Models.ServiceDetail.Course
+                                                                                && (x.Role.CanCreate == true || x.Role.CanUpdate == true || x.Role.CanDelete == true)))
+        {
+
+            //If there's any graduate in the program, no editing can be done
+            var studentsToCheck = Model.Specialisation == null ? Model.Program.Students : Model.Program.Students.Where(st => st.Specialisation != null && st.Specialisation.Id == Model.Specialisation.Id);
+            if (studentsToCheck.Any(st => st.StudentStatus == StudentStatus.Graduated))
+            {
+                 graduatedCount = studentsToCheck.Where(st => st.StudentStatus == StudentStatus.Graduated).Distinct().Count();
+
+            }
+            else
+            {
+                if (sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) WITU.Models.ServiceDetail.Course && (x.Role.CanUpdate || x.Role.CanCreate)))
+                {
+                    canEdit = true;
+                }
+
+                if (sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) WITU.Models.ServiceDetail.Course && x.Role.CanDelete))
+                {
+                    canDelete = true;
+                }
+                
+                
+            }
+
+        }
+
+    }
+
+
+}
+<div class="bodytext">
+
+    
+    @if (!canEdit)
+    {
+
+        if (graduatedCount > 0)
+        {
+            <div><small><span>This course can't be edited at this point because <strong>@graduatedCount</strong> Student(s) have been graduated in @Model.ProgramName so far. </span></small></div>
+        }
+    }
+    else
+    {
+        <div class="pull-right">
+            @Html.ActionLink("Edit", "EditCourse", "Program", new { id = Model.Id }, new { @class = "btn saveBtn" })
+        </div>
+        
+     }
+    
+    @if (!canDelete)
+    {
+
+        if (graduatedCount > 0)
+        {
+            <div><small><span>This course can't be deleted at this point because <strong>@graduatedCount</strong> Student(s) have been graduated in @Model.ProgramName so far. </span></small></div>
+        }
+    }
+    else
+    {
+        <div class="pull-right">
+            <button id="btn-delete-course" class="btn saveBtn" onclick="javascript:DeleteCourse('@Model.Id', '@(Model.Code+ " : "+Model.Name)', '@Model.ProgramName', '@(Model.StudentCourses.Count())');">
+                <span class="glyphicon glyphicon-trash"></span>
+            </button>
+
+        </div>
+
+    }
+    
+    @if (canEdit || canDelete)
+    {
+        <div>
+            <small>
+                <strong>
+                    This course has @(Model.StudentCourses.Count()) student results. Modifying it will affect @(Model.StudentCourses.Select(x => x.Student).Distinct().Count()) students.
+                </strong>
+            </small>
+        </div>
+        
+    }
+
+    <div>
+        <b>
+            @Model.Program.ProgramCore.Name @(Model.Specialisation != null ? String.Format("({0})", Model.Specialisation.SpecialisationCore.Name) : "")
+        </b>
+    </div>
+
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Code)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Code)
+        </dd>
+
+        @if (Model.CourseType != null)
+        {
+            <dt>
+                @Html.DisplayNameFor(model => model.CourseType)
+            </dt>
+
+            <dd>
+                @Enum.GetName(typeof(CourseType), Model.CourseType.Value)
+            </dd>
+        }
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CreditUnits)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreditUnits)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SemesterLevel)
+        </dt>
+
+        <dd>
+            <span>Year @Model.SemesterLevel.Level, Semester @Model.SemesterLevel.SemesterSession</span>
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Status)
+        </dt>
+
+        <dd>
+            @Enum.GetName(typeof(CourseStatus), Model.Status)
+        </dd>
+
+    </dl>
+
+
+
+    <div>
+        <p class="greyHeader">Course Content</p>
+        @if (Model.Content != null)
+        {
+            <div class="contentDiv">
+                @Html.Raw(Model.Content)
+            </div>
+        }
+        else
+        {
+            <i>No Course Content Available</i>
+        }
+    </div>
+
+</div>

@@ -1,0 +1,82 @@
+﻿@model IEnumerable<ARMSv2.Models.Result.PublishHistory>
+@{
+    Layout = null;
+}
+
+<div>
+    <table class="table dataTable">
+        <thead>
+            <tr>
+                <th>Campus</th>
+                <th>Program</th>
+                <th>Course</th>
+                <th>
+                    <div>
+                        Academic Year
+                    </div>
+                    <div>
+                        <small><em>when the course was done.</em></small>
+                    </div>
+                </th>
+                <th>
+                    <div>
+                        Semester
+                    </div>
+                    <div>
+                        <small><em>when the course was done.</em></small>
+                    </div>
+                </th>
+                <th>Published On</th>
+                <th>Published By</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var ph in Model)
+            {
+                <tr>
+                    <td>
+                        <a href="#" onclick="javascript:publishHistoryDetail('@Url.Action("publishhistorydetail", "Result" , new {id=@ph.PublishedResult.Id })');">
+                            @ph.PublishedResult.Course.Program.Campus.Name
+                        </a>
+                    </td>
+                    <td>
+                        <a href="#" onclick="javascript:publishHistoryDetail('@Url.Action("publishhistorydetail", "Result" , new {id=@ph.PublishedResult.Id })');">
+                            @ph.PublishedResult.Course.Program.ProgramCore.Name
+                        </a>
+                    </td>
+                    <td>
+                        <a href="#" onclick="javascript:publishHistoryDetail('@Url.Action("publishhistorydetail", "Result" , new {id=@ph.PublishedResult.Id })');">
+                            @ph.PublishedResult.Course.Name
+                        </a>
+                    </td>
+                    <td>
+                        <a href="#" onclick="javascript:publishHistoryDetail('@Url.Action("publishhistorydetail", "Result" , new {id=@ph.PublishedResult.Id })');">
+                            @ph.PublishedResult.Semester.AcademicYear.Name
+                        </a>
+                    </td>
+                    <td>
+                        <a href="#" onclick="javascript:publishHistoryDetail('@Url.Action("publishhistorydetail", "Result" , new {id=@ph.PublishedResult.Id })');">
+                            @ph.PublishedResult.Semester.SemesterSession
+                        </a>
+                    </td>
+                    <td>
+                        <a href="#" onclick="javascript:publishHistoryDetail('@Url.Action("publishhistorydetail", "Result" , new {id=@ph.PublishedResult.Id })');">
+                            @if (ph.PublishedResult.PublishedOn != null)
+                            {
+                                @ph.PublishedResult.PublishedOn.Value.ToString("g")
+                            }
+                        </a>
+                    </td>
+                    <td>
+                        <a href="#" onclick="javascript:publishHistoryDetail('@Url.Action("publishhistorydetail", "Result" , new {id=@ph.PublishedResult.Id })');">
+                            @if (ph.ApprovedStuff != null)
+                            {
+                                @ph.ApprovedStuff.Person.FullName
+                            }
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

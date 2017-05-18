@@ -1,0 +1,97 @@
+﻿@using ARMSv2.Core.Model
+@using ARMSv2.Utils
+@model ARMSv2.Core.Model.Bank
+
+@{
+    ViewBag.Title = "Bank Details - " + Model.Name;
+}
+
+<h4>@Model.Name - @Model.AccountName</h4>
+
+@if (Request.IsAuthenticated)
+{
+    if (User.ApplicationUserType() == (int)UserTypes.Staff)
+    {
+        @Html.ActionLink("Edit Bank Detail", "AddOrEditBankDetail", "Financial", new {id = Model.Id}, new {@class="btn btn-success"})
+    }
+}
+<hr />
+
+<div class="col-md-12">
+    <div class="col-md-4">
+        <img class="img img-responsive" src="@ApplicationConstants.FinanceBankUrl@Model.LogoFileName"/>
+    </div>
+    <div class="col-md-8">
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.AccountName)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.AccountName)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.AccountNumber)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.AccountNumber)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.BankCharges)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.BankCharges)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Branch)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Branch)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.SwiftCode)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.SwiftCode)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.BranchCode)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.BranchCode)
+            </dd>
+
+        </dl>
+    </div>
+</div>
+<div>
+    <h4>Instructions</h4>
+    @if (Model.BankInstructions == null)
+    {
+        <p class="text-info">No Instructions Available</p>
+    }
+    else
+    {
+        <p>
+            @Html.Raw(Model.BankInstructions)
+        </p>
+    }
+</div>

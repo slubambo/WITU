@@ -1,0 +1,108 @@
+﻿@using ARMSv2.Utils
+@model ARMSv2.Core.Model.Bank
+
+@{
+    ViewBag.Title = "Add/Edit Bank Detail";
+}
+
+@if (Model.Id > 0)
+{
+    <h2>Edit Bank Details - @Model.AccountName</h2>
+}
+else
+{
+    <h2>Add Bank Details</h2>
+}
+
+@using (Html.BeginForm("AddOrEditBankDetail", "Financial", FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" })) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true)
+        
+        <div class="form-group">
+            @Html.LabelFor(model => model.PostedFile, new { @class = "control-label col-md-4" })
+            <div class="col-md-6">
+                <input id="PostedFile" type="file" value="" name="PostedFile">
+                @*@Html.TextBoxFor(model => model.PostedFile, new { type = "file" })*@
+                @Html.ValidationMessageFor(model => model.PostedFile)
+            </div>
+            <div class="col-md-2">
+                @if (Model.LogoFileName != null)
+                {
+                    <img src="@ApplicationConstants.FinanceBankUrl@Model.LogoFileName" class="img-responsive" />
+                }
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AccountName, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.AccountName)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AccountNumber, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.AccountNumber)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.BankCharges, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.BankCharges)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Branch, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.Branch)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.Name)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.SwiftCode, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.SwiftCode)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.BranchCode, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.BranchCode)
+            </div>
+        </div>
+        
+        <div class="form-group">
+            @Html.LabelFor(model => model.BankInstructions, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.ValidationMessageFor(model => model.BankInstructions)
+                @Html.TextAreaFor(model => model.BankInstructions, new { @class = "tinymce-textarea" })
+            </div>
+        </div>
+        
+        <div>
+            @Html.HiddenFor(x => x.Id)
+            @Html.HiddenFor(x => x.LogoFileName)
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}

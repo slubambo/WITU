@@ -1,0 +1,93 @@
+﻿@{
+    ViewBag.Title = "Staff Accounts Management";
+    //Layout = null;
+
+}
+@using ARMSv2.Models
+@model ARMSv2.Models.UserInfoViewModel
+ 
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/jquery-libs")
+@Scripts.Render("~/bundles/custom")
+<table class="table responsiblityTable">
+    <thead>
+
+        <tr>
+            <th>
+                Category
+            </th>
+            <th>
+                Service
+            </th>
+            <th>
+                View
+            </th>
+            <th>
+                Add
+            </th>
+            <th>
+                Edit
+            </th>
+            <th>
+                Delete
+            </th>
+
+
+        </tr>
+
+    </thead>
+    <tbody>
+        @if (Model.Responsibilities != null)
+        {
+
+
+            for (var k = 0; k < Model.Responsibilities.Count(); k++)
+            {
+
+                <tr>
+                    <td>
+
+                        @{
+                var category = Model.Responsibilities[k].Service.Category;
+                        }
+                        @if (category != null)
+                        {
+                            @Html.DisplayEnum(category.Value, typeof(ServiceCategory))
+                        }
+
+                    </td>
+
+                    <td>
+
+                        @Model.Responsibilities[k].Service.Name
+
+                    </td>
+                    <td>
+                        @Html.HiddenFor(m => m.Responsibilities[k].Id)
+                        @Html.HiddenFor(m => m.Responsibilities[k].Service.Id)
+                        @Html.EditorFor(m => m.Responsibilities[k].CanRead)
+                    </td>
+                    <td>
+                        @Html.EditorFor(m => m.Responsibilities[k].CanCreate)
+                    </td>
+                    <td>
+                        @Html.EditorFor(m => m.Responsibilities[k].CanUpdate)
+                    </td>
+                    <td>
+                        @Html.EditorFor(m => m.Responsibilities[k].CanDelete)
+                    </td>
+
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<div class="col-lg-offset-9">
+    @Html.HiddenFor(x => x.User.Id)
+    <input type="submit" value="Cancel" class="btn btn-default" name="buttonClicked"/>
+    <input type="submit" value="Save" id="postTable" class="btn saveBtn" name="buttonClicked"/>
+     
+    <div class="clearfix"> </div>
+</div>
+

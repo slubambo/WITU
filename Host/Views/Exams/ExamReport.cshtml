@@ -1,0 +1,81 @@
+﻿@{
+    ViewBag.Title = "Staff";
+    Layout = "~/Views/Shared/_LayoutStaff.cshtml";
+}
+@model ARMSv2.Models.ExamReportViewModel
+           
+
+@using (Html.BeginForm("ExamReport", "Exams", FormMethod.Get))
+{
+
+    @Html.AntiForgeryToken()
+    <div>
+
+        <select name="RequiredStaffCourseId">
+            @if (Model.StaffCourses!=null)
+            {
+                foreach (var staffCourse in Model.StaffCourses.ToList())
+                {
+                    if (@staffCourse.Id == @Model.RequiredStaffCourseId)
+                    {
+                        <option selected value="@staffCourse.Id">@staffCourse.Course.Name (Semester @staffCourse.Semester.SemesterSession)</option>
+
+                    }
+                    else
+                    {
+                        <option value="@staffCourse.Id">@staffCourse.Course.Name (Semester @staffCourse.Semester.SemesterSession)</option>
+                    }
+                }
+            }
+        </select>
+        <button type="submit">Load</button>
+    </div>
+}
+@if (@Model.ActiveStaffCourse != null)
+{
+    <h3>Exam Report For @Model.ActiveStaffCourse.Course.Name</h3>
+    <h3>Malpractice Records</h3>
+
+    <table class="table table-striped">
+        <thead>
+            <td>Comments</td>
+            <td>Exam</td>
+            <td>Invigilator(s)</td>
+            <td>Time</td>
+            <td>Attachments</td>
+        </thead>
+        <tbody>
+        @foreach (var malpractice in Model.ExamMalpractices)
+        {
+            <tr>
+                <td>@malpractice.Comments</td>
+                <td>@malpractice.InvigilatorCourse.StaffCourse.Course.Code</td>
+                <td>@foreach (var invigilator in malpractice.InvigilatorCourse.StaffCourse.InvigilatorCourses.ToList())
+                    {
+                        <p>@invigilator.Invigilator.Person.FullName</p>
+                    }</td>
+                <td>@malpractice.CreatedOn</td>
+                <td>@if (malpractice.ExamMalpracticeAttachments != null) { 
+                        foreach (var attachment in @malpractice.ExamMalpracticeAttachments.ToList())
+                    {
+                            <img src="@attachment.Url"/>
+                        }
+                    }else{
+                <p>No attachments</p>
+                }
+                    
+                </td>
+            </tr>
+        }
+
+    </table>
+
+    <h3>Attendance Records</h3>
+    <p>Total Registered: @Model.RegisteredCount</p>
+    <p>Total Attended: @Model.AttendanceCount</p>
+     using (Html.BeginForm("PrintAttendanceList", "Exams", FormMethod.Post))
+        {
+            <input hidden name="RequiredStaffCourseId" value="@Model.RequiredStaffCourseId" />
+             <button type="submit">Print Attendance List</button>
+        }
+}

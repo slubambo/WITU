@@ -1,0 +1,121 @@
+﻿@model WITU.Models.Result.AcademicBoardResults
+@{
+    ViewBag.Title = "Academic Board Report";
+}
+
+<div>
+    <hgroup>
+        <h2 class="blueHeader">Academic Board Report - @Model.ProgramName</h2>
+        <h4>@Model.AcademicYearDetails Year @Model.SemesterLevel.Level Semester @Model.SemesterLevel.SemesterSession</h4>
+    </hgroup>
+    <br/>
+    <div>
+        <table class="table" id="academic-board-table">
+            <thead>
+                <tr>
+                    @*<th>
+                        SN
+                    </th>*@
+                    <th>
+                        Registration Number
+                    </th>
+                    <th>
+                        Name
+                    </th>
+                    @foreach (var course in Model.Courses)
+                    {
+                        @*<th colspan="3">@course.Code</th>*@
+                        <th >@course.Code Score</th>
+                        <th >@course.Code Grade</th>
+                        <th>@course.Code GP</th>
+                        
+                    }
+                    <th>
+                        CTCUs
+                    </th>
+                    <th>
+                        GPA
+                    </th>
+                    <th>
+                        CGPA
+                    </th>
+                    <th>
+                        Award
+                    </th>
+                    <th>
+                        Remarks
+                    </th>
+                </tr>
+                @*<tr>
+                    @foreach (var course in Model.Courses)
+                    {
+                        <th>Score</th>
+                        <th>Grade</th>
+                        <th>GP</th>
+                    }
+                </tr>*@
+            </thead>
+            <tbody>
+                @for (var i = 0; i < Model.StudentResultDetails.Count; i++)
+                {
+                    var srd = Model.StudentResultDetails.OrderBy(x => x.Student.RegistrationNumber).ToList()[i];
+
+                    <tr>
+                        @*<td>@(i + 1)</td>*@
+                        <td>@srd.Student.RegistrationNumber</td>
+                        <td>@srd.Student.Person.FullName</td>
+                        @foreach (var course in Model.Courses)
+                        {
+                            var sCourse = srd.StudentCourseDetails.FirstOrDefault(x => x.StudentCourse.Course.Id == course.Id);
+                            if (sCourse == null)
+                            {
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            }
+                            else
+                            {
+                                if (sCourse.CourseScoreSummary.IsPassed ?? false)
+                                {
+                                    <td>@sCourse.CourseScoreSummary.Score</td>
+                                    <td>@sCourse.CourseScoreSummary.Grade</td>
+                                    <td>@sCourse.CourseScoreSummary.GradePoint</td>
+                                }
+                                else
+                                {
+                                    <td><b>@sCourse.CourseScoreSummary.Score</b></td>
+                                    <td><b>@sCourse.CourseScoreSummary.Grade</b></td>
+                                    <td><b>@sCourse.CourseScoreSummary.GradePoint</b></td>
+                                }
+                            }
+                        }
+                        @if (srd.StudentResultSummary == null)
+                        {
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        }
+                        else
+                        {
+                            <td>@srd.StudentResultSummary.CumulativeTotatlCreditUnits</td>
+                            <td>@srd.StudentResultSummary.GradePointAverage</td>
+                            <td>@srd.StudentResultSummary.CumulativeGradePointAverage</td>
+                            <td>@srd.StudentResultSummary.Award</td>
+                            <td>@srd.StudentResultSummary.Remark</td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="b">
+        <a class="btn btn-default" href="@Url.Action("PrintAcademicBoardResult")" target="_blank">
+            <span class="fa fa-download fa-2x"></span>
+            <span class="fa fa-file-pdf-o fa-2x"></span>
+        </a>
+    </div>
+
+</div>

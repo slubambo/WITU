@@ -1,0 +1,183 @@
+﻿@using ARMSv2.Core.Model
+@model ARMSv2.Models.Result.ApprovalDetail
+
+@{
+    ViewBag.Title = "Approval Detail";
+}
+
+<div>
+    <hgroup>
+        <h2 class="blueHeader">Approval Details</h2>
+        <h3>
+            Action: 
+            <span class="label @(Model.ResultApproval.ChangeStatus == ChangeStatus.Delete ? "label-danger" : "label-warning")">@Model.ResultApproval.ChangeStatus</span>
+        </h3>
+    </hgroup>
+   
+    <div>
+        <dl class="dl-horizontal">
+            <dt><b>Student's Name:</b></dt>
+            <dd>@Model.ResultApproval.StudentCourse.Student.Person.FullName</dd>
+        </dl>
+
+        <dl class="dl-horizontal">
+            <dt><b>Registration Number:</b></dt>
+            <dd>@Model.ResultApproval.StudentCourse.Student.RegistrationNumber</dd>
+        </dl> 
+        
+        <dl class="dl-horizontal">
+            <dt><b>Program</b></dt>
+            <dd>@Model.ResultApproval.StudentCourse.Student.Program.ProgramCore.Name</dd>
+        </dl>
+        
+        <dl class="dl-horizontal">
+            <dt><b>Course Name:</b></dt>
+            <dd>@Model.ResultApproval.StudentCourse.Course.Name</dd>
+        </dl>
+        
+        <dl class="dl-horizontal">
+            <dt><b>Course Code:</b></dt>
+            <dd>@Model.ResultApproval.StudentCourse.Course.Code</dd>
+        </dl>
+        
+
+        <dl class="dl-horizontal">
+            <dt><b>Requested By:</b></dt>
+            <dd>@Model.ResultApproval.RequestedByUser.Username</dd>
+        </dl>
+        
+        <dl class="dl-horizontal">
+            <dt><b>Requested On:</b></dt>
+            <dd>@Model.ResultApproval.CreatedOn.ToString("f")</dd>
+        </dl>
+        
+        <dl>
+            <dt><b>Reason</b></dt>
+            <dd>@Model.ResultApproval.ChangeReason</dd>
+        </dl>
+    </div>
+    
+    <div class="col-md-12">
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    From
+                </div>
+                <div class="panel-body">
+                    <dl class="dl-horizontal">
+                        <dt>Continuous Assessment</dt>
+                        <dd>@Model.ResultApproval.OldContinuousAssessment</dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Examination Mark</dt>
+                        <dd>@Model.ResultApproval.OldExamMark</dd>
+                    </dl>
+                    <strong>
+                        <dl class="dl-horizontal">
+                            <dt>Final Mark</dt>
+                            <dd>@Model.ResultApproval.OldFinalMark</dd>
+                        </dl>
+                    </strong>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            @if (Model.ResultApproval.ChangeStatus == ChangeStatus.Edit)
+            {
+                <div class="panel panel-warning">
+                    <div class="panel-heading">
+                        To 
+                    </div>
+                    <div class="panel-body">
+                        <dl class="dl-horizontal">
+                            <dt>Continuous Assessment</dt>
+                            <dd>@Model.ResultApproval.NewContinuousAssessment</dd>
+                        </dl>
+                        <dl class="dl-horizontal">
+                            <dt>Examination Mark</dt>
+                            <dd>@Model.ResultApproval.NewExamMark</dd>
+                        </dl>
+                        <strong>
+                            <dl class="dl-horizontal">
+                                <dt>Final Mark</dt>
+                                <dd>@Model.ResultApproval.NewFinalMark</dd>
+                            </dl>
+                        </strong>
+                    </div>
+                </div>
+            }
+            else if (Model.ResultApproval.ChangeStatus == ChangeStatus.Delete)
+            {
+                <div class="panel panel-danger">
+                    <div class="panel-heading">
+                        To
+                    </div>
+                <div class="panel-body">
+                    <dl class="dl-horizontal">
+                        <dt>Continuous Assessment</dt>
+                        <dd>@Model.ResultApproval.NewContinuousAssessment</dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Examination Mark</dt>
+                        <dd>@Model.ResultApproval.NewExamMark</dd>
+                    </dl>
+                    <strong>
+                        <dl class="dl-horizontal">
+                            <dt>Final Mark</dt>
+                            <dd>@Model.ResultApproval.NewFinalMark</dd>
+                        </dl>
+                    </strong>
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+    
+    <hr/>
+    @if (Model.ResultApproval.IsApproved == null)
+    {
+        <div>
+            <h4>Decision</h4>
+            
+            @if (Model.SingleApprovalForm == null)
+            {
+                @Html.Action("SingleApprovalForm", new {resultChangeId = Model.ResultApproval.Id})
+            }
+            else
+            {
+                @Html.Partial("SingleApprovalForm", Model.SingleApprovalForm)
+            }
+        </div>
+    }
+    else
+    {
+        <div class="well-lg">
+            <h4>@(Model.ResultApproval.IsApproved.Value ? "Approved" : "Rejected")</h4>
+            @if (Model.ResultApproval.DisapprovalReason != null)
+            {
+                <p>
+                    @Model.ResultApproval.DisapprovalReason
+                </p>
+            }
+            else
+            {
+                <p><em>No Reason given</em></p>
+            }
+        </div>
+    }
+    
+    <div>
+        <a class="btn btn-default pull-left" href="@Url.Action("Changes")">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+            Back
+        </a>
+        
+        <a class="btn btn-default pull-right" href="@Url.Action("PrintApproovalDetail", new { id = Model.ResultApproval.Id })" target="_blank">
+            <span class="fa fa-download fa-2x"></span>
+            <span class="fa fa-file-pdf-o fa-2x"></span>
+        </a>
+
+    </div>
+   
+</div>
+

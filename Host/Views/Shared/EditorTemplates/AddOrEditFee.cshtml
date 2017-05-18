@@ -1,0 +1,66 @@
+﻿@using ARMSv2.Core.Model
+@using ARMSv2.Utils
+@model ARMSv2.Models.AddOrEditFee
+
+@{
+    Layout = null;
+}
+
+
+<div class="form-horizontal">
+    @Html.HiddenFor(model => model.Id)
+    @Html.HiddenFor(model => model.FunctionalFeeId)
+
+    <div class="form-group col-xs-12">
+        @Html.LabelFor(model => model.YearOfStudy, new { @class = "control-label col-sm-3" })
+        <div class="">
+            @Html.TextBoxFor(model => model.YearOfStudy, new { @class = "col-sm-7 col-xs-12 col-md-6" })&nbsp;
+            @Html.ValidationMessageFor(model => model.YearOfStudy)
+        </div>
+    </div>
+
+    <div class="form-group col-xs-12">
+        @Html.LabelFor(model => model.Fees, new { @class = "control-label col-sm-3" })
+        <div class="">
+            @Html.TextBoxFor(model => model.Fees, new { @class = "col-sm-7 col-xs-12 col-md-6" })&nbsp;
+            @Html.ValidationMessageFor(model => model.Fees)
+        </div>
+    </div>
+
+    <div class="form-group col-xs-12">
+        @Html.LabelFor(model => model.IsPayableOnce, new { @class = "control-label col-sm-3" })
+        <div class="">
+            @Html.EditorFor(model => model.IsPayableOnce)
+            @Html.ValidationMessageFor(model => model.IsPayableOnce)
+        </div>
+    </div>
+
+    <div class="form-group col-xs-12">
+        @Html.LabelFor(model => model.StartAcademicYear, new { @class = "control-label col-sm-3" })
+        <div class="">
+            @Html.DropDownWithModelSelectable(model => model.StartAcademicYear, Model.AcademicYearOptions,
+                                  new SelectListItem() { Text = "-- Select Academic Year--", Value = "0" }, new { @class = "col-sm-7 col-xs-12 expandSelect col-md-6" })<br/>
+            @Html.ValidationMessageFor(model => model.StartAcademicYear)
+        </div>
+    </div>
+
+    <div class="form-group col-xs-12">
+        @Html.LabelFor(model => model.GraduateLevel, new { @class = "control-label col-sm-3" })
+        <div class="">
+            @Html.RadioButtonFor(model => model.GraduateLevel, GraduateLevel.UnderGraduate, new { id = "RdBtnUnderGraduate" }) Under Graduate
+            @Html.RadioButtonFor(model => model.GraduateLevel, GraduateLevel.PostGraduate, new { id = "RdBtnPostGraduate" }) Post Graduate
+            <br />
+            @Html.ValidationMessageFor(model => model.GraduateLevel)
+        </div>
+    </div>
+
+    <div class="form-group col-xs-12">
+        @Html.LabelFor(model => model.StudyPeriodCategory, new { @class = "control-label col-sm-3" })
+        <div class="">
+            @Html.RadioButtonFor(model => model.StudyPeriodCategory, StudyPeriodCategory.Regular) Regular
+            @Html.RadioButtonFor(model => model.StudyPeriodCategory, StudyPeriodCategory.InService) In-Service
+            <br />
+            @Html.ValidationMessageFor(model => model.StudyPeriodCategory)
+        </div>
+    </div>
+</div>

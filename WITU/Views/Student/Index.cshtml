@@ -1,0 +1,34 @@
+﻿@using WITU.Core.Model
+@{
+    ViewBag.Title = "Student";
+    Layout = "~/Views/Shared/_LayoutStudent.cshtml";
+    
+}
+@model WITU.Models.StudentHomeView
+           
+<div class="row">
+    <div class="col-md-12" style="line-height:25px">
+        <h4 class="maroonHeader">Student Information</h4>
+        </div>
+    </div>
+        <div class="row">
+        <div class="col-md-3"><img src="@User.ApplicationUserProfilePhoto()" class="img-responsive" style="width: 110px; height: auto; margin:10px auto; border: 1px solid #E9C3CC" />
+        </div>
+            <div class="col-md-9 row-top" style="line-height:20px">
+                <div class="row"><div class="col-xs-3"><p class="detailLabel">NAME:</p></div><div class="col-xs-9"><p> @Model.student.Person.FullName</p></div></div>
+                <div class="row"><div class="col-xs-3"><p class="detailLabel">REG No:</p></div><div class="col-xs-9"><p>@Model.student.RegistrationNumber</p></div></div>
+                @*<div class="row"><div class="col-xs-3"><p class="detailLabel">FEES No:</p></div><div class="col-xs-9"><p>@Model.student.StudentNumber</p></div></div>*@
+                <div class="row"><div class="col-xs-3"><p class="detailLabel">PROGRAMME:</p></div><div class="col-xs-9"><p>@Model.student.Program.ProgramCore.Name</p></div></div>
+                @if (!Model.registrationStatus)
+                {
+                    <div class="row"><div class="col-xs-3"><p class="detailLabel alertText">ALERT!:</p></div><div class="col-xs-9"><p>You have not registered</p></div></div>
+
+                }
+                <div class="row">
+                    <div class="col-xs-3"></div>
+                    <div class="col-xs-9 noMarginCol">
+                        @Html.ActionLink("Edit", "EditStudentProfile", "Student", null, new { @class = "btn saveBtn" })
+                    </div>
+                </div>
+            </div>
+            </div>

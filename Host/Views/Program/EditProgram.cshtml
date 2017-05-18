@@ -1,0 +1,199 @@
+﻿@using ARMSv2.Utils
+@model ARMSv2.Models.EditProgram
+
+@{
+    ViewBag.Title = "Ndejje University Records Management System";
+}
+<div class="">
+
+    <h2 class="greyHeader">
+        Add/Edit Program 
+        
+        @if (!String.IsNullOrEmpty(Model.ProgramCoreName))
+        {
+            <span>- @Model.ProgramCoreName</span>
+        }
+    </h2>
+    <br/>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            @*<h4>Program Details</h4>*@
+          
+
+            <div>
+                @Html.Raw(Html.UnEncodedValidationSummary())
+            </div>
+
+            <div class="form-group"><span class="col-md-3 control-label">Program</span>
+                <div class="col-md-9 " >
+                    @Html.DropDownWithModelSelectable(m => m.ProgramCoreId, Model.ProgramCores,
+                    new SelectListItem() { Text = "-- Select Program Component -- ", Value = "0" }, new { @class = "form-control addControl" })
+                </div>
+            </div>
+            <div class="col2longLbls">
+                @Html.EditorFor(m => m.AdministrativeSelectItem)</div>
+           
+            <div class="form-group">
+                @Html.LabelFor(m => m.Code, new { @class = "col-md-3 control-label" })
+                <div class="col-md-9 ">
+                    @Html.TextBoxFor(m => m.Code, new { @class = "form-control addControl" })
+                </div>
+            </div>
+            
+            <div class="form-group">
+                @Html.LabelFor(m => m.ProgramNumber, new { @class = "col-md-3 control-label" })
+                <div class="col-md-9 ">
+                    @Html.TextBoxFor(m => m.ProgramNumber, new { @class = "form-control addControl" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.StartAcademicYear, new { @class = "col-md-3 control-label" })
+                <div class="col-md-9 ">
+                    @Html.DropDownWithModelSelectable(m => m.StartAcademicYear, Model.AcademicYears,
+                        new SelectListItem() { Text = "-- Select Academic Year -- ", Value = "0" }, new { @class = "form-control addControl" })
+                </div>
+            </div>
+            
+            <div class="form-group">
+                @Html.LabelFor(m => m.MinimumLoad, new { @class = "col-md-3 control-label" })
+                <div class="col-md-6 ">
+                    @Html.TextBoxFor(m => m.MinimumLoad, new { @class = "form-control" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.IsAdmitted, new { @class = "col-md-3 control-label" })
+                <div class="col-md-9 ">
+                    <div class="col-md-3">
+                        @Html.RadioButtonFor(m => m.IsAdmitted, true) Open
+                    </div>
+                    <div class="col-md-7">
+                        @Html.RadioButtonFor(m => m.IsAdmitted, false) Closed (Not Admitting)
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.StudyPeriodPrograms, new { @class = "col-md-3 control-label" })
+                <div class="col-md-8">
+                    @for (int i = 0; i < Model.StudyPeriodPrograms.Count; i++)
+                    {
+                        <div class="col-md-3">
+                            @Html.CheckBoxFor(m => m.StudyPeriodPrograms[i].IsSelected)
+                            @Html.DisplayFor(m => m.StudyPeriodPrograms[i].Name)
+
+                            @Html.HiddenFor(m => m.StudyPeriodPrograms[i].StudyPeriodId)
+                            @Html.HiddenFor(m => m.StudyPeriodPrograms[i].StudyPeriodProgramId)
+                            @Html.HiddenFor(m => m.StudyPeriodPrograms[i].Name)
+                        </div>
+                    }
+                </div>
+            </div>
+
+
+            @*<div class="col-md-12">
+                <h6>*Leave both fields blank if not applicable.</h6>
+                <table class="table blueTable">
+                    <thead>
+                        <tr>
+                            <th>Study Period</th>
+                            <th>Tuition</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (var i = 0; i < Model.StudyPeriodPrograms.Count; i++)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DropDownWithModelSelectable(m => m.StudyPeriodPrograms[i].StudyPeriodId,
+                              Model.StudyPeriods, new SelectListItem() { Text = "-- Select Study Period -- ", Value = "0" }, new { @class = "form-control noBorderInput" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(m => m.StudyPeriodPrograms[i].Tuition, new { @class = "form-control noBorderInput" })
+
+                                    @Html.HiddenFor(x => x.StudyPeriodPrograms[i].StudyPeriodProgramId)
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                @for (var i = 0; i < Model.StudyPeriods.Count; i++)
+                {
+                    @Html.HiddenFor(x => x.StudyPeriods[i].Text)
+                    @Html.HiddenFor(x => x.StudyPeriods[i].Value)
+                }
+            </div>*@
+
+            
+
+            @if (Model.Specialisations.Any())
+            {
+                <div class="col-md-12">
+                    <h4>Specialisations</h4>
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.SpecialisationLevel, new { @class = "col-md-3 control-label" })
+                        <div class="col-md-9">
+                            @Html.TextBoxFor(m => m.SpecialisationLevel, new { @class = "form-control" })
+                        </div>
+                    </div>
+
+                    <h6>*Leave both fields blank if not applicable.</h6>
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Select Specialisation</th>
+                                <th>Code</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (var i = 0; i < Model.ProgramSpecialisations.Count; i++)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DropDownWithModelSelectable(m => m.ProgramSpecialisations[i].SpecialisationCoreId,
+                                        Model.Specialisations, new SelectListItem() { Text = "-- Select Specialisation -- ", Value = "0" }, new { @class = "form-control" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(m => m.ProgramSpecialisations[i].Code, new { @class = "form-control" })
+
+                                        @Html.HiddenFor(x => x.ProgramSpecialisations[i].SpecialisaitonId)
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                    @for (var i = 0; i < Model.Specialisations.Count; i++)
+                    {
+                        @Html.HiddenFor(x => x.Specialisations[i].Text)
+                        @Html.HiddenFor(x => x.Specialisations[i].Value)
+                    }
+
+                </div>
+            }
+
+            <div class="col-md-9">
+                <div class="fright">
+                    <input type="submit" value="Save" class="btn saveBtn " />
+                    <input type="button" value="Cancel"
+                           onclick="javascript: cancelSubmission('@Url.Action("View", "Program", new {id = Model.ProgramId})');" class="btn delBtn" />
+                </div>  <div class="clearfix"></div>
+                    <br />
+                
+            </div>
+
+
+        </div>
+
+        @Html.HiddenFor(x => x.ProgramId)
+    }
+</div>
+

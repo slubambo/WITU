@@ -1,0 +1,18 @@
+﻿@using ARMSv2.Utils
+@model ARMSv2.Models.widgets.CampusSelectItem
+
+<div>
+    <link href="~/Content/base/font-awesome.min.css" rel="stylesheet" />
+    
+    <div class="form-group col-sm-12">
+        @Html.LabelFor(m => m.CampusId, new { @class = "col-md-4 col-sm-4 control-label" })
+        <div class="col-md-8  col-sm-8">
+            @Html.DropDownWithModelSelectable(m => m.CampusId, Model.CampusOptions, Model.DefaultFirstItem,
+                new { @class = "form-control", id = "drpdwn-campus" })
+        </div>
+    </div>
+    
+ 
+    @Html.HiddenFor( x => x.StaffId)
+    @Html.Hidden("levelId",2)
+</div>

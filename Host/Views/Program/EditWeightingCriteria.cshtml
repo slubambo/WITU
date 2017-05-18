@@ -1,0 +1,130 @@
+﻿@using ARMSv2.Utils
+@model ARMSv2.Models.EditWeightingCriteria
+
+@{
+    ViewBag.Title = "Edit Weighting Criteria";
+}
+
+<div class="">
+    <h3 class="blueHeader">Edit @Model.ProgramName  Weighting Criteria </h3>
+
+    @using (Html.BeginForm())
+    {
+        <div>
+            @Html.Raw(Html.UnEncodedValidationSummary())
+        </div>
+
+        <div class="tabs borderedTabs noborder ">
+            <ul class="">
+                @for (var i = 0; i < Model.CriteriaElements.Count; i++)
+                {
+                    <li><a href="#div-@Model.CriteriaElements[i].Name">@Model.CriteriaElements[i].Name</a></li>
+                }
+            </ul>
+
+            @for (var i = 0; i < Model.CriteriaElements.Count; i++)
+            {
+
+
+                <div id="div-@Model.CriteriaElements[i].Name" class="bodytext tab-pane nopadding">
+                    <div class="clearfix">
+                        <br />
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.CriteriaElements[i].CriteriaKind, new { @class = "control-label col-md-3" })
+                        <div class="col-md-9">
+                            @Html.DropDownWithModelSelectable(model => model.CriteriaElements[i].CriteriaKind, Model.CriteriaOptions,
+                                new SelectListItem() { Text = "-- Choose Option --", Value = "-1" },
+                                new
+                                {
+                                    @onchange = "javascript:onCriteriaDropDownChange(this, '" + @Model.CriteriaElements[i].Name + "')",
+                                    @id = "drp-criteria-element-" + @Model.CriteriaElements[i].Name
+                                })
+                        </div>
+                    </div>
+
+                    <div class="clearfix"></div>
+                    <br />
+
+                    <div class="form-group " id="div-subject-numbers-@Model.CriteriaElements[i].Name">
+                        @Html.LabelFor(model => model.CriteriaElements[i].NumberOfSubjects, new { @class = "control-label col-md-3" })
+                        <div class="col-md-9">
+                            @Html.TextBoxFor(model => model.CriteriaElements[i].NumberOfSubjects)
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <br />
+                    @for (var j = 0; j < Model.CriteriaElements[i].SubjectCategories.Count; j++)
+                    {
+                        <div id="div-subject-options-@Model.CriteriaElements[i].Name-@Model.CriteriaElements[i].SubjectCategories[j].SubjectRelations">
+
+                            <div class="maroonHeader col-md-12 lbl-subject-options-title-@Model.CriteriaElements[i].SubjectCategories[j].SubjectRelations">
+                                @Model.CriteriaElements[i].SubjectCategories[j].Name
+                            </div>
+
+                            @for (var k = 0; k < Model.CriteriaElements[i].SubjectCategories[j].Subjects.Count; k++)
+                            {
+                                <div class="col-md-3">
+                                    <div class="col-md-10">
+                                        <div class=" checkbox">
+                                            @Html.CheckBoxFor(m => m.CriteriaElements[i].SubjectCategories[j].Subjects[k].Selected,
+                                         new { @class = "weightCheck chk-subject-" + Model.CriteriaElements[i].Name })
+                                            @Html.DisplayTextFor(m => m.CriteriaElements[i].SubjectCategories[j].Subjects[k].Name)
+                                        </div>
+                                        @Html.HiddenFor(m => m.CriteriaElements[i].SubjectCategories[j].Subjects[k].Name)
+                                        @Html.HiddenFor(m => m.CriteriaElements[i].SubjectCategories[j].Subjects[k].SubjectId)
+                                        @Html.HiddenFor(m => m.CriteriaElements[i].SubjectCategories[j].Subjects[k].SubjectWeightingCriteriaId)
+                                        @Html.HiddenFor(m => m.CriteriaElements[i].SubjectCategories[j].Subjects[k].SubjectRelation)
+                                    </div>
+                                </div>
+                            }
+                            <div class="clearfix"></div>
+                            <br />
+                        </div>
+
+                        @Html.HiddenFor(m => m.CriteriaElements[i].SubjectCategories[j].Name)
+                        @Html.HiddenFor(m => m.CriteriaElements[i].SubjectCategories[j].SubjectRelations)
+                    }
+
+                    @*<div class="col-md-12 form-group">
+                            <label class="sr-only" for="email">@Html.LabelFor()</label>
+                            <textarea id="comment" class="form-control" placeholder="Comment"></textarea>
+                        </div>*@
+
+                    <div class="col-md-12">
+                        @Html.LabelFor(model => model.CriteriaElements[i].Summary,
+                            new { @class = "control-label", @for = "txtArea-Summary-" + @Model.CriteriaElements[i].Name })
+                        <div>
+                            @Html.TextAreaFor(model => model.CriteriaElements[i].Summary,
+                                new { @class = "form-control", id = "txtArea-Summary-" + @Model.CriteriaElements[i].Name })
+                        </div>
+                    </div>
+
+                    @Html.HiddenFor(x => x.CriteriaElements[i].Name)
+                    @Html.HiddenFor(x => x.CriteriaElements[i].WeightingCriteriaId)
+                    <div class="clearfix"></div>
+                    <br />
+                    <div class="col-md-12">
+                        <div class="fright">
+                            <input type="submit" value="Save" class="saveBtn " />
+                            <input type="button" value="Cancel"
+                                   onclick="javascript: cancelSubmission('@Url.Action("ProgramCore", "Program", new {id = Model.ProgramCoreId})');" class="delBtn" />
+                            <div class="clearfix"></div>
+                        </div>
+                        @Html.HiddenFor(x => x.ProgramCoreId)
+                        @Html.HiddenFor(x => x.ProgramName)
+                        
+                    </div>
+                    <div class="clearfix"></div>
+                    <br />
+                </div>
+            }
+        </div>
+        <br />
+        
+    }
+
+    <br />
+    <br />
+    
+</div>

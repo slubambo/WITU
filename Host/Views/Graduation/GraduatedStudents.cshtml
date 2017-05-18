@@ -1,0 +1,179 @@
+﻿@model IEnumerable<ARMSv2.Core.Model.Student>
+@using ARMSv2.Core.Model
+@using ARMSv2.Utils
+@using ARMSv2.Models.UserManagement
+@{
+    ViewBag.Title = "Graduation Lists";
+    var gradDetails = Model.Any() ? Model.Select(x => x.GraduationDetail).Distinct().OrderByDescending(x => x.GraduationDate) : null;
+
+}
+@{ var sessionDetails = (SessionUserManagementDetails)HttpContext.Current.Session["LoggedInUserRoles"]; }
+
+@if (Model.Any())
+{
+    foreach (var gradDetail in gradDetails)
+    {
+        var progCores = Model.Where(x => x.GraduationDetail.Id == gradDetail.Id).Select(x => x.Program.ProgramCore).Distinct().OrderByDescending(x => x.Name);
+        <h3 class="maroonHeader">@gradDetail.Name (@gradDetail.GraduationDate.ToString("dd MMMM yyyy"))</h3>
+        <div class="table-responsive">
+            <table id="tbl-grad-students-@gradDetail.Id" class="tbl-grad-students table table-hover">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var core in progCores)
+                    {
+                        if (core.SpecialisationCores.Any())
+                        {
+                            //Core has specialisations
+                            foreach (var specCore in core.SpecialisationCores)
+                            {
+                                var studentsFor = Model.Where(x => x.GraduationDetail.Id == gradDetail.Id && x.Program.ProgramCore.Id == core.Id && x.Specialisation != null && x.Specialisation.SpecialisationCore.Id == specCore.Id);
+
+                                if (studentsFor.Any())
+                                {
+                                    <tr>
+                                        <td><strong>@core.Name.ToUpper() (@specCore.Name.ToUpper())</strong></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td><i>The @(core.AwardType.Level == GraduateLevel.PostGraduate ? "Director" : "Dean"), @core.Programs.FirstOrDefault().Faculty.FacultyCore.Name to present the following for the Award of the <b>@core.Name (@specCore.Name)</b></i></td>
+                                        <td></td>
+                                    </tr>
+                                    foreach (var student in studentsFor)
+                                    {
+                                        <tr>
+                                            <td>@student.Person.FullNameWithNoTitleForGradList @(student.Person.Gender != null && student.Person.Gender == Gender.Female ? "(Ms)" : "") </td>
+                                            <td>
+                                                @if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int)ARMSv2.Models.ServiceDetail.Transcript
+                                                                                                             && (x.Role.CanCreate == true || x.Role.CanRead == true || x.Role.CanUpdate == true)))
+                                                {
+                                                    <button class=" btn btn-default btn-xs" onclick="location.href = '@Url.Action("PrintStudentTranscript", "Result", new {studentId = student.Id})'">
+                                                        <span class="fa fa-download"></span>
+                                                        Transcript
+                                                    </button>
+                                                    <small class="hidden">@student.Program.ProgramCore.Name</small>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+
+                                }
+
+
+                            }
+
+                            //Students withouts specialisations in a program with specialisations
+                            var studentsWithoutSpec = Model.Where(x => x.GraduationDetail.Id == gradDetail.Id && x.Program.ProgramCore.Id == core.Id && (x.Specialisation == null || core.SpecialisationCores.All(specCore => specCore.Id != x.Specialisation.SpecialisationCore.Id)));
+                            if (studentsWithoutSpec.Any())
+                            {
+                                <tr>
+                                    <td><strong>@core.Name.ToUpper()</strong></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><i>The @(core.AwardType.Level == GraduateLevel.PostGraduate ? "Director" : "Dean"), @core.Programs.FirstOrDefault().Faculty.FacultyCore.Name to present the following for the Award of the <b>@core.Name</b></i></td>
+                                    <td></td>
+                                </tr>
+                                foreach (var student in studentsWithoutSpec)
+                                {
+                                    <tr>
+                                        <td>@student.Person.FullNameWithNoTitleForGradList @(student.Person.Gender != null && student.Person.Gender == Gender.Female ? "(Ms)" : "") </td>
+                                        <td>
+                                            @if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int)ARMSv2.Models.ServiceDetail.Transcript
+                                                                                                             && (x.Role.CanCreate == true || x.Role.CanRead == true || x.Role.CanUpdate == true)))
+                                            {
+                                                <button class=" btn btn-default btn-xs" onclick="location.href = '@Url.Action("PrintStudentTranscript", "Result", new {studentId = student.Id})'">
+                                                    <span class="fa fa-download"></span>
+                                                    Transcript
+                                                </button>
+                                                <small class="hidden">@student.Program.ProgramCore.Name</small>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+
+                            }
+
+
+                        }
+                        else
+                        {
+                            <tr>
+                                <td><strong>@core.Name.ToUpper()</strong></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td><i>The @(core.AwardType.Level == GraduateLevel.PostGraduate ? "Director" : "Dean"), @core.Programs.FirstOrDefault().Faculty.FacultyCore.Name to present the following for the Award of the <b>@core.Name</b></i></td>
+                                <td></td>
+                            </tr>
+                            foreach (var student in Model.Where(x => x.GraduationDetail.Id == gradDetail.Id && x.Program.ProgramCore.Id == core.Id))
+                            {
+                                <tr>
+                                    <td>@student.Person.FullNameWithNoTitleForGradList @(student.Person.Gender != null && student.Person.Gender == Gender.Female ? "(Ms)" : "") </td>
+                                    <td>
+                                        @if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int)ARMSv2.Models.ServiceDetail.Transcript
+                                                                                                             && (x.Role.CanCreate == true || x.Role.CanRead == true || x.Role.CanUpdate == true)))
+                                        {
+                                            <button class=" btn btn-default btn-xs" onclick="location.href = '@Url.Action("PrintStudentTranscript", "Result", new {studentId = student.Id})'">
+                                                <span class="fa fa-download"></span>
+                                                Transcript
+                                            </button>
+                                            <small class="hidden">@student.Program.ProgramCore.Name</small>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+
+                        }
+
+                    }
+                </tbody>
+
+            </table>
+        </div>
+
+        <br />
+
+    }
+
+
+
+}
+else
+{
+    <span>No Students to Show</span>
+}
+
+
+<button id="btn-gobackto-detail" class=" btn btn-default btn-sm" onclick="location.href = '@Url.Action("Lists", "Graduation", null)'">
+    <span class="glyphicon glyphicon-arrow-left"></span>
+    Back
+</button>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".tbl-grad-students").dataTable(
+            {
+                dom: 'lBfrtip',
+                buttons: [
+                    {
+                        extend: 'csv',
+                        exportOptions: {
+                            columns: [0]
+                        }
+                    }, {
+                        extend: 'pdfHtml5',
+                        exportOptions: {
+                            columns: [0]
+                        }
+                    }
+                ], "bSort": false, "bDestroy": true, responsive: true
+            }
+
+            );
+    })
+</script>

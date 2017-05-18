@@ -1,0 +1,120 @@
+﻿@model IEnumerable<ARMSv2.Core.Model.PublishedResult>
+@using ARMSv2.Core.Model
+@using ARMSv2.Utils
+@using ARMSv2.Models.UserManagement
+@{ var sessionDetails = (SessionUserManagementDetails)HttpContext.Current.Session["LoggedInUserRoles"]; }          
+@{
+    ViewBag.Title = "Publish Result";
+}
+
+
+<div>
+    <h2 class="blueHeader">Publish Results</h2>
+    
+    <div class="tabs">
+        <ul class="nav nav-pills programUl">
+            <li><a href="#dv-publish-pending">Pending</a></li>
+            <li><a href="#dv-publish-published">Published</a></li>
+        </ul>
+        
+        <div id="dv-publish-pending">
+            @if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) ARMSv2.Models.ServiceDetail.PublishResults
+                                                                                     && (x.Role.CanCreate == true || x.Role.CanUpdate == true || x.Role.CanDelete == true)))
+            {
+                <div class="pull-right voffset1 btn-group btn-group-sm">
+                    <button id="btn-publish-result" class="btn btn-info btn-sm voffset1 btn-multiselect">
+                        <span class="fa fa-pencil-square-o"></span>
+                        Publish Results
+                    </button>
+                </div>
+            }
+            <table class="table" id="tbl-publish-result">
+                <thead>
+                    <tr>
+                        <th>
+                            <input type="checkbox" autocomplete="off" value="allChecked" class="pull-left" 
+                                   id="tbl-chbx-publish-all" />
+                        </th>
+                        <th>Campus</th>
+                        <th>Program</th>
+                        <th>Course</th>
+                        <th>
+                            <div>
+                                Academic Year
+                            </div>
+                            <div>
+                                <small><em>when the course was done.</em></small>
+                            </div>
+                        </th>
+                        <th>
+                            <div>
+                                Semester
+                            </div>
+                            <div>
+                                <small><em>when the course was done.</em></small>
+                            </div>
+                        </th>
+                        <th>No. of Pending Results</th>
+                        <th>No. of Published Results</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var pr in Model.Where(x => !x.IsPublished))
+                    {
+                        <tr>
+                            <td>
+                                <input type="checkbox" value="@pr.Id" autocomplete="off" 
+                                       onchange="javascript: publishCheckBoxChange(this);" class="tbl-chbx-publish-sc pull-left" />
+                            </td>
+                            <td>@pr.Course.Program.Campus.Name</td>
+                            <td>@pr.Course.Program.ProgramCore.Name @(pr.Course.Specialisation == null?"":string.Format("({0})",pr.Course.Specialisation.SpecialisationCore.Name))</td>
+                            <td>@pr.Course.Name</td>
+                            <td>@pr.Semester.AcademicYear.Name</td>
+                            <td>@pr.Semester.SemesterSession</td>
+                            <td>@pr.StudentCourses.Count(x => x.ResultStatus != ResultStatus.PublishedMarks && x.ResultStatus != ResultStatus.ChangeApproved && x.ResultStatus != ResultStatus.ChangedPendingApproval && x.ResultStatus != ResultStatus.DeletedPendingApproval)</td>
+                            <td>@pr.StudentCourses.Count(x => x.ResultStatus == ResultStatus.PublishedMarks || x.ResultStatus == ResultStatus.ChangeApproved || x.ResultStatus == ResultStatus.ChangedPendingApproval || x.ResultStatus == ResultStatus.DeletedPendingApproval)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        
+        <div id="dv-publish-published">
+            @Html.Action("PublishHistory")
+        </div>
+    </div>
+    
+    @*<p class="well-sm">
+        Please specify the course, specialisation or program to publish
+    </p>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+
+            <div>
+                @Html.Raw(Html.UnEncodedValidationSummary())
+            </div>
+
+            @Html.EditorFor(m => m.CourseProgramSelectItem)
+
+            <div class="form-group col-md-12">
+                @Html.LabelFor(m => m.AcademicYearId, new { @class = "col-md-4 control-label" })
+                <div class="col-md-8">
+                    @Html.DropDownWithModelSelectable(m => m.AcademicYearId, Model.AcademicYearOptions,
+                        Model.CourseProgramSelectItem.YearSemesterPogramSelectItem.ProgramSelectItem.AdministrativeSelectItem.DefaultFirstItem,
+                        new { @class = "form-control", id = "drpdwn-academic-year" })
+                </div>
+            </div>
+            <div class="pull-right">
+                <button type="submit" class="btn saveBtn">
+                    Next
+                    <span class="glyphicon glyphicon-chevron-right"></span>
+                </button>
+            </div>
+        </div>
+    }*@
+</div>
+

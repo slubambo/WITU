@@ -1,0 +1,132 @@
+﻿
+@using WITU.Core.Model
+@model WITU.Models.SemesterView
+@using WITU.Utils
+@using WITU.Models.UserManagement
+           
+@{ var sessionDetails = (SessionUserManagementDetails)HttpContext.Current.Session["LoggedInUserRoles"]; }
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var table = $('.semesterTable').DataTable({
+            "columnDefs": [
+                { "visible": false, "targets": 0 }
+            ],
+            "order": [[0, 'desc'], [2, 'desc']],
+            "displayLength": 25,
+            "drawCallback": function (settings) {
+                var api = this.api();
+                var rows = api.rows({ page: 'current' }).nodes();
+                var last = null;
+
+                api.column(0, { page: 'current' }).data().each(function (group, i) {
+                    if (last !== group) {
+                        $(rows).eq(i).before(
+                            '<tr class="group"><td colspan="5">' + group + '</td></tr>'
+                        );
+
+                        last = group;
+                    }
+                });
+            }
+        });
+
+        // Order by the grouping
+        $('.semesterTable tbody').on('click', 'tr.group', function () {
+            var currentOrder = table.order()[0];
+            
+            if (currentOrder[0] === 0 && currentOrder[1] === 'asc') {
+                table.order([0, 'desc']).draw();
+            }
+            else {
+                table.order([0, 'asc']).draw();
+            }
+            
+        });
+    });
+</script>
+<style>
+    tr.group,
+    tr.group:hover {
+        background-color: #ddd !important;
+        color: #663300 !important;
+    }
+    .table-hover tbody tr:hover > td {
+        cursor: pointer;
+        cursor: hand;
+    }
+
+</style>
+<table class="table semesterTable">
+    <thead>
+
+        <tr>
+            <th>
+                Academic Year
+            </th>
+            <th>
+                Start Date
+            </th>
+            <th>
+                End Date
+            </th>
+            <th>
+                Registration Deadline
+            </th>
+            <th>
+                Results Upload Deadline
+            </th>
+
+        </tr>
+
+    </thead>
+    <tbody>
+        @foreach (var item in Model.SemesterConfigurationDetails)
+{
+
+    if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) WITU.Models.ServiceDetail.Semester
+                                                                            && (x.Role.CanUpdate == true)))
+    {
+        <tr onclick="location.href = '@Url.Action("AddorEdit", "Semester", new {id = @item.Id})' " style="cursor: pointer;" title="Edit">
+            <td>
+                Academic Year: @item.AcademicYear.Name
+            </td>
+            <td>
+                @item.StartDate.ToString("dd MMMM yyyy")
+            </td>
+            <td>
+                @item.EndDate.ToString("dd MMMM yyyy")
+            </td>
+            <td>
+                @item.RegistrationDeadline.ToString("dd MMMM yyyy")
+            </td>
+            <td>
+                @item.ResultsUploadDeadline.ToString("dd MMMM yyyy")
+            </td>
+        </tr>
+    }
+    else
+    {
+         <tr>
+            <td>
+                Academic Year: @item.AcademicYear.Name
+            </td>
+            <td>
+                @item.StartDate.ToString("dd MMMM yyyy")
+            </td>
+            <td>
+                @item.EndDate.ToString("dd MMMM yyyy")
+            </td>
+            <td>
+                @item.RegistrationDeadline.ToString("dd MMMM yyyy")
+            </td>
+            <td>
+                @item.ResultsUploadDeadline.ToString("dd MMMM yyyy")
+            </td>
+        </tr>
+    }
+}
+    </tbody>
+</table>
+
+

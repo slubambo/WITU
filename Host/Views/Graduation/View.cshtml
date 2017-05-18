@@ -1,0 +1,160 @@
+﻿@using ARMSv2.Core.Model
+@using ARMSv2.Models
+@using ARMSv2.Utils
+@using ARMSv2.Models.UserManagement
+@model ARMSv2.Models.graduation.GradCeremonyView
+
+@{
+    ViewBag.Title = "Ndejje University Records Management System";
+}
+@{ var sessionDetails = (SessionUserManagementDetails)HttpContext.Current.Session["LoggedInUserRoles"]; }
+
+
+<div class="row">
+    <h3 class="blueTxt col-sm-7 nomargin">
+        @Model.GradCeremony.Name
+    </h3>
+    @if (Request.IsAuthenticated)
+    {
+        if (User.ApplicationUserType() == (int) UserTypes.Staff)
+        {
+            <div class="col-sm-5">
+                <div class="row">
+                    @if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) ARMSv2.Models.ServiceDetail.GraduationCeremonies
+                    && (x.Role.CanUpdate == true)))
+                    {
+                        //If there are students already added to the ceremony, hide Edit ceremony button
+                        if (!Model.GradCeremony.GraduationDetails.SelectMany(gc => gc.Students).Any())
+                        {
+                            <span class="col-md-6">
+                                <button id="btn-edit-ceremony" class=" btn btn-default btn-sm" onclick="location.href = '@Url.Action("AddOrEditGradCeremony", "Graduation", new {id = Model.GradCeremony.Id})'" >
+                                    <span class="glyphicon glyphicon-edit"></span>
+                                    Edit Ceremony
+                                </button>
+                            </span>
+                        
+                        }
+                        
+                    }
+                    @if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) ARMSv2.Models.ServiceDetail.GraduationCeremonies
+                                                                                             && (x.Role.CanDelete == true)))
+                    {
+                        //If there are students already added to the ceremony, hide Delete ceremony button
+                        if (!Model.GradCeremony.GraduationDetails.Select(gc => gc.Students).Any())
+                        {
+                            <span class="col-md-6">
+                                <button id="btn-delete-ceremony" class=" btn btn-default btn-sm">
+                                    <span class="glyphicon glyphicon-remove"></span>
+                                    Delete Ceremony
+                                </button>
+                            </span>
+                        }
+                    }
+                </div>
+            </div>
+        }
+    }
+</div>
+
+
+<div class="row">
+    <span class="col-xs-12 col-sm-4">Completion Date: </span>
+    <span class="col-xs-12 col-sm-8">@Model.GradCeremony.CompletionDate.ToString("MMMM yyyy")</span>
+</div>
+
+
+<div class="row">
+
+    @if (Request.IsAuthenticated)
+    {
+        if (User.ApplicationUserType() == (int) UserTypes.Staff)
+        {
+            if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) ARMSv2.Models.ServiceDetail.GraduationCeremonies
+                                                                                    && (x.Role.CanCreate == true || x.Role.CanUpdate == true)))
+            {
+                <div class="col-sm-12">
+                    @Html.ActionLink("Add Detail", "AddOrEditGradDetail", new {id = 0, gradCeremonyId = Model.GradCeremony.Id, controller = "Graduation"}, new {@class = "saveBtn btn-primary pull-right"})
+                </div>
+            }
+        }
+    }
+
+</div>
+<br/>
+@if (Model.GradCeremony.ShowMarksOnTranscript)
+{
+    <h5 class="blueTxt">Student Transcripts show Marks</h5>
+}
+else
+{
+    <h5 class="blueTxt">Student Transcripts don't show Marks</h5>
+}
+<br/>
+<table id="grad-detail-list" class="table dataTable table-responsive">
+    <thead>
+    <tr>
+        <th>Day</th>
+        <th>Graduation Date</th>
+        <th>
+            No. of Graduating Students
+        </th>
+        <th>
+
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var detail in Model.GradCeremony.GraduationDetails)
+    {
+        <tr>
+            <td>@Html.ActionLink(detail.Name, "ViewGradDetail", new {id = @detail.Id, controller = "Graduation"})</td>
+            <td>@Html.ActionLink(detail.GraduationDate.ToString("dddd, d MMMM yyyy"), "ViewGradDetail", new {id = @detail.Id, controller = "Graduation"})</td>
+            <td>
+                @Html.ActionLink(detail.Students.Count.ToString(), "ViewGradDetail", new {id = @detail.Id, controller = "Graduation"})
+
+            </td>
+            <td>
+
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+
+
+<script type="text/javascript">
+    $(document).ready(function() {
+
+        var gradCeremonyId = '@Model.GradCeremony.Id';
+
+        if ($("#btn-delete-ceremony").length) {
+
+            $("#btn-delete-ceremony").click(function() {
+
+                BootstrapDialog.confirm("You are about to delete ceremony @Model.GradCeremony.Name (@Model.GradCeremony.CompletionDate.ToString("MMMM yyyy")) with @Model.GradCeremony.GraduationDetails.Count days. This shall affect @Model.GradCeremony.GraduationDetails.SelectMany(x => x.Students).Count() students, Are you sure?", function(result) {
+                    if (result) {
+                        DeleteCeremony(gradCeremonyId);
+
+                    } else {
+                        //Do nothing
+                    }
+                });
+
+            });
+        }
+
+    });
+
+    function DeleteCeremony(ceremonyId) {
+        $.post(baseUrl + "Api/UtilsApi/DeleteGrad/" + ceremonyId, function (data) {
+            if (data == true) {
+                
+                window.location.href = '@Url.Action("Index", "Graduation", null)';
+
+            } else {
+                showToast("Something went wrong while deleting @Model.GradCeremony.Name (@Model.GradCeremony.CompletionDate.ToString("MMMM yyyy")).", "error");
+            }
+        });
+    }
+</script>

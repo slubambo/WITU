@@ -1,0 +1,12 @@
+﻿@model IEnumerable<WITU.Models.Menu>
+           
+<ul class="homeUl">
+    <li>@Html.ActionLink("Home", "Index", "Home", null, new { @class = ViewBag.Showing == "Home" ? "active-menu" : null })</li>
+    <li>@Html.ActionLink("Courses", "Index", "Courses", null,  new { @class = ViewBag.Showing == "Courses" ? "active-menu" : null })</li>
+    @foreach (var kv in Model)
+    {
+        <li>@Html.ActionLink(kv.Name, "General", "InformationDesk", new { name = @kv.UrlAction }, new { @class = ViewBag.Showing == kv.Name ? "active-menu" : null })</li>
+    }
+
+</ul>
+

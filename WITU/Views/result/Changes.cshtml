@@ -1,0 +1,111 @@
+﻿@model IEnumerable<WITU.Core.Model.ResultApproval>
+@using WITU.Utils
+@using WITU.Models.UserManagement
+@{ var sessionDetails = (SessionUserManagementDetails)HttpContext.Current.Session["LoggedInUserRoles"]; }
+@{
+    ViewBag.Title = "Changes";
+}
+
+<div>
+    <h2 class="blueHeader">Changes</h2>
+
+    <div class="tabs nav-pills programUl">
+        
+            <ul>
+                <li><a href="#dv-changes-pending">Pending</a></li>
+                <li><a href="#dv-changes-history">All</a></li>
+            </ul>
+        
+        <div id="dv-changes-pending">
+            @if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int) WITU.Models.ServiceDetail.Changes
+                                                                                     && (x.Role.CanCreate == true || x.Role.CanUpdate == true || x.Role.CanDelete == true)))
+            {
+                <div class="pull-right">
+
+                    <button id="btn-approval-change-approve" class="btn btn-primary btn-multiselect">
+                        <span class="glyphicon glyphicon-thumbs-up"></span>
+                        Approve
+                    </button>
+
+                    <button id="btn-approval-change-reject" class=" btn btn-default btn-multiselect">
+                        <span class="glyphicon glyphicon-thumbs-down"></span>
+                        Reject
+                    </button>
+
+                </div>
+            }
+            <table id="tbl-changes-pending" class="table">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" value="allChecked" id="tbl-chbx-changes-pending-all" /></th>
+                        <th>Registration Number</th>
+                        <th>Name</th>
+                        <th>Program</th>
+                        <th>Course Code</th>
+                        <th>Course Name</th>
+                        <th>Action</th>
+                        <th>Old Mark</th>
+                        <th>New Mark</th>
+                        <th class="hidden"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var ra in Model.Where(x => x.IsApproved == null))
+                    {
+                        <tr data-url="@Url.Action("ApprovalDetail", new {id = ra.Id})">
+                            <td><input type="checkbox" value="@ra.Id" class="chkbx-tbl-changes-pending pull-left" /></td>
+                            <td>@Html.ActionLink(ra.StudentCourse.Student.RegistrationNumber, "ApprovalDetail", new { id = ra.Id })</td>
+                            <td>@Html.ActionLink(ra.StudentCourse.Student.Person.FullName, "ApprovalDetail", new { id = ra.Id })</td>
+                            <td>@Html.ActionLink(ra.StudentCourse.Student.Program.ProgramCore.Name, "ApprovalDetail", new { id = ra.Id })</td>
+                            <td>@Html.ActionLink(ra.StudentCourse.Course.Code, "ApprovalDetail", new { id = ra.Id })</td>
+                            <td>@Html.ActionLink(ra.StudentCourse.Course.Name, "ApprovalDetail", new { id = ra.Id })</td>
+                            <td>@Html.ActionLink(ra.ChangeStatus.ToString(), "ApprovalDetail", new { id = ra.Id })</td>
+                            <td>@ra.StudentCourse.FinalMark</td>
+                            <td>@ra.NewFinalMark</td>
+                            <td class="hidden">@ra.Id</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div id="dv-changes-history">
+            <table class="dataTable table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Registration Number</th>
+                        <th>Name</th>
+                        <th>Program</th>
+                        <th>Course Name</th>
+                        <th>Action</th>
+                        <th>Old Mark</th>
+                        <th>New Mark</th>
+                        <th>Response</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var ra in Model)
+                    {
+                        <tr data-url="@Url.Action("ApprovalDetail", new {id = ra.Id})">
+                            <td></td>
+                            <td>@Html.ActionLink(ra.StudentCourse.Student.RegistrationNumber, "ApprovalDetail", new { id = ra.Id })</td>
+                            <td>@Html.ActionLink(ra.StudentCourse.Student.Person.FullName, "ApprovalDetail", new { id = ra.Id })</td>
+                            <td>@Html.ActionLink(ra.StudentCourse.Student.Program.ProgramCore.Name, "ApprovalDetail", new { id = ra.Id })</td>
+                            <td>@Html.ActionLink(ra.StudentCourse.Course.Name, "ApprovalDetail", new { id = ra.Id })</td>
+                            <td>@Html.ActionLink(ra.ChangeStatus.ToString(), "ApprovalDetail", new { id = ra.Id })</td>
+                            <td>@ra.StudentCourse.FinalMark</td>
+                            <td>@ra.NewFinalMark</td>
+                            <td>
+                                @if (ra.IsApproved != null)
+                                {
+                                    <label>@(ra.IsApproved.Value ? "Approved" : "Rejected")</label>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

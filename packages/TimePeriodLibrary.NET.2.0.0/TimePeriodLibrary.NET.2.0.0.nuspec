@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>TimePeriodLibrary.NET</id>
+    <version>2.0.0</version>
+    <title>Time Period Library for .NET</title>
+    <authors>Jani Giannoudis</authors>
+    <owners>Jani Giannoudis</owners>
+    <projectUrl>http://www.codeproject.com/Articles/168662/Time-Period-Library-for-NET</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Extensive time period calculations and individual calendar periods.</description>
+    <releaseNotes>DateDiff: New constructors with a TimeSpan.
+Merged YearCalendarTimeRange into CalendarTimeRange.
+ITimeFormatter: Added new properties to customize the duration separator and interval marker.
+Optimized gap, intersection and overlap calculation algorythm:
+  - Improved performance about 30% or more.
+  - Refactored TimeLine, TimeLineMoment and TimeLineMommentCollection.
+Added support for Account Calendar:
+  - ITimeCalendar: Extended method GetYear with the parameter month.
+  - ITimeCalendar/TimeCalendarConfig: New property FiscalFirstDayOfYear to control the first day of the year.
+  - ITimeCalendar/TimeCalendarConfig: New property FiscalYearAlignment to control the year alignment.
+  - ITimeCalendar/TimeCalendarConfig: New property FiscalQuarterGrouping to control the week grouping within a quarter.
+  - Year/Halfyear/Quarter/Month: Added support the fiscal account calendar.
+  - New utility class FiscalCalendarTool.
+New documentation chapters 'Accounting Calendar' and 'TimeLine'.</releaseNotes>
+    <copyright>(c) 2011-2014 by Jani Giannoudis, Switzerland</copyright>
+    <tags>C# ASP.NET Windows .NET Mobile Silverlight C#4.0 Windows-Phone WinForms Date Time Calendar</tags>
+  </metadata>
+</package>

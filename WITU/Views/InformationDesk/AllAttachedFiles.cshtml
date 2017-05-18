@@ -1,0 +1,51 @@
+﻿@using WITU.Models
+@model IEnumerable<WITU.Models.Attachment>
+@{
+    Layout = null;
+}
+
+@Styles.Render("~/Content/css")
+<script type="text/javascript" src="~/Content/custom/Site.css" rel="stylesheet"></script>
+<p>
+    @foreach (var attachment in Model)
+    {
+        <p>
+            <a href="@attachment.Url" target="_blank" title="Click to View File">
+                <div class="pull-left">
+                    @if (attachment.IsImage)
+                    {
+                        <img src="@attachment.ThumbnailUrl" alt="@attachment.Name" class="img-responsive" />
+                    }
+                    else if (attachment.FileType.Equals(FileTypeExtention.doc.ToString()) || attachment.FileType.Equals(FileTypeExtention.docx.ToString()))
+                    {
+                        <span class="fa fa-file-word-o fa-align-center text-center fa-2x"></span>
+                    }
+                    else if (attachment.FileType.Equals(FileTypeExtention.pdf.ToString()))
+                    {
+                        <span class="fa fa-file-pdf-o fa-align-center text-center  fa-2x"></span>
+                    }
+                    else if (attachment.FileType.Equals(FileTypeExtention.xls.ToString()) || attachment.FileType.Equals(FileTypeExtention.xlsx.ToString()))
+                    {
+                        <span class="fa fa-file-excel-o fa-align-center text-center  fa-2x"></span>
+                    }
+                    else
+                    {
+                        <span class="fa fa-file fa-align-center text-center"></span>
+                    }
+                </div>
+                <div class="pull-left">
+
+                    <span class="attachmentLink" title="Click to View Attachment">&nbsp;&nbsp;@attachment.FriendlyName</span>
+                    @if (attachment.AcademicYearName != null)
+{
+    <span class="attachmentLink" title="Click to View Attachment">(@attachment.AcademicYearName)</span>
+}
+                </div>
+
+            </a>
+           <div class="clearfix"></div>
+        </p>
+    }
+    <div class="clearfix"></div>
+
+ @Scripts.Render("~/bundles/bootstrap")
