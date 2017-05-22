@@ -199,8 +199,7 @@ namespace WITU.Controllers
                         if (file.Id > 0)
                             attach = _coreRepository.Get<GeneralInformationAttachment>(file.Id) ??
                                      new GeneralInformationAttachment();
-                        if (file.AcademicYear > 0)
-                            attach.CohortYear = _coreRepository.Get<CohortYear>(file.AcademicYear);
+                        
                         attach.UserFriendlyName = file.FriendlyName;
                         attach.FileName = file.Name;
                         attach.FileType = Path.GetExtension(file.Name).Trim().Replace(".", "").ToLowerInvariant();
@@ -245,14 +244,12 @@ namespace WITU.Controllers
                                 //Size = x.
                                 OriginalFileName = x.OriginalFileName,
                                 FriendlyName = x.UserFriendlyName,
-                                AcademicYear = x.CohortYear != null ? x.CohortYear.Id : 0,
                                 ThumbnailUrl = Attachment.ImageExtensions.Any(y => y.Equals(x.FileType))
                                     ? string.Format("{0}{1}/{2}", urlPath, ResourceFolders.Thumbnail.ToString(),
                                         x.FileName)
                                     : urlPath + x.FileName,
                                 Url = urlPath + x.FileName,
                                 IsImage = Attachment.ImageExtensions.Any(y => y.Equals(x.FileType)),
-                                AcademicYearName = x.CohortYear != null ? x.CohortYear.Name : ""
                             }));
                     break;
                 case AttachmentType.InformationDesk:

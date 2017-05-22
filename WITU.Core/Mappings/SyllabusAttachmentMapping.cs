@@ -1,18 +1,19 @@
-﻿using System;
+﻿using FluentNHibernate.Mapping;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WITU.Core.Model;
-using FluentNHibernate.Mapping;
 
 namespace WITU.Core.Mappings
 {
-    public class GeneralInformationAttachmentMapping : ClassMap<GeneralInformationAttachment>
+    
+    public class SyllabusAttachmentMapping : ClassMap<SyllabusAttachment>
     {
-        public GeneralInformationAttachmentMapping()
+        public SyllabusAttachmentMapping()
         {
-            Table("`general_information_attachment`");
+            Table("`syllabus_attachment`");
             Schema("witu");
             Id(x => x.Id, "id")
                 .GeneratedBy.Native();
@@ -22,9 +23,9 @@ namespace WITU.Core.Mappings
             Map(x => x.FileName, "fileName");
             Map(x => x.FileType, "fileType");
             Map(x => x.Description, "description");
-            References(x => x.GeneralInformation)
-                .Class<GeneralInformation>()
-                .Column("generalInformationId")
+            References(x => x.Syllabus)
+                .Class<Syllabus>()
+                .Column("syllabusId")
                 .Not.Nullable()
                 .Fetch.Select()
                 .Cascade.SaveUpdate();

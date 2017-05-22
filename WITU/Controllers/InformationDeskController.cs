@@ -177,13 +177,12 @@ namespace WITU.Controllers
                         FileType = x.FileType,
                         OriginalFileName = x.OriginalFileName,
                         FriendlyName = x.UserFriendlyName,
-                        AcademicYear = x.CohortYear != null ? x.CohortYear.Id : 0,
                         ThumbnailUrl = Attachment.ImageExtensions.Any(y => y.Equals(x.FileType)) ?
                             string.Format("{0}{1}/{2}", urlPath, ResourceFolders.Thumbnail.ToString(), x.FileName) :
                             urlPath + x.FileName,
                         Url = urlPath + x.FileName,
                         IsImage = Attachment.ImageExtensions.Any(y => y.Equals(x.FileType)),
-                        AcademicYearName = x.CohortYear != null ? x.CohortYear.Name : ""
+                        //AcademicYearName = x.CohortYear != null ? x.CohortYear.Name : ""
                     }));
 
                     break;

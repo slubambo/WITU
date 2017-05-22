@@ -1,0 +1,61 @@
+﻿@using System.Globalization
+@using ARMSv2.Core.Model
+@{
+    ViewBag.Title = "Course - " + @Model.Course.Name;
+    Html.EnableClientValidation();
+}
+
+<div class="homeWrap">
+    <div class="homeLowerContent">
+        <div class="col-md-12 homeNewsSection">
+            <h5 class="">About this Course</h5>
+            <h3 class="text-left text-header">@Model.Course.Name</h3>
+            <p>@Model.Overview</p>
+
+            <div class="homeCenter">
+                <div class="col-lg-12">
+                    <p><strong>Created By: </strong> @Model.Course.Creators</p>
+                    <p><strong>Commitment:</strong> @Model.Course.MinimumWeeks - @Model.Course.MaximumWeeks Weeks, @Model.Course.MinimumHoursWeekly - @Model.Course.MaximumHoursWeekly hours/week</p>
+                    <p><strong>Requirement: </strong> @Model.Course.Requirement</p>
+                </div>
+
+                <div class="clearfix"></div>
+            </div>
+
+            <h3 class="text-left text-header">Syllabus</h3>
+            <div class="homeCenter">
+                <div class="col-lg-12">
+                    <div class="panel-group" id="accordion">
+                        <div class="panel panel-default">
+                            @{ int counter = 1;}
+                            @foreach (var syllabus in Model.Course.Syllabi)
+                            {
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse@(counter)"><h4>Week @syllabus.Week </h4></a>
+                                    </h4>
+                                </div>
+                                <div id="collapse@(counter)" class="panel-collapse collapse @(@counter == 1 ? "in" : "")">
+                                    <div class="panel-body">
+                                        <h4>@syllabus.Title</h4>
+                                        <p>@syllabus.Overview</p>
+
+                                        <p><strong>Resources</strong></p>
+
+
+                                    </div>
+                                </div>
+                                counter +=1;
+                            }
+                        </div>
+                    </div>
+                    <p><strong>Note:</strong> Click on the linked heading text to expand or collapse accordion panels.</p>
+                </div>
+            </div>
+                <div class="clearfix"></div>
+                <br />
+            </div>
+            <div class="clearfix"></div>
+
+        </div>
+</div>

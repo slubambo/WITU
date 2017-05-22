@@ -288,10 +288,10 @@ namespace WITU.Controllers
             if (model.User.Id > 0)
             {
                 var user = _coreRepo.Get<User>(model.User.Id);
-                Instructor staff = _staffRepo.GetStaffByUserId(model.User.Id);
+                Instructor instructor = _staffRepo.GetStaffByUserId(model.User.Id);
 
                 model.User = user;
-                model.StaffPositions = staff != null ? staff.StaffPositions.ToList() : null;
+                model.StaffPositions = instructor != null ? instructor.InstructorPositions.ToList() : null;
 
                 if (buttonClicked == "Add Position")
                 {
@@ -384,7 +384,7 @@ namespace WITU.Controllers
                                 AssignedDate = DateTime.Now,
                                 IsActive = model.StaffPosition.IsActive,
                                 LevelId = (AccessLevel)Convert.ToInt32(levelId),
-                                Staff = staff,
+                                Staff = instructor,
                                 IdNumber = model.StaffPosition.IdNumber,
                                 WorkStatus = model.StaffPosition.WorkStatus,
                                 Position = _coreRepo.Get<Position>(model.StaffPosition.Position.Id),
@@ -426,7 +426,7 @@ namespace WITU.Controllers
                                 staffPosition.WorkStatus = model.StaffPosition.WorkStatus;
                                 staffPosition.Position = _coreRepo.Get<Position>(model.StaffPosition.Position.Id);
                                 staffPosition.Campus = campus;
-                                staffPosition.Staff = staff;
+                                staffPosition.Staff = instructor;
                             }
 
                             //if ((AccessLevel)Convert.ToInt32(levelId) == AccessLevel.Course && selection != null
@@ -455,7 +455,7 @@ namespace WITU.Controllers
                         return PartialView("_addStaffPosition", model);
                     }
                     model.StaffPositions =
-                        _coreRepo.GetAll<InstructorPosition>().Where(ress => ress.Staff.Id == staff.Id).ToList();
+                        _coreRepo.GetAll<InstructorPosition>().Where(ress => ress.Staff.Id == instructor.Id).ToList();
 
                     return PartialView("_StaffPositions", model);
                 }
@@ -701,8 +701,8 @@ namespace WITU.Controllers
                 UserId = stf.User.Id,
                 Username = stf.User.Username ?? "",
                 FullName = stf.Person.FullName ?? "",
-                Positions = stf.StaffPositions.Where(a => a.IsActive).ToList(),
-                StaffCourses = stf.StaffPositions.Where(a => a.IsActive).SelectMany(a => a.StaffCourses).ToList(),
+                Positions = stf.InstructorPositions.Where(a => a.IsActive).ToList(),
+                StaffCourses = stf.InstructorPositions.Where(a => a.IsActive).SelectMany(a => a.StaffCourses).ToList(),
                 Person = stf.Person
             }).ToList();
 

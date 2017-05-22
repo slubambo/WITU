@@ -18,6 +18,9 @@ namespace WITU.Core.Mappings
                 .GeneratedBy.Native();
             OptimisticLock.Version();
             Map(x => x.Name, "name");
+            Map(x => x.DescriptiveTitle, "descriptiveTitle");
+            Map(x => x.Description, "description");
+            Map(x => x.Creators, "creators");
             HasMany(x => x.Courses)
                 .KeyColumn("courseCategoryId")
                 .KeyNullable()

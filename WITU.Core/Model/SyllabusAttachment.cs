@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace WITU.Core.Model
 {
     [Serializable]
-    public class GeneralInformationAttachment
+    public class SyllabusAttachment
     {
         public virtual int Id { get; set; }
 
@@ -21,7 +21,6 @@ namespace WITU.Core.Model
 
         public virtual string Description { get; set; }
 
-        public virtual GeneralInformation GeneralInformation { get; set; }
-
+        public virtual Syllabus Syllabus { get; set; }
     }
 }

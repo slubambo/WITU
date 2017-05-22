@@ -25,13 +25,13 @@ namespace WITU.Models
             //ProgramId = course.Program != null ? course.Program.Id : 0;
             //ProgramName = course.Program != null ? course.ProgramName : "";
             //CampusName = course.Program != null ? course.Program.Campus.Name : "";
-            Code = course.Code;
+            //Code = course.Code;
             CourseType = course.CourseType != null ? (int)course.CourseType : 0;
             //SemesterLevelId = course.SemesterLevel != null ? course.SemesterLevel.Id : 0;
             Name = course.Name;
-            CourseContent = course.Content;
-            CreditUnits = course.Weight ?? 0;
-            SubjectId = course.Subject != null ? course.Subject.Id : 0;
+            //CourseContent = course.Content;
+            //CreditUnits = course.Weight ?? 0;
+            //SubjectId = course.Subject != null ? course.Subject.Id : 0;
             Status = course.Status > 0 ? course.Status : (int)CourseStatus.Active;
             
         }

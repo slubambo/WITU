@@ -5,7 +5,7 @@
 @{ var sessionDetails = (SessionUserManagementDetails)HttpContext.Current.Session["LoggedInUserRoles"]; }
 @model IEnumerable<WITU.Models.Courses.CourseModel>
 
-<div>
+
     @*@if (User.ApplicationUserType() == (int)UserTypes.Staff)
     {
         if (sessionDetails != null && sessionDetails.LoggedInUserRoles.Any(x => x.Role.Service.Id == (int)ServiceDetail.Programme
@@ -20,22 +20,26 @@
     <div class="table-responsive ">
         <table class="table dataTable tbl-campus-programs">
             <thead>
-                <tr>
-                    <th>Course Name</th>
-                    <th>Category</th>
-                    <th>
-                        Time Frame
-                    </th>
-                </tr>
+            <tr>
+                <th>Course</th>
+                <th>Specialization</th>
+                <th>Commitment</th>
+                <th>Overview</th>
+            </tr>
             </thead>
             <tbody>
                 @foreach (var course in Model)
-                {
-                    <tr>
-                        <td>@course.Course.Name</td>
-                        <td>@course.Course.CourseCategory.Name</td>
+            {
+                    <tr onclick="location.href = '@Url.Action("Course", "Courses", new {id = @course.Course.Id})' " style="cursor: pointer;">
                         <td>
-                            @course.Course.TimeFrame Months
+                           course.Course.Name
+                        </td>
+                        <td>
+                            @course.Course.CourseCategory.Name
+                        </td>
+                        <td>@course.Course.MinimumWeeks - @course.Course.MaximumWeeks Weeks, @course.Course.MinimumHoursWeekly - @course.Course.MaximumHoursWeekly hours/week</td>
+                        <td>
+                            @course.Overview
                         </td>
                     </tr>
                 }
@@ -45,4 +49,3 @@
     <div class="clearfix"></div>
     <br/>
     <br/>
-</div>

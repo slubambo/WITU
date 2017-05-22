@@ -7,8 +7,6 @@ namespace WITU.Models.Courses
     {
         public IEnumerable<CourseModel> AllCourses { get; set; }
 
-        public IEnumerable<CourseCore> AllCourseCores { get; set; }
-
         public IEnumerable<Campus> Campuses { get; set; }
     }
 
@@ -16,7 +14,7 @@ namespace WITU.Models.Courses
     {
         public Course Course { get; set; }
 
-        public string StudyTimesSummary { get; set; }
+        public string Overview { get; set; }
     }
 
 }

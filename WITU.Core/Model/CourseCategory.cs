@@ -25,6 +25,24 @@ namespace WITU.Core.Model
             set;
         }
 
+        public virtual string DescriptiveTitle
+        {
+            get;
+            set;
+        }
+
+        public virtual string Description
+        {
+            get;
+            set;
+        }
+
+        public virtual string Creators
+        {
+            get;
+            set;
+        }
+
         public virtual Iesi.Collections.Generic.ISet<Course> Courses
         {
             get;

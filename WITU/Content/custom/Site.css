@@ -1918,6 +1918,9 @@ ul.ui-autocomplete {
 }
 
 /* WITU E-Learning*/
+.nav-pills > li.active > a{
+    background-color: #663300!important
+}
 .welcomediv {
     background-color: #663300;
     min-height: 350px;
@@ -2091,4 +2094,7 @@ ul.ui-autocomplete {
 	-moz-transform: rotateY(180deg);
   -o-transform: rotateY(180deg);
 	transform: rotateY(180deg);
+}
+.panel-group .panel{
+    border-radius: 0px
 }

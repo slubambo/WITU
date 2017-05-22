@@ -1,29 +1,32 @@
-﻿@model IEnumerable<WITU.Core.Model.CourseCore>
-           
-<div>
-    <table class="table dataTable">
+﻿@model IEnumerable<WITU.Models.Courses.CourseModel>
+
+<div class="table-responsive ">
+    <table class="table dataTable tbl-campus-programs">
         <thead>
             <tr>
                 <th>Course</th>
+                <th>Specialization</th>
+                <th>Commitment</th>
                 <th>Overview</th>
-                @*<th>Aims</th>
-                <th>Skills</th>*@
             </tr>
         </thead>
         <tbody>
             @foreach (var course in Model)
             {
-                <tr>
+                <tr onclick="location.href = '@Url.Action("Course", "Courses", new {id = @course.Course.Id})' " style="cursor: pointer;">
                     <td>
-                        @Html.ActionLink(course.Name, "Index", "Courses")
+                        @course.Course.Name
                     </td>
                     <td>
-                        @course.ShortDescription
+                        @course.Course.CourseCategory.Name
                     </td>
-                    @*<td class="center">@course.Aims</td>
-                    <td class="center">@course.Skills</td>*@
+                    <td>@course.Course.MinimumWeeks - @course.Course.MaximumWeeks Weeks, @course.Course.MinimumHoursWeekly - @course.Course.MaximumHoursWeekly hours/week</td>
+                    <td>
+                        @course.Overview
+                    </td>
                 </tr>
             }
         </tbody>
     </table>
 </div>
+

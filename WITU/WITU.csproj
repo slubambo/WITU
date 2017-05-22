@@ -249,6 +249,7 @@
     <Compile Include="Controllers\CountryController.cs" />
     <Compile Include="Controllers\CoursesController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
+    <Compile Include="Controllers\InstructorController.cs" />
     <Compile Include="Controllers\UserManagementController.cs" />
     <Compile Include="Controllers\UtilsApiController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -274,6 +275,7 @@
     <Compile Include="Models\AdminUnits\UniversityView.cs" />
     <Compile Include="Models\ContentView.cs" />
     <Compile Include="Models\Courses\CoursesModel.cs" />
+    <Compile Include="Models\Courses\CourseView.cs" />
     <Compile Include="Models\EditPerson.cs" />
     <Compile Include="Models\StaffHomeView.cs" />
     <Compile Include="Models\StudentHomeView.cs" />
@@ -1331,6 +1333,8 @@
     <Content Include="Views\Courses\Index.cshtml" />
     <Content Include="Views\Courses\Display\_CourseCoreList.cshtml" />
     <Content Include="Views\Courses\Display\_CourseTables.cshtml" />
+    <Content Include="Views\Instructor\Index.cshtml" />
+    <Content Include="Views\Courses\course.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

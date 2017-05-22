@@ -43,7 +43,7 @@
                 @*This was the old implementation, only program cores of active programs were shown*@
                 @*@if (Request.IsAuthenticated && User.ApplicationUserType() == (int)UserTypes.Staff)
                 {*@
-                    @Html.Partial("Display/_CourseCoreList", Model.AllCourseCores)
+                    @Html.Partial("Display/_CourseCoreList", Model.AllCourses)
                 @*}
                 else
                 {*@

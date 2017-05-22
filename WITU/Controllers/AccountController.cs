@@ -98,8 +98,8 @@ namespace WITU.Controllers
                                 LoggedInUserRoles = roles,
                                 Instructor = instructor,
                                 HighestLevel =
-                                    instructor.StaffPositions.OrderBy(x => x.LevelId).FirstOrDefault() != null
-                                        ? (int)instructor.StaffPositions.OrderBy(x => x.LevelId).FirstOrDefault().LevelId
+                                    instructor.InstructorPositions.OrderBy(x => x.LevelId).FirstOrDefault() != null
+                                        ? (int)instructor.InstructorPositions.OrderBy(x => x.LevelId).FirstOrDefault().LevelId
                                         : 0
                             };
 
@@ -112,7 +112,7 @@ namespace WITU.Controllers
                         switch (user.UserType)
                         {
                             case (int) UserTypes.Instructor:
-                                return string.IsNullOrEmpty(returnUrl)? RedirectToAction("Index", "Staff"): RedirectToLocal(returnUrl);
+                                return string.IsNullOrEmpty(returnUrl)? RedirectToAction("Index", "Instructor"): RedirectToLocal(returnUrl);
 
                             case (int) UserTypes.Student:
                                 return string.IsNullOrEmpty(returnUrl)? user.IsFirstTimeUser
