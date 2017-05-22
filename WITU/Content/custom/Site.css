@@ -560,8 +560,6 @@ html {
     background-position: -521px -345px;
 }
 
-
-
 .infoIcon {
     background-position: -425px -94px;
 }
@@ -628,6 +626,10 @@ html {
 
 .subjectIcon {
     background-position: -69px -90px;
+}
+
+.cohortIcon {
+    background-position:  -71px -220px
 }
 
 .accordionMenu .menuCont {
@@ -2091,4 +2093,51 @@ ul.ui-autocomplete {
 	-moz-transform: rotateY(180deg);
   -o-transform: rotateY(180deg);
 	transform: rotateY(180deg);
+}
+
+ul.no_style {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.course-container {
+    padding:0.01em 16px
+}
+
+.course-card {
+    box-shadow:0 4px 10px 0 rgba(0,0,0,0.2),0 4px 20px 0 rgba(0,0,0,0.19);
+    margin-bottom: 25px;
+}
+
+.course-header-footer-background {
+    background-color: #F1F1F1;
+}
+
+.left {
+    position: absolute;
+    left: 12px;
+}
+
+.right {
+    position: absolute;
+    right: 12px;
+}
+
+a.course-options:hover, a.course-options:active {
+    background-color: #663300;
+    text-decoration: none;
+    color: white;
+}
+
+.course-options, course-options:visited {
+    border-radius: 5px;
+    color: black;
+    border: 1.5px solid #663300;
+    padding: 4px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin-right: 20px;
 }

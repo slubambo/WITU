@@ -116,8 +116,8 @@ namespace WITU.Controllers
 
                             case (int) UserTypes.Student:
                                 return string.IsNullOrEmpty(returnUrl)? user.IsFirstTimeUser
-                                    ? RedirectToAction("FirstTimeUser", "Student")
-                                    : RedirectToAction("Index", "Student") : RedirectToLocal(returnUrl);
+                                    ? RedirectToAction("FirstTimeUser", "Learner")
+                                    : RedirectToAction("Index", "Learner") : RedirectToLocal(returnUrl);
 
                             case (int) UserTypes.ProspectiveStudent:
                                 return string.IsNullOrEmpty(returnUrl)? RedirectToAction("Index", "ProspectiveStudent") : RedirectToLocal(returnUrl);

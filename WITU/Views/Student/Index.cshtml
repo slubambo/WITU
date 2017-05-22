@@ -18,7 +18,8 @@
                 <div class="row"><div class="col-xs-3"><p class="detailLabel">NAME:</p></div><div class="col-xs-9"><p> @Model.student.Person.FullName</p></div></div>
                 <div class="row"><div class="col-xs-3"><p class="detailLabel">REG No:</p></div><div class="col-xs-9"><p>@Model.student.RegistrationNumber</p></div></div>
                 @*<div class="row"><div class="col-xs-3"><p class="detailLabel">FEES No:</p></div><div class="col-xs-9"><p>@Model.student.StudentNumber</p></div></div>*@
-                <div class="row"><div class="col-xs-3"><p class="detailLabel">PROGRAMME:</p></div><div class="col-xs-9"><p>@Model.student.Program.ProgramCore.Name</p></div></div>
+                @*@<div class="row"><div class="col-xs-3"><p class="detailLabel">PROGRAMME:</p></div><div class="col-xs-9"><p>@Model.student.Program.ProgramCore.Name</p></div></div>*@
+
                 @if (!Model.registrationStatus)
                 {
                     <div class="row"><div class="col-xs-3"><p class="detailLabel alertText">ALERT!:</p></div><div class="col-xs-9"><p>You have not registered</p></div></div>

@@ -61,21 +61,21 @@ namespace WITU.Utils
 
             return @userTypeClaim.Value;
         }
-        public static int ApplicationStudentProgramId(this IPrincipal principal)
-        {
-            //if(!principal.Identity.IsAuthenticated)
-            //    throw new ArgumentNullException("principal");
+        //public static int ApplicationStudentProgramId(this IPrincipal principal)
+        //{
+        //    //if(!principal.Identity.IsAuthenticated)
+        //    //    throw new ArgumentNullException("principal");
 
-            if (!principal.Identity.IsAuthenticated)
-                return -1;
+        //    if (!principal.Identity.IsAuthenticated)
+        //        return -1;
 
-            var userClaims = principal.Identity as ClaimsIdentity;
-            var studentProgramIdClaim = userClaims.Claims.FirstOrDefault(x => x.Type.Equals(ApplicationConstants.StudentProgramIdClaim));
-            if (studentProgramIdClaim == null)
-                throw new IndexOutOfRangeException("No User Claim for StudentProgramIdClaim");
+        //    var userClaims = principal.Identity as ClaimsIdentity;
+        //    //var studentProgramIdClaim = userClaims.Claims.FirstOrDefault(x => x.Type.Equals(ApplicationConstants.StudentProgramIdClaim));
+        //    //if (studentProgramIdClaim == null)
+        //        //throw new IndexOutOfRangeException("No User Claim for StudentProgramIdClaim");
 
-            return Int32.Parse(studentProgramIdClaim.Value);
-        }
+        //    return Int32.Parse(studentProgramIdClaim.Value);
+        //}
 
         public static int ApplicationStudentSpecialisationId(this IPrincipal principal)
         {

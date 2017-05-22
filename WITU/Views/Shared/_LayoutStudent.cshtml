@@ -73,15 +73,15 @@
                                 <h4 class="panel-title">
                                     <span class="menuAccordion">
                                         <span class="icon studentIcon" title="Student Home"></span>
-                                        <a href="@Url.Action("Index", "Student", null)"><span class="hidden-xs">Student Home</span></a>
+                                        <a href="@Url.Action("Index", "Learner", null)"><span class="hidden-xs">Student Home</span></a>
                                     </span>
                                 </h4>
                             </div>
                             <div class="menuElement">
                                 <h4 class="panel-title">
                                     <span class="menuAccordion">
-                                        <span class="icon regIcon" title="Registration"></span><a data-toggle="collapse" data-parent="#accordion" href="#reg-menu">
-                                            <span class="hidden-xs">Registration</span>
+                                        <span class="icon regIcon" title="Courses"></span><a data-toggle="collapse" data-parent="#accordion" href="#reg-menu">
+                                            <span class="hidden-xs">Courses</span>
                                         </a>
                                     </span>
                                 </h4>
@@ -89,9 +89,9 @@
                                 <div id="reg-menu" class="iconElements panel-collapse collapse">
                                     <span class="iconElementsArrow"></span>
                                     <ul class="panel-body">
-                                        <li>@Html.ActionLink("Exemptions", "Exemptions", "Student")</li>
-
-                                        <li>@Html.ActionLink("Exam Permit", "ExamPermit", "Registration")</li>
+                                        <li>@Html.ActionLink("All", "ViewCourses", "Learner")</li>
+                                        <li>@Html.ActionLink("In Progress", "ExamPermit", "Registration")</li>
+                                        <li>@Html.ActionLink("Completed", "ExamPermit", "Registration")</li>
                                     </ul>
                                 </div>
                             </div>
@@ -99,15 +99,15 @@
 
                                 <h4 class="panel-title">
                                     <span class="menuAccordion">
-                                        <span class="icon resultsIcon" title="Results"></span><a data-toggle="collapse" data-parent="#accordion" href="#results-menu">
-                                            <span class="hidden-xs">Results</span>
+                                        <span class="icon gradIcon" title="Accomplishments"></span><a data-toggle="collapse" data-parent="#accordion" href="#results-menu">
+                                            <span class="hidden-xs">Accomplishments</span>
                                         </a>
                                     </span>
                                 </h4>
                                 <div id="results-menu" class="iconElements panel-collapse collapse">
                                     <span class="iconElementsArrow"></span>
                                     <ul class="panel-body">
-                                        <li>@Html.ActionLink("Semester Results", "StudentResults", "Result")</li>
+                                        <li>@Html.ActionLink("Certifications", "StudentResults", "Result")</li>
                                     </ul>
                                 </div>
                             </div>
@@ -115,61 +115,19 @@
 
                                 <h4 class="panel-title">
                                     <span class="menuAccordion">
-                                        <span class="icon accountsIcon" title="Accounts"></span><a data-toggle="collapse" data-parent="#accordion" href="#acct-menu">
-                                            <span class="hidden-xs">Finance</span>
+                                        <span class="icon cohortIcon" title="Cohorts"></span><a data-toggle="collapse" data-parent="#accordion" href="#acct-menu">
+                                            <span class="hidden-xs">Cohorts</span>
                                         </a>
                                     </span>
                                 </h4>
                                 <div id="acct-menu" class="iconElements panel-collapse collapse">
                                     <span class="iconElementsArrow"></span>
                                     <ul class="panel-body">
-                                        <li>@Html.ActionLink("Payslip", "Index", "StudentFinance")</li>
-                                        <li>@Html.ActionLink("Statement", "FinancialStatement", "StudentFinance")</li>
+                                        <li>@Html.ActionLink("Sign Up", "Index", "StudentFinance")</li>
+                                        <li>@Html.ActionLink("Leave", "FinancialStatement", "StudentFinance")</li>
                                     </ul>
                                 </div>
-                            </div>
-                            <div class="menuElement">
-                                <h4 class="panel-title">
-                                    <span class="menuAccordion">
-                                        <span class="icon acadIcon" title="Academic Information"></span><a data-toggle="collapse" data-parent="#accordion" href="#acad-menu">
-                                            <span class="hidden-xs">Academic Information</span>
-                                        </a>
-                                    </span>
-                                </h4>
-
-                                <div id="acad-menu" class="iconElements panel-collapse collapse">
-                                    <span class="iconElementsArrow"></span>
-                                    <ul class="panel-body">
-                                        <li>@Html.ActionLink("Regulations", "RegulationsAndProcedures", "Semester")</li>
-                                        <li>@Html.ActionLink("Pass Marks", "PassMarks", "Semester")</li>
-                                        @if (Request.IsAuthenticated)
-                                        {
-
-                                            if (User.ApplicationUserType() == (int)UserTypes.Student)
-                                            {
-                                                var studentProgramId = User.ApplicationStudentProgramId();
-                                                if (studentProgramId != -1)
-                                                {
-                                                    <li>@Html.ActionLink("Grading Scheme", "StudentsGradingScheme", "Semester", new { }, new object { })</li>
-                                                    <li>@Html.ActionLink("Course Content", "View", "Program", new { id = studentProgramId }, new object { })</li>
-
-                                                }
-                                                else
-                                                {
-                                                    <li>@Html.ActionLink("Course Content", "Index", "Program")</li>
-                                                }
-                                            }
-                                            else
-                                            {
-                                                <li>@Html.ActionLink("Course Content", "Index", "Program")</li>
-                                            }
-                                        }
-
-
-
-                                    </ul>
-                                </div>
-                            </div>
+                            </div>                   
                         </div>
                     </div>
                     <div class="menuSection">

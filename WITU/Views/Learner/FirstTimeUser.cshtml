@@ -1,0 +1,63 @@
+﻿@model WITU.Models.student.FirstTimeUserModel
+@{
+    ViewBag.Title = "First Time User";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@*<div class="row">
+    <img class="img-responsive" src="~/Content/images/splash_firsttime.jpg" style="border: 1px solid #BFCDFA;"/>
+</div>*@
+<div class="row">
+    <div class="col-md-8 col-xs-12 nopadding">
+        <h3 class="maroonHeader">Update Your Account Settings</h3>
+        <p>Please fill in your old password and your new password.</p>
+        
+        <h3 class="maroonHeader">Passwords (All fields required)</h3>
+        @using (Html.BeginForm("FirstTimeUser", "Learner", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+           
+            @Html.ValidationSummary()
+            <div class="form-group">
+                @Html.LabelFor(m => m.OldPassword, new { @class = "col-sm-4 col-md-4 control-label" })
+                <div class="col-sm-8 col-md-8">
+                    @Html.PasswordFor(m => m.OldPassword, new { @class = " form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.NewPassword, new { @class = "col-sm-4 col-md-4 control-label" })
+                <div class="col-sm-8 col-md-8">
+                    @Html.PasswordFor(m => m.NewPassword, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-sm-4 col-md-4 control-label" })
+                <div class="col-sm-8 col-md-8">
+                    @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+                </div>
+            </div>
+            @*<div class="form-group">
+                @Html.LabelFor(m => m.EmailAddress, new { @class = "col-sm-4 col-md-4 control-label" })
+                <div class="col-sm-8 col-md-8">
+                    @Html.TextBoxFor(m => m.EmailAddress, new { @class = "form-control" })
+                </div>
+            </div>*@
+            <div class="form-group">
+                <label class="col-sm-4 col-md-4 control-label">Are you a human?</label>
+                <div class="col-sm-8 col-md-8">
+                    @Html.ReCaptcha()
+                </div>
+            </div>
+
+            <div class="form-group nomargin">
+                <div class="fright">
+                    <input type="submit" value="Continue" class="btn saveBtn" />
+                    @Html.ActionLink("Skip", "Index", "Learner", new { @class = " btn delBtn" })
+                </div>
+            </div>
+            <br/>
+        }
+
+
+    </div>
+</div>

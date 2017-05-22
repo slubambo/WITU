@@ -1,0 +1,41 @@
+﻿@model WITU.Models.Learner.CourseListModel
+@{
+    ViewBag.Title = "Courses";
+    Layout = "~/Views/Shared/_LayoutStudent.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>ViewCourses</title>
+</head>
+<body>
+    <h3 class="greyHeader"><strong>View Courses</strong></h3>
+    <div>
+        <ul class="no_style">
+            @foreach (var course in Model.CourseList) {
+                <li>
+                    <div class="course-card">
+                        <header class="course-container course-header-footer-background">
+                            <h1>@course.Name</h1>
+                        </header>
+
+                        <div class="course-container">
+                            <p>@course.Content</p>
+                        </div>
+
+                        <footer class="course-container course-header-footer-background">
+                            <h5>
+                                <a class="course-options" href="@Url.Action("ViewCourse", "Learner", new {courseId = @course.Id })">Go to course</a>
+                                <a class="course-options" href="google.com">Sign up</a>
+                            </h5>
+                        </footer>
+                    </div>
+                </li>
+            }
+        </ul> 
+    </div>
+</body>
+</html>
